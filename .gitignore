@@ -1,0 +1,16 @@
+bin/*
+build/*
+lib/*
+*.csv
+*.log
+*.lck
+*.txt
+*.xls
+*.xlsx
+.classpath
+.DS_Store
+.gitignore~
+.project
+Thumbs.db
+*.~*
+*.*~
