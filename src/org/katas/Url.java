@@ -63,9 +63,9 @@ public class Url {
             buffer.append(st.nextToken());
             return buffer.toString();
         }
-        else {
-            return url;
-        }
+
+        return url;
+
     }
 
     /**
