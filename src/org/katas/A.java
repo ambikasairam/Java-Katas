@@ -101,7 +101,7 @@ public class A implements Serializable {
     // In Java, you pass a pointer to an object to a method, and anything you do to change the
     // values of the variables inside the object to which that pointer points is also reflected
     // outside the method. But in a method, you cannot change the pointer to point to something
-    // something else. In other words:
+    // else. In other words:
     //     public void M1(B b) { this.b = b; this.b = null; }
     // If b is non-null when it is passed to M1, b is also non-null after the method returns.
     //     public void M2(B b) { this.b = b; this.b.setString("something"); }
