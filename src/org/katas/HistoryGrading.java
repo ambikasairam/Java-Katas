@@ -4,7 +4,9 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 /**
@@ -80,9 +82,16 @@ public class HistoryGrading {
     else {
       try {
         this.length = Integer.parseInt(this.line);
+        if (this.length < 2 || this.length > 20) {
+          throw new IllegalArgumentException();
+        }
       }
       catch (NumberFormatException e) {
         System.err.println("First line is not a number.");
+        return false;
+      }
+      catch (IllegalArgumentException e) {
+        System.err.println("Number must be between 2 and 20, inclusive.");
         return false;
       }
     }
@@ -116,6 +125,9 @@ public class HistoryGrading {
       while (tokenizer.hasMoreTokens()) {
         this.historicalEvents.add(tokenizer.nextToken());
       }
+      if (this.duplicatesExist(this.historicalEvents)) {
+        return false;
+      }
     }
 
     return true;
@@ -147,6 +159,9 @@ public class HistoryGrading {
       while (tokenizer.countTokens() > 0) {
         this.studentResponses.add(tokenizer.nextToken());
       }
+      if (this.duplicatesExist(this.studentResponses)) {
+        return false;
+      }
       this.grades.add(this.gradeResponses());
       this.allResponses.addAll(this.studentResponses);
       this.allResponses.add("\n");
@@ -155,6 +170,27 @@ public class HistoryGrading {
       this.line = reader.readLine();
     }
     return true;
+  }
+
+  /**
+   * Checks whether duplicates exist in a list.
+   * 
+   * @param list List in which to check whether duplicates exist.
+   * @return True if duplicates exist or list is null or empty, false otherwise.
+   */
+  private boolean duplicatesExist(List<String> list) {
+    if (list == null || list.isEmpty()) {
+      System.err.println("List is null or empty.");
+      return true;
+    }
+
+    Set<String> set = new HashSet<String>(list);
+    if (set.size() < list.size()) {
+      System.err.println("Duplicates exist in list.");
+      return true;
+    }
+
+    return false;
   }
 
   /**
