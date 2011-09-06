@@ -278,6 +278,11 @@ public class HistoryGrading {
    * @param args The filename.
    */
   public static void main(String[] args) {
+    if (args.length != 1) {
+      System.err.println("Need filename.");
+      return;
+    }
+
     HistoryGrading grading = new HistoryGrading();
     if (grading.getInput(args[0])) {
       grading.printResults();
