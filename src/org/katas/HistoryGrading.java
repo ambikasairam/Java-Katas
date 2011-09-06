@@ -9,7 +9,7 @@ import java.util.StringTokenizer;
 
 /**
  * This class contains methods to read in and grade students' responses as per the instructions
- * found <a href="uva.onlinejudge.org/external/1/111.pdf" target="_blank">here</a>.
+ * found <a href="http://uva.onlinejudge.org/external/1/111.pdf" target="_blank">here</a>.
  * 
  * @author BJ Peter DeLaCruz
  * @version 1.0
@@ -237,7 +237,7 @@ public class HistoryGrading {
 
   /**
    * This program will grade students' responses as per the instructions found <a
-   * href="uva.onlinejudge.org/external/1/111.pdf" target="_blank">here</a>.
+   * href="http://uva.onlinejudge.org/external/1/111.pdf" target="_blank">here</a>.
    * 
    * @param args The filename.
    */
