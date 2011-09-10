@@ -69,7 +69,7 @@ public class FollowingOrders {
         }
       }
 
-      List<String> strings = KataUtils.makeList(new ArrayList<Character>(letters), letters.size());
+      List<String> strings = KataUtils.makeList(new ArrayList<Character>(letters));
 
       List<String> results = new ArrayList<String>();
       for (String s : strings) {

@@ -23,11 +23,11 @@ public final class KataUtils {
    * N.
    * 
    * @param letters Originally a list of N letters.
-   * @param numLetters N, the length of a string.
    * @return List of strings with length N.
    */
-  public static List<String> makeList(List<Character> letters, int numLetters) {
+  public static List<String> makeList(List<Character> letters) {
     List<String> strings = new ArrayList<String>();
+    int numLetters = letters.size();
     makeList(strings, letters);
     List<String> results = new ArrayList<String>();
     for (String s : strings) {
