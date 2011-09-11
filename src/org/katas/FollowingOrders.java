@@ -1,7 +1,5 @@
 package org.katas;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,7 +16,7 @@ import java.util.Set;
 public class FollowingOrders {
 
   /** The lines in the file. */
-  private final List<String> lines = new ArrayList<String>();
+  private List<String> lines = new ArrayList<String>();
 
   /**
    * Creates a new FollowingOrders object.
@@ -28,9 +26,18 @@ public class FollowingOrders {
   }
 
   /**
-   * Gets lines read in from the file.
+   * Sets lines read in from a file.
    * 
-   * @return The lines read in from the file.
+   * @param lines The lines read in from a file.
+   */
+  public void setLines(List<String> lines) {
+    this.lines = lines;
+  }
+
+  /**
+   * Gets lines read in from a file.
+   * 
+   * @return The lines read in from a file.
    */
   public List<String> getLines() {
     return this.lines;
@@ -45,7 +52,7 @@ public class FollowingOrders {
     while (this.lines.size() != 0) {
 
       String line = this.lines.remove(0);
-      List<Character> letters = KataUtils.getLine(line);
+      List<Character> letters = KataUtils.extractChars(line);
       Set<Character> tempSet = new HashSet<Character>(letters);
       if (tempSet.size() < letters.size()) {
         try {
@@ -58,7 +65,7 @@ public class FollowingOrders {
       }
 
       String constraints = this.lines.remove(0);
-      List<Character> constraintsList = KataUtils.getLine(constraints);
+      List<Character> constraintsList = KataUtils.extractChars(constraints);
       if (constraintsList.size() % 2 != 0) {
         try {
           throw new IOException("Odd number of constraints: " + constraints);
@@ -69,7 +76,7 @@ public class FollowingOrders {
         }
       }
 
-      List<String> strings = KataUtils.makeList(new ArrayList<Character>(letters));
+      List<String> strings = KataUtils.makeStringsList(new ArrayList<Character>(letters));
 
       List<String> results = new ArrayList<String>();
       for (String s : strings) {
@@ -105,7 +112,7 @@ public class FollowingOrders {
   }
 
   /**
-   * Prints the results of the algorithm in the <code>processLines</code> method.
+   * Prints the results to the screen.
    * 
    * @param letters The original list of letters.
    * @param constraints All of the constraints.
@@ -135,10 +142,10 @@ public class FollowingOrders {
   }
 
   /**
-   * The main program: given a filename, extracts all of the lines in the file and then processes
-   * them.
+   * The main program; given the name of a file, extracts all of the lines in the file and then
+   * processes them.
    * 
-   * @param args The filename containing the letters and constraints.
+   * @param args The name of the file containing the letters and constraints.
    */
   public static void main(String... args) {
     if (args.length != 1) {
@@ -146,18 +153,16 @@ public class FollowingOrders {
       return;
     }
 
-    BufferedReader reader = null;
-    String line = "";
     FollowingOrders orders = new FollowingOrders();
+    orders.setLines(KataUtils.readLines(args[0]));
+
     try {
-      reader = new BufferedReader(new FileReader(args[0]));
-      while ((line = reader.readLine()) != null) {
-        orders.getLines().add(line);
+      if (orders.getLines() != null) {
+        if (orders.getLines().size() % 2 != 0) {
+          throw new IOException("Invalid file. File contains odd number of lines.");
+        }
+        orders.processLines();
       }
-      if (orders.getLines().size() % 2 != 0) {
-        throw new IOException("Invalid file. File contains odd number of lines.");
-      }
-      orders.processLines();
     }
     catch (IOException e) {
       System.err.println(e.getMessage());
