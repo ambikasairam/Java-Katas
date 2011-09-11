@@ -22,6 +22,21 @@ public final class KataUtils {
   }
 
   /**
+   * Turns a string (usually, a line from a file) into a list of strings.
+   * 
+   * @param string The string that needs to be broken up into a list of strings.
+   * @return The list of strings.
+   */
+  public static List<String> stringToList(String string) {
+    List<String> list = new ArrayList<String>();
+    StringTokenizer tokenizer = new StringTokenizer(string, " ");
+    while (tokenizer.hasMoreTokens()) {
+      list.add(tokenizer.nextToken());
+    }
+    return list;
+  }
+
+  /**
    * Given a list of N letters, returns a list of all possible combinations of strings with length
    * N.
    * 
