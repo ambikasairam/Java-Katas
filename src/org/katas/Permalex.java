@@ -12,10 +12,7 @@ import java.util.Set;
  * 
  * @author BJ Peter DeLaCruz
  */
-public class Permalex {
-
-  /** The lines in the file. */
-  private List<String> lines = new ArrayList<String>();
+public class Permalex extends Kata {
 
   /**
    * Creates a new Permalex object.
@@ -25,31 +22,14 @@ public class Permalex {
   }
 
   /**
-   * Sets lines read in from a file.
-   * 
-   * @param lines The lines read in from a file.
-   */
-  public void setLines(List<String> lines) {
-    this.lines = lines;
-  }
-
-  /**
-   * Gets lines read in from a file.
-   * 
-   * @return The lines read in from a file.
-   */
-  public List<String> getLines() {
-    return this.lines;
-  }
-
-  /**
    * For each string in the input file, prints out the position number at which the string is
    * located in the list of sorted permutations of the characters in the string.
    */
+  @Override
   public void processLines() {
-    while (this.lines.size() != 0) {
+    while (!this.getLines().isEmpty()) {
 
-      String line = this.lines.remove(0);
+      String line = this.getLines().remove(0);
       if ("#".equals(line)) { // EOF
         return;
       }

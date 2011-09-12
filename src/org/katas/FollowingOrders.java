@@ -13,10 +13,7 @@ import java.util.Set;
  * 
  * @author BJ Peter DeLaCruz
  */
-public class FollowingOrders {
-
-  /** The lines in the file. */
-  private List<String> lines = new ArrayList<String>();
+public class FollowingOrders extends Kata {
 
   /**
    * Creates a new FollowingOrders object.
@@ -26,32 +23,15 @@ public class FollowingOrders {
   }
 
   /**
-   * Sets lines read in from a file.
-   * 
-   * @param lines The lines read in from a file.
-   */
-  public void setLines(List<String> lines) {
-    this.lines = lines;
-  }
-
-  /**
-   * Gets lines read in from a file.
-   * 
-   * @return The lines read in from a file.
-   */
-  public List<String> getLines() {
-    return this.lines;
-  }
-
-  /**
    * Processes each pair of lines (one is the letters to order, the other is the list of
    * constraints), and prints out a list of strings whose characters satisfy <span
    * style="text-decoration:underline">all</span> of the constraints.
    */
+  @Override
   public void processLines() {
-    while (this.lines.size() != 0) {
+    while (!this.getLines().isEmpty()) {
 
-      String line = this.lines.remove(0);
+      String line = this.getLines().remove(0);
       List<Character> letters = KataUtils.extractChars(line);
       Set<Character> tempSet = new HashSet<Character>(letters);
       if (tempSet.size() < letters.size()) {
@@ -64,7 +44,7 @@ public class FollowingOrders {
         }
       }
 
-      String constraints = this.lines.remove(0);
+      String constraints = this.getLines().remove(0);
       List<Character> constraintsList = KataUtils.extractChars(constraints);
       if (constraintsList.size() % 2 != 0) {
         try {

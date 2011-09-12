@@ -8,10 +8,8 @@ import java.util.List;
  * 
  * @author BJ Peter DeLaCruz
  */
-public class WordCross {
+public class WordCross extends Kata {
 
-  /** The lines read in from a file. */
-  private List<String> lines;
   /** Number of spaces between each horizontal word. */
   private static final int NUM_SPACES = 3;
 
@@ -23,31 +21,14 @@ public class WordCross {
   }
 
   /**
-   * Sets the lines read in from a file.
-   * 
-   * @param lines The lines read in from a file.
-   */
-  public void setLines(List<String> lines) {
-    this.lines = lines;
-  }
-
-  /**
-   * Gets the lines read in from a file.
-   * 
-   * @return The lines read in from a file.
-   */
-  public List<String> getLines() {
-    return this.lines;
-  }
-
-  /**
    * Makes double leading crosses with the words found on each line if each line contains four and
    * only four words, and also if there are common letters in each pair of vertical and horizontal
    * words.
    */
+  @Override
   public void processLines() {
-    while (this.lines.size() > 0) {
-      String line = this.lines.remove(0);
+    while (!this.getLines().isEmpty()) {
+      String line = this.getLines().remove(0);
       if ("#".equals(line)) { // EOF
         return;
       }

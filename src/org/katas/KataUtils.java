@@ -129,6 +129,63 @@ public final class KataUtils {
   }
 
   /**
+   * Creates a list of integers from 1 to N.
+   * 
+   * @param n The greatest integer that will be in the list.
+   * @return A list of integers from 1 to N.
+   */
+  public static List<Integer> createIntegersList(int n) {
+    List<Integer> integers = new ArrayList<Integer>();
+    for (int index = 0; index < n; index++) {
+      integers.add(index + 1);
+    }
+    return integers;
+  }
+
+  /**
+   * Creates a list of integers from a string (usually, a line read in from a file).
+   * 
+   * @param line The string containing integers.
+   * @param delim The delimiter, e.g. a whitespace character.
+   * @return A list of integers, or <code>null</code> if problems were encountered parsing the
+   * string.
+   */
+  public static List<Integer> createIntegersList(String line, String delim) {
+    List<Integer> integers = new ArrayList<Integer>();
+    StringTokenizer tokenizer = new StringTokenizer(line, delim);
+    try {
+      while (tokenizer.hasMoreTokens()) {
+        integers.add(Integer.parseInt(tokenizer.nextToken()));
+      }
+    }
+    catch (NumberFormatException e) {
+      System.err.println("Non-numeric characters found on line: " + line);
+      return null;
+    }
+    return integers;
+  }
+
+  /**
+   * Prints the contents of a list of objects (strings, integers, etc.).
+   * 
+   * @param list The list of objects.
+   * @return A string displaying the contents of a list.
+   */
+  public static String printArrayContents(List<?> list) {
+    StringBuffer buffer = new StringBuffer();
+    String temp = "[";
+    buffer.append(temp);
+    for (int index = 0; index < list.size() - 1; index++) {
+      buffer.append(list.get(index));
+      buffer.append(", ");
+    }
+    buffer.append(list.get(list.size() - 1));
+    temp = "]";
+    buffer.append(temp);
+    return buffer.toString();
+  }
+
+  /**
    * Given the name of a file, reads in all of the lines from the file.
    * 
    * @param filename Name of a file.
