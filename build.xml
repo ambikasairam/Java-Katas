@@ -54,7 +54,7 @@
   </target>
 
   <!-- Basic properties for this system. -->
-  <property name="system.name" value="wattdepot-hnei" />
+  <property name="system.name" value="java-katas" />
   <property name="system.main.class" value="org.wattdepot.hnei.HneiTabularFileSensor" />
   <property name="majorVersionNumber" value="1" />
   <property name="minorVersionNumber" value="0" />
