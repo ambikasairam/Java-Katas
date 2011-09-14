@@ -3,7 +3,7 @@ package org.katas;
 import javax.swing.table.DefaultTableModel;
 
 /**
- * Used to test how to use a table model with a JTable.
+ * Used to demonstrate how to use a table model with a JTable.
  * 
  * @author BJ Peter DeLaCruz
  */
