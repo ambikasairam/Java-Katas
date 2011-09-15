@@ -57,9 +57,9 @@ public class Spreadsheet extends Kata {
         return;
       }
       if (dimensions.get(0) < 0 && dimensions.get(1) < 0) {
-        System.err.print("Negative values are not allowed: ");
-        System.err.print(dimensions.get(0) + " ");
-        System.err.println(dimensions.get(1));
+        System.err.print("Negative values are not allowed: row ");
+        System.err.print(dimensions.get(1) + ", column ");
+        System.err.println(dimensions.get(0) + ".");
         return;
       }
 
@@ -107,7 +107,7 @@ public class Spreadsheet extends Kata {
   }
 
   /**
-   * Calculates all of the formulas found in a spreadsheet, if any.
+   * Calculates all of the formulas found in a spreadsheet.
    */
   private void calculateFormulas() {
     int rowIndex = 0;
@@ -185,11 +185,15 @@ public class Spreadsheet extends Kata {
         rowNum += (c - 65) + (rowMultiplier * 26);
         rowMultiplier += 1;
       }
+      else if (c > 96 && c < 123) {
+        rowNum += (c - 97) + (rowMultiplier * 26);
+        rowMultiplier += 1;
+      }
       else if (c > 47 && c < 58) {
         colNum += c;
       }
       else {
-        throw new IllegalArgumentException("Illegal character found: " + c);
+        throw new IllegalArgumentException("Invalid character found: " + c);
       }
     }
     coords.add(Integer.parseInt(colNum) - 1);
