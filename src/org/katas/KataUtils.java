@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -182,6 +183,38 @@ public final class KataUtils {
     buffer.append(list.get(list.size() - 1));
     temp = "]";
     buffer.append(temp);
+    return buffer.toString();
+  }
+
+  /**
+   * Given a list of 2D arrays of objects, returns a string representing the contents of each 2D
+   * array in a readable format.
+   * 
+   * @param list List of 2D arrays of objects.
+   * @return A string representing the contents of each 2D array of objects.
+   */
+  public static String print2dArrayContents(List<?> list) {
+    StringBuffer buffer = new StringBuffer();
+    int numTables = 0;
+    String temp = "[ ";
+    buffer.append(temp);
+    for (Object o : list) {
+      if (o instanceof Object[][]) {
+        Object[][] objects = (Object[][]) o;
+        for (int index = 0; index < objects.length - 1; index++) {
+          buffer.append(printArrayContents(Arrays.asList(objects[index])));
+          temp = "\n  ";
+          buffer.append(temp);
+        }
+        buffer.append(printArrayContents(Arrays.asList(objects[objects.length - 1])));
+      }
+      temp = " ]";
+      buffer.append(temp);
+      if (++numTables < list.size()) {
+        temp = "\n\n[ ";
+        buffer.append(temp);
+      }
+    }
     return buffer.toString();
   }
 
