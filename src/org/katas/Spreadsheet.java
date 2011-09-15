@@ -6,7 +6,7 @@ import java.util.StringTokenizer;
 
 /**
  * This program reads in a file containing one or more spreadsheets and outputs one or more new
- * spreadsheets after calculating all of the formulas found in them.
+ * spreadsheets after calculating all of the formulas found in them, if any.
  * 
  * @author BJ Peter DeLaCruz
  */
@@ -53,7 +53,7 @@ public class Spreadsheet extends Kata {
       List<Integer> dimensions = KataUtils.createIntegersList(line, " ");
       if (dimensions.size() != 2) {
         System.err.print("Only two values are expected: ");
-        System.err.println("number of rows and number of columns.");
+        System.err.println("number of columns and number of rows.");
         return;
       }
       if (dimensions.get(0) < 0 && dimensions.get(1) < 0) {
@@ -63,7 +63,7 @@ public class Spreadsheet extends Kata {
         return;
       }
 
-      this.spreadsheets.add(new Object[dimensions.get(0)][dimensions.get(1)]);
+      this.spreadsheets.add(new Object[dimensions.get(1)][dimensions.get(0)]);
 
       populateSpreadsheet(dimensions);
 
@@ -80,7 +80,7 @@ public class Spreadsheet extends Kata {
    * @param dimensions Dimensions of the spreadsheet (number of rows and columns).
    */
   private void populateSpreadsheet(List<Integer> dimensions) {
-    for (int rowIndex = 0; rowIndex < dimensions.get(0); rowIndex++) {
+    for (int rowIndex = 0; rowIndex < dimensions.get(1); rowIndex++) {
       StringTokenizer tokenizer = new StringTokenizer(this.getLines().remove(0), " ");
       // Get recently added spreadsheet.
       Object[][] tempSpreadsheet = this.spreadsheets.get(this.spreadsheets.size() - 1);
@@ -108,7 +108,7 @@ public class Spreadsheet extends Kata {
   }
 
   /**
-   * Calculates all of the formulas found in a spreadsheet.
+   * Calculates all of the formulas found in a spreadsheet, if any.
    */
   private void calculateFormulas() {
     int rowIndex = 0;
@@ -137,7 +137,7 @@ public class Spreadsheet extends Kata {
    */
   private int doCalculation(String formula, Integer rowIndex, Integer colIndex) {
     List<List<Integer>> coordinates = new ArrayList<List<Integer>>();
-    StringTokenizer tokenizer = new StringTokenizer(formula.substring(1), "+ ");
+    StringTokenizer tokenizer = new StringTokenizer(formula.substring(1), "+"); // skip '='
     int sum = 0;
     while (tokenizer.hasMoreTokens()) {
       List<Integer> coords = this.getCoordinates(tokenizer.nextToken());
@@ -146,18 +146,30 @@ public class Spreadsheet extends Kata {
       }
       coordinates.add(coords);
     }
+    Object[][] spreadsheet = this.spreadsheets.get(this.spreadsheets.size() - 1);
+    int maxRows = spreadsheet.length;
+    int maxCols = spreadsheet[0].length;
     for (List<Integer> coord : coordinates) {
-      System.out.println(this.spreadsheets.get(this.spreadsheets.size() - 1)[coord.get(0)][coord
-          .get(1)]);
-      sum +=
-          (Integer) this.spreadsheets.get(this.spreadsheets.size() - 1)[coord.get(0)][coord.get(1)];
+      if (coord.get(0) >= maxRows || coord.get(1) >= maxCols) {
+        String msg = "Invalid coordinate found: row " + (coord.get(0) + 1) + ", column ";
+        msg += (coord.get(1) + 1) + " does not exist.";
+        throw new IllegalArgumentException(msg);
+      }
+      // If a cell also contains a formula, calculate that formula first before calculating the
+      // current one.
+      if (spreadsheet[coord.get(0)][coord.get(1)] instanceof String) {
+        String value = (String) spreadsheet[coord.get(0)][coord.get(1)];
+        sum += this.doCalculation(value, coord.get(0), coord.get(1));
+        continue;
+      }
+      sum += (Integer) spreadsheet[coord.get(0)][coord.get(1)];
     }
     return sum;
   }
 
   /**
    * Gets the numerical coordinates for a two-dimensional array given one or more letters (A-Z)
-   * representing row numbers and one or more digits (0-9) representing column numbers.
+   * representing column numbers and one or more digits (0-9) representing row numbers.
    * 
    * @param coord The coordinate of the cell for which to get the row and column numbers.
    * @return A list containing the row and column numbers.
@@ -179,8 +191,8 @@ public class Spreadsheet extends Kata {
         throw new IllegalArgumentException("Illegal character found: " + c);
       }
     }
-    coords.add(rowNum);
     coords.add(Integer.parseInt(colNum) - 1);
+    coords.add(rowNum);
     return coords;
   }
 
