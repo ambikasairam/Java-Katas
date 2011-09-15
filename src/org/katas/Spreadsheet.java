@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 /**
- * This program reads in a file containing one or more spreadsheets and outputs one or more new
- * spreadsheets after calculating all of the formulas found in them, if any.
+ * This program reads in a file containing one or more spreadsheets that contain formulas and
+ * outputs one or more new spreadsheets that contain the results of calculating those formulas.
  * 
  * @author BJ Peter DeLaCruz
  */
@@ -43,8 +43,8 @@ public class Spreadsheet extends Kata {
   }
 
   /**
-   * Processes all spreadsheets found in a file and calculates all of the formulas found in them, if
-   * any.
+   * Processes all spreadsheets found in a file, calculates all formulas found, and outputs new
+   * spreadsheets to the screen.
    */
   @Override
   public void processLines() {
