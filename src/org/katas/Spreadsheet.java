@@ -70,7 +70,6 @@ public class Spreadsheet extends Kata {
       calculateFormulas();
     }
 
-    System.out.println("Results: ");
     System.out.println(KataUtils.print2dArrayContents(this.spreadsheets));
   }
 
@@ -128,7 +127,7 @@ public class Spreadsheet extends Kata {
   }
 
   /**
-   * Returns a value based on the formula found in the cell in the specified row and column.
+   * Returns a value based on the formula found in the cell at the specified row and column.
    * 
    * @param formula Formula to calculate.
    * @param rowIndex Row number; used to detect cyclic dependencies.
@@ -142,7 +141,9 @@ public class Spreadsheet extends Kata {
     while (tokenizer.hasMoreTokens()) {
       List<Integer> coords = this.getCoordinates(tokenizer.nextToken());
       if (rowIndex == coords.toArray()[0] && colIndex == coords.toArray()[1]) {
-        throw new IllegalArgumentException("Cyclic dependency detected in formula: " + formula);
+        String msg = "Cyclic dependency detected in formula " + formula;
+        msg += " for row " + (rowIndex + 1) + ", column " + (colIndex + 1) + ".";
+        throw new IllegalArgumentException(msg);
       }
       coordinates.add(coords);
     }
