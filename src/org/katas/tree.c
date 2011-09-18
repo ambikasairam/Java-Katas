@@ -95,8 +95,7 @@ Node** create_array(int size) {
 * @param nodes : The array at which to store the nodes.
 * @return 0 on success, -1 if the file could not be opened or nodes is null.
 */
-int process_file(Node** nodes, char* line) {
-    char* filename = "C:\\tree.txt";
+int process_line(Node** nodes, char* line) {
     char* tokenizer;
     int index = 0;
 
@@ -413,7 +412,7 @@ int main() {
             return -1;
         }
 
-        if (process_file(nodes, strings[index])) {
+        if (process_line(nodes, strings[index])) {
             return -1;
         }
 
