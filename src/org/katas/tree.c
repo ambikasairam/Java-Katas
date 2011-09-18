@@ -207,7 +207,10 @@ int create_binary_tree(Node** nodes, int rootIndex) {
        else if (c == 'R') {
          parent = parent->right;
        }
-       else if (c != '-') { /* Except root node */
+       else if (c == '-') { /* Root node */
+         isInserted = 1;
+       }
+       else if (c != '-') {
          printf("Invalid character found: %c.\n", c);
          return -1;
        }
@@ -255,19 +258,19 @@ int print_nodes(Node** nodes) {
  * @param rootIndex : The index at which the root node is located in the array.
  * @return 0 on success, -1 if memory could not be allocated for the queue or nodes is null.
  */
-Node** print_binary_tree(Node** nodes, int rootIndex) {
+int print_binary_tree(Node** nodes, int rootIndex) {
    int index, queueIndex;
    Node** queue;
 
    if (!nodes) {
      printf("Array is null.\n");
-     return NULL;
+     return -1;
    }
 
    queue = create_array(NUM_NODES);
    if (!queue) {
      printf("Unable to allocate space for the queue.\n");
-     return NULL;
+     return -1;
    }
 
    printf("Level order:\n");
@@ -293,7 +296,33 @@ Node** print_binary_tree(Node** nodes, int rootIndex) {
      }
    }
 
-   return queue;
+   print_nodes(queue);
+
+   free(queue);
+
+   return 0;
+}
+
+/**
+ * Frees the memory allocated for the array of nodes.
+ *
+ * @param nodes : The array of nodes.
+ * @return 0 on success, -1 if nodes is null.
+ */
+int free_array(Node** nodes) {
+  int index;
+
+  if (!nodes) {
+    printf("Array is null.\n");
+    return -1;
+  }
+
+  for (index = 0; index < NUM_NODES; index++) {
+    free(nodes[index]);
+  }
+  free(nodes);
+
+  return 0;
 }
 
 /**
@@ -308,7 +337,6 @@ Node** print_binary_tree(Node** nodes, int rootIndex) {
 int main() {
    int rootIndex;
    Node** nodes;
-   Node** queue;
 
    nodes = create_array(NUM_NODES);
    if (!nodes) {
@@ -325,13 +353,11 @@ int main() {
      return -1;
    }
 
-   queue = print_binary_tree(nodes, rootIndex);
-   if (!queue) {
-     return -1;
-   }
+   print_binary_tree(nodes, rootIndex);
 
-   print_nodes(queue);
+   free_array(nodes);
 
+   printf("\nPress any key to quit the program...\n");
    getchar();
 
    return 0;
