@@ -94,7 +94,7 @@ public class TreeLevel extends Kata {
     while (!nodes.isEmpty()) {
       Node node = nodes.remove(0);
       Node parent = tree.get(0);
-      char[] path = node.getPosition().toCharArray();
+      char[] path = node.getPosition().toUpperCase().toCharArray();
       boolean isInserted = false;
       for (char direction : path) {
         if (direction == 'L' && parent.getLeft() == null) {

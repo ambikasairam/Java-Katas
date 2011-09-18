@@ -433,6 +433,11 @@ int main() {
         free_array(nodes);
     }
 
+    for (index = 0; index < MAX_LENGTH; index++) {
+      free(strings[index]);
+    }
+    free(strings);
+
     printf("Press Enter to quit this program...\n");
     getchar();
 

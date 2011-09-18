@@ -20,7 +20,7 @@ public class NodeComparator implements Comparator<Node>, Serializable {
    */
   @Override
   public int compare(Node arg0, Node arg1) {
-    return arg0.getPosition().compareTo(arg1.getPosition());
+    return arg0.getPosition().toUpperCase().compareTo(arg1.getPosition().toUpperCase());
   }
 
 }
