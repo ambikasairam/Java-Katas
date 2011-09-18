@@ -1,3 +1,4 @@
+/** tree.c **/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -16,8 +17,8 @@ typedef struct node {
 /**
  * Given two Node structs, compares the two using the strings found inside them.
  *
- * @param a The first Node struct.
- * @param b The second Node struct.
+ * @param a : The first Node struct.
+ * @param b : The second Node struct.
  * @return Greater than 0 if the first string comes after the second string, less than 0 if the
  * opposite occurs, or 0 if the two are the same.
  */
@@ -28,14 +29,17 @@ int compare_nodes(const void* a, const void* b) {
 }
 
 /**
- * Prints the value and position of a node.
+ * Prints the value and position of a node. If the node has one or more children, their values are
+ * printed as well.
  *
- * @param The node whose value and position are to be printed.
+ * @param node : The node whose value and position are to be printed, along with those of its
+ * children, if it has any.
+ * @param 0 on success, -1 if node is null.
  */
-void print_node(Node* node) {
+int print_node(Node* node) {
    if (node == NULL) {
      printf("Node is null.\n");
-     return;
+     return -1;
    }
 
    if (node->left == NULL && node->right == NULL) {
@@ -53,16 +57,20 @@ void print_node(Node* node) {
      printf("Node=[value=%d,position=%s,left=%d,right=%d]\n", node->value, node->position,
        node->left->value, node->right->value);   
    }
+
+   return 0;
 }
 
 /**
  * Creates a dynamic array of pointers to nodes.
  *
- * @param The size of the dynamic array.
- * @return The dynamic array of pointers to nodes (i.e. a pointer to an array of pointers).
+ * @param size : The size of the dynamic array.
+ * @return The dynamic array of pointers to nodes (i.e. a pointer to an array of pointers), or null
+ * if memory for the array or an element could not be allocated.
  */
 Node** create_array(int size) {
    int index;
+
    Node** nodes = (Node**) calloc(size, sizeof(Node*));
    if (!nodes) {
      printf("Unable to allocate 2D array of nodes.\n");
@@ -77,22 +85,27 @@ Node** create_array(int size) {
      nodes[index]->left = NULL;
      nodes[index]->right = NULL;
    }
+
    return nodes;
 }
 
 /**
- * Reads in a file containing a list of nodes, builds a tree with those nodes, and prints the nodes
- * in level order.
+ * Processes all of the lines in a file and creates nodes, which are stored in an array.
+ *
+ * @param nodes : The array at which to store the nodes.
+ * @return 0 on success, -1 if the file could not be opened or nodes is null.
  */
-int main() {
-   FILE* ifp;
+int process_file(Node** nodes) {
    char line[MAX_LENGTH];
+   char* filename = "C:\\tree.txt";
    char* tokenizer;
-   char* filename = "tree.txt";
-   int counter, index, numNodes, queueIndex, rootIndex;
-   Node** queue;
+   int index = 0;
+   FILE *ifp;
 
-   Node** nodes = create_array(NUM_NODES);
+   if (!nodes) {
+     printf("Array is null.\n");
+     return -1;
+   }
 
    ifp = fopen(filename, "r");   
    if (!ifp) {
@@ -100,8 +113,6 @@ int main() {
      return -1;
    }
 
-   /* Add all of the nodes to the array. */
-   index = 0;
    while (!feof(ifp)) {
      if (fgets(line, MAX_LENGTH, ifp)) {
        tokenizer = strtok(line, "() ");
@@ -113,7 +124,7 @@ int main() {
            nodes[index]->value = atoi(tokenizer);
            index++;
          }
-         else if (size != 1) {
+         else if (size != 1) { /* Descendants of root node */
            char* ptr = strstr(tokenizer, ",");
            strcpy(nodes[index]->position, ptr + 1);
            *ptr = '\0';
@@ -124,9 +135,26 @@ int main() {
        }
      }
    }
-   numNodes = index;
 
-   /* Sort the array of nodes. */
+   fclose(ifp);
+
+   return 0;
+}
+
+/**
+ * Sorts an array of nodes.
+ *
+ * @param nodes : The array of nodes to sort.
+ * @return The index at which the root node is located, or -1 if nodes is null.
+ */
+int sort_array(Node** nodes) {
+   int index, rootIndex;
+
+   if (!nodes) {
+     printf("Array is null.\n");
+     return -1;
+   }
+
    qsort(nodes, NUM_NODES, sizeof(Node*), compare_nodes);
    for (index = 0; index < NUM_NODES; index++) {
      if (strlen(nodes[index]->position) != 0 && nodes[index]->position[0] == '-') {
@@ -134,12 +162,31 @@ int main() {
      }
    }
 
-   /* Create the binary tree. */
+   return rootIndex;
+}
+
+/**
+ * Creates a binary tree given an array of nodes.
+ *
+ * @param nodes : The array of nodes.
+ * @param rootIndex : The index at which the root node is located in the array.
+ * @return 0 on success; -1 if a character other than an L, R, or - is found, nodes is null, or a
+ * character could not be inserted into the tree.
+ */
+int create_binary_tree(Node** nodes, int rootIndex) {
+   int index;
+
+   if (!nodes) {
+     printf("Array is null.\n");
+     return -1;
+   }
+
    for (index = 0; index < NUM_NODES; index++) {
      Node* currentNode = nodes[index];
      Node* parent = nodes[rootIndex];
      int pos = 0;
      char c = currentNode->position[pos];
+     char isInserted = 0;
 
      if (strlen(currentNode->position) == 0) {
        continue;
@@ -148,9 +195,11 @@ int main() {
      while (c != '\0') {
        if (c == 'L' && parent->left == NULL) {
          parent->left = currentNode;
+         isInserted = 1;
        }
        else if (c == 'R' && parent->right == NULL) {
          parent->right = currentNode;
+         isInserted = 1;
        }
        else if (c == 'L') {
          parent = parent->left;
@@ -158,38 +207,132 @@ int main() {
        else if (c == 'R') {
          parent = parent->right;
        }
+       else if (c != '-') { /* Except root node */
+         printf("Invalid character found: %c.\n", c);
+         return -1;
+       }
        pos++;
        c = currentNode->position[pos];
      }
+
+     if (!isInserted) {
+       printf("Unable to insert the following node into the tree: ");
+       print_node(currentNode);
+       return -1;
+     }
    }
 
-   /* Print the binary tree. */
+   return 0;
+}
+
+/**
+ * Prints all of the nodes stored in an array.
+ *
+ * @param nodes : The array of nodes.
+ * @return 0 on success, -1 if nodes is null.
+ */
+int print_nodes(Node** nodes) {
+   int index;
+
+   if (!nodes) {
+     printf("Array is null.\n");
+     return -1;
+   }
+
    for (index = 0; index < NUM_NODES; index++) {
-     if (strlen(nodes[index]->position) != 0) {
+     if (nodes[index] && strlen(nodes[index]->position) != 0) {
        print_node(nodes[index]);
      }
    }
 
-   queue = create_array(NUM_NODES);
-   if (!queue) {
-     printf("Unable to allocate space for the queue to store the nodes.\n");
-     return -1;
+   return 0;
+}
+
+/**
+ * Prints the contents of a binary tree in level order using a queue.
+ *
+ * @param nodes : The binary tree to print.
+ * @param rootIndex : The index at which the root node is located in the array.
+ * @return 0 on success, -1 if memory could not be allocated for the queue or nodes is null.
+ */
+Node** print_binary_tree(Node** nodes, int rootIndex) {
+   int index, queueIndex;
+   Node** queue;
+
+   if (!nodes) {
+     printf("Array is null.\n");
+     return NULL;
    }
 
-   for (index = 0, counter = 0, queueIndex = 0; index < NUM_NODES; index++) {
-     if (strlen(nodes[index]->position) != 0) {
-       queue[queueIndex] = nodes[index];
-       queue[queueIndex + 1] = nodes[index]->left;
-       queue[queueIndex + 2] = nodes[index]->right;
-       queueIndex += 3;
-       counter++;
+   queue = create_array(NUM_NODES);
+   if (!queue) {
+     printf("Unable to allocate space for the queue.\n");
+     return NULL;
+   }
+
+   printf("Level order:\n");
+   queue[0] = nodes[rootIndex];
+   queueIndex = 0;
+   index = 0;
+   while (1) {
+     Node* node = queue[index];
+     if (node) {
+       if (node->left) {
+         queueIndex++;
+         queue[queueIndex] = node->left;
+       }
+       if (node->right) {
+         queueIndex++;
+         queue[queueIndex] = node->right;
+       }
      }
-     if (counter == numNodes) {
+     /* No popping necessary, just move the index forward. */
+     index++;
+     if (index == NUM_NODES) {
        break;
      }
    }
 
-   fclose(ifp);
+   return queue;
+}
+
+/**
+ * Reads in a file containing a list of nodes, builds a tree with those nodes, and prints the nodes
+ * in level order. I created this program to test how easy it could be to program in C using the
+ * object-oriented approach (although I didn't use any function pointers in this program).
+ *
+ * Note that unlike the Java version of this program, only one binary tree could be created.
+ *
+ * @return 0 on success, -1 on failure.
+ */
+int main() {
+   int rootIndex;
+   Node** nodes;
+   Node** queue;
+
+   nodes = create_array(NUM_NODES);
+   if (!nodes) {
+     return -1;
+   }
+
+   if (process_file(nodes)) {
+     return -1;
+   }
+
+   rootIndex = sort_array(nodes);
+
+   if (create_binary_tree(nodes, rootIndex)) {
+     return -1;
+   }
+
+   queue = print_binary_tree(nodes, rootIndex);
+   if (!queue) {
+     return -1;
+   }
+
+   print_nodes(queue);
+
+   getchar();
 
    return 0;
 }
