@@ -64,7 +64,7 @@ public final class KataUtils {
    * @param strings Originally an empty list of strings.
    * @param letters Originally a list of N letters.
    */
-  private static void makeStringsList(List<String> strings, List<Character> letters) {
+  protected static void makeStringsList(List<String> strings, List<Character> letters) {
     if (letters.size() == 2) {
       strings.add(letters.get(0) + "" + letters.get(1));
       strings.add(letters.get(1) + "" + letters.get(0));
@@ -141,6 +141,31 @@ public final class KataUtils {
       integers.add(index + 1);
     }
     return integers;
+  }
+
+  /**
+   * Creates a list of doubles from a string (usually, a line read in from a file).
+   * 
+   * @param line The string containing doubles.
+   * @param delim The delimiter, e.g. a whitespace character.
+   * @return A list of doubles, or <code>null</code> if problems were encountered parsing the
+   * string.
+   */
+  public static List<Double> createDoublesList(String line, String delim) {
+    // TODO: Use an enum and pass it in as a third parameter instead of creating two different
+    // methods.
+    List<Double> doubles = new ArrayList<Double>();
+    StringTokenizer tokenizer = new StringTokenizer(line, delim);
+    try {
+      while (tokenizer.hasMoreTokens()) {
+        doubles.add(Double.parseDouble(tokenizer.nextToken()));
+      }
+    }
+    catch (NumberFormatException e) {
+      System.err.println("Non-numeric characters found on line: " + line);
+      return null;
+    }
+    return doubles;
   }
 
   /**
