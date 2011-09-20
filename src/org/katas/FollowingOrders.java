@@ -27,6 +27,7 @@ public class FollowingOrders extends Kata {
    * constraints), and prints out a list of strings whose characters satisfy <span
    * style="text-decoration:underline">all</span> of the constraints.
    */
+  @SuppressWarnings("deprecation")
   @Override
   public void processLines() {
     while (!this.getLines().isEmpty()) {

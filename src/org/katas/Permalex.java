@@ -25,6 +25,7 @@ public class Permalex extends Kata {
    * For each string in the input file, prints out the position number at which the string is
    * located in the list of sorted permutations of the characters in the string.
    */
+  @SuppressWarnings("deprecation")
   @Override
   public void processLines() {
     while (!this.getLines().isEmpty()) {

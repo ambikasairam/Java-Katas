@@ -5,7 +5,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 /**
@@ -44,6 +46,7 @@ public final class KataUtils {
    * @param letters Originally a list of N letters.
    * @return List of strings with length N.
    */
+  @Deprecated
   public static List<String> makeStringsList(List<Character> letters) {
     List<String> strings = new ArrayList<String>();
     int numLetters = letters.size();
@@ -64,7 +67,8 @@ public final class KataUtils {
    * @param strings Originally an empty list of strings.
    * @param letters Originally a list of N letters.
    */
-  protected static void makeStringsList(List<String> strings, List<Character> letters) {
+  @Deprecated
+  private static void makeStringsList(List<String> strings, List<Character> letters) {
     if (letters.size() == 2) {
       strings.add(letters.get(0) + "" + letters.get(1));
       strings.add(letters.get(1) + "" + letters.get(0));
@@ -82,6 +86,84 @@ public final class KataUtils {
         }
       }
       strings.addAll(tempList);
+    }
+  }
+
+  /**
+   * Given a set of N characters, generates a list of permutations of strings with length 0 to N.
+   * 
+   * @param chars The set of N characters.
+   * @return The list of permutations of strings with length 0 to N.
+   */
+  public static List<String> allPermutationsOfSubsequences(Set<Character> chars) {
+
+    Set<Set<Character>> powerSetOfChars = generatePowerSet(chars);
+
+    List<String> permutations = new ArrayList<String>();
+
+    for (Set<Character> subsequence : powerSetOfChars) {
+      permute(new ArrayList<Character>(subsequence), 0, permutations);
+    }
+
+    return permutations;
+  }
+
+  /**
+   * Generates a set of sets of characters (i.e. a power set); each set of characters is used by
+   * {@link #allPermutationsOfSubsequences(Set)} to create the list of permutations of strings with
+   * length 0 to N.
+   * 
+   * @param set The set used to create the power set.
+   * @return The power set.
+   */
+  private static Set<Set<Character>> generatePowerSet(Set<Character> set) {
+    Set<Set<Character>> powerSet = new HashSet<Set<Character>>();
+    if (set.isEmpty()) {
+      powerSet.add(new HashSet<Character>());
+      return powerSet;
+    }
+
+    Character anElement = set.iterator().next();
+    set.remove(anElement);
+
+    for (Set<Character> subset : generatePowerSet(set)) {
+      Set<Character> setWithElement = new HashSet<Character>();
+      setWithElement.add(anElement);
+      setWithElement.addAll(subset);
+      powerSet.add(setWithElement);
+      powerSet.add(subset);
+    }
+
+    set.add(anElement);
+
+    return powerSet;
+  }
+
+  /**
+   * Permutes a list of characters.
+   * 
+   * @param characters The characters to permute.
+   * @param index The starting point in the list of characters.
+   * @param strings The list in which the permutations of strings are stored.
+   */
+  private static void permute(List<Character> characters, int index, List<String> strings) {
+    if (index == characters.size()) {
+      StringBuffer buffer = new StringBuffer();
+      for (int i = 0; i < index; i++) {
+        buffer.append(characters.get(i));
+      }
+      strings.add(buffer.toString());
+    }
+    else {
+      for (int i = index; i < characters.size(); i++) {
+        char temp = characters.get(i);
+        characters.set(i, characters.get(index));
+        characters.set(index, temp);
+        permute(characters, index + 1, strings);
+        temp = characters.get(i);
+        characters.set(i, characters.get(index));
+        characters.set(index, temp);
+      }
     }
   }
 
