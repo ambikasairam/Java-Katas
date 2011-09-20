@@ -25,21 +25,6 @@ public final class KataUtils {
   }
 
   /**
-   * Turns a string (usually, a line from a file) into a list of strings.
-   * 
-   * @param string The string that needs to be broken up into a list of strings.
-   * @return The list of strings.
-   */
-  public static List<String> stringToList(String string) {
-    List<String> list = new ArrayList<String>();
-    StringTokenizer tokenizer = new StringTokenizer(string, " ");
-    while (tokenizer.hasMoreTokens()) {
-      list.add(tokenizer.nextToken());
-    }
-    return list;
-  }
-
-  /**
    * Given a list of N letters, returns a list of all possible combinations of strings with length
    * N.
    * 
@@ -168,21 +153,6 @@ public final class KataUtils {
   }
 
   /**
-   * Given a line with characters delimited by spaces on it, returns an array list of characters.
-   * 
-   * @param line The line from which to get the characters.
-   * @return An array list of characters.
-   */
-  public static List<Character> extractChars(String line) {
-    List<Character> list = new ArrayList<Character>();
-    StringTokenizer tokenizer = new StringTokenizer(line, " ");
-    while (tokenizer.hasMoreTokens()) {
-      list.add(tokenizer.nextToken().toCharArray()[0]);
-    }
-    return list;
-  }
-
-  /**
    * Given a string, returns a list of characters in the string.
    * 
    * @param string The string from which to extract characters.
@@ -239,6 +209,12 @@ public final class KataUtils {
     StringTokenizer tokenizer = new StringTokenizer(line, delim);
     try {
       switch (type) {
+      case CHARACTER:
+        List<Character> characters = new ArrayList<Character>();
+        while (tokenizer.hasMoreTokens()) {
+          characters.add(tokenizer.nextToken().toCharArray()[0]);
+        }
+        return characters;
       case DOUBLE:
         List<Double> doubles = new ArrayList<Double>();
         while (tokenizer.hasMoreTokens()) {

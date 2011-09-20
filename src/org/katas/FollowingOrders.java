@@ -27,13 +27,14 @@ public class FollowingOrders extends Kata {
    * constraints), and prints out a list of strings whose characters satisfy <span
    * style="text-decoration:underline">all</span> of the constraints.
    */
-  @SuppressWarnings("deprecation")
+  @SuppressWarnings({ "deprecation", "unchecked" })
   @Override
   public void processLines() {
     while (!this.getLines().isEmpty()) {
 
       String line = this.getLines().remove(0);
-      List<Character> letters = KataUtils.extractChars(line);
+      List<Character> letters =
+          (List<Character>) KataUtils.createList(line, " ", KataEnums.CHARACTER);
       Set<Character> tempSet = new HashSet<Character>(letters);
       if (tempSet.size() < letters.size()) {
         try {
@@ -46,7 +47,8 @@ public class FollowingOrders extends Kata {
       }
 
       String constraints = this.getLines().remove(0);
-      List<Character> constraintsList = KataUtils.extractChars(constraints);
+      List<Character> constraintsList =
+          (List<Character>) KataUtils.createList(constraints, " ", KataEnums.CHARACTER);
       if (constraintsList.size() % 2 != 0) {
         try {
           throw new IOException("Odd number of constraints: " + constraints);

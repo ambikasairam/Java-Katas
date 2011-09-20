@@ -33,7 +33,8 @@ public class WordCross extends Kata {
         return;
       }
 
-      List<String> strings = KataUtils.stringToList(line);
+      @SuppressWarnings("unchecked")
+      List<String> strings = (List<String>) KataUtils.createList(line, " ", KataEnums.STRING);
       if (strings.size() != 4) {
         System.err.print("Line does not contain four and only four words: ");
         System.err.println(line);

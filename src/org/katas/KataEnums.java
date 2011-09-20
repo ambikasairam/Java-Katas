@@ -9,7 +9,7 @@ package org.katas;
 public enum KataEnums {
 
   /** The different data types that an ADT can hold. */
-  DOUBLE("Double"), INTEGER("Integer"), STRING("String");
+  CHARACTER("Character"), DOUBLE("Double"), INTEGER("Integer"), STRING("String");
 
   private final String type;
 
