@@ -226,51 +226,45 @@ public final class KataUtils {
   }
 
   /**
-   * Creates a list of doubles from a string (usually, a line read in from a file).
-   * 
-   * @param line The string containing doubles.
-   * @param delim The delimiter, e.g. a whitespace character.
-   * @return A list of doubles, or <code>null</code> if problems were encountered parsing the
-   * string.
-   */
-  public static List<Double> createDoublesList(String line, String delim) {
-    // TODO: Use an enum and pass it in as a third parameter instead of creating two different
-    // methods.
-    List<Double> doubles = new ArrayList<Double>();
-    StringTokenizer tokenizer = new StringTokenizer(line, delim);
-    try {
-      while (tokenizer.hasMoreTokens()) {
-        doubles.add(Double.parseDouble(tokenizer.nextToken()));
-      }
-    }
-    catch (NumberFormatException e) {
-      System.err.println("Non-numeric characters found on line: " + line);
-      return null;
-    }
-    return doubles;
-  }
-
-  /**
-   * Creates a list of integers from a string (usually, a line read in from a file).
+   * Creates a list of objects of a particular data type from a string (usually, a line read in from
+   * a file).
    * 
    * @param line The string containing integers.
    * @param delim The delimiter, e.g. a whitespace character.
-   * @return A list of integers, or <code>null</code> if problems were encountered parsing the
-   * string.
+   * @param type The data type of the objects in the list.
+   * @return A list of objects of a particular data type, or <code>null</code> if problems were
+   * encountered parsing the string.
    */
-  public static List<Integer> createIntegersList(String line, String delim) {
-    List<Integer> integers = new ArrayList<Integer>();
+  public static List<?> createList(String line, String delim, KataEnums type) {
     StringTokenizer tokenizer = new StringTokenizer(line, delim);
     try {
-      while (tokenizer.hasMoreTokens()) {
-        integers.add(Integer.parseInt(tokenizer.nextToken()));
+      switch (type) {
+      case DOUBLE:
+        List<Double> doubles = new ArrayList<Double>();
+        while (tokenizer.hasMoreTokens()) {
+          doubles.add(Double.parseDouble(tokenizer.nextToken()));
+        }
+        return doubles;
+      case INTEGER:
+        List<Integer> integers = new ArrayList<Integer>();
+        while (tokenizer.hasMoreTokens()) {
+          integers.add(Integer.parseInt(tokenizer.nextToken()));
+        }
+        return integers;
+      case STRING:
+        List<String> strings = new ArrayList<String>();
+        while (tokenizer.hasMoreTokens()) {
+          strings.add(tokenizer.nextToken());
+        }
+        return strings;
+      default:
+        throw new IllegalArgumentException("Unsupported data type: " + type);
       }
     }
     catch (NumberFormatException e) {
       System.err.println("Non-numeric characters found on line: " + line);
-      return null;
     }
-    return integers;
+    return null;
   }
 
   /**

@@ -50,7 +50,8 @@ public class Spreadsheet extends Kata {
   public void processLines() {
     for (int count = 0; count < this.numSpreadsheets; count++) {
       String line = this.getLines().remove(0);
-      List<Integer> dimensions = KataUtils.createIntegersList(line, " ");
+      @SuppressWarnings("unchecked")
+      List<Integer> dimensions = (List<Integer>) KataUtils.createList(line, " ", KataEnums.INTEGER);
       if (dimensions.size() != 2) {
         System.err.print("Only two values are expected: ");
         System.err.println("number of columns and number of rows.");

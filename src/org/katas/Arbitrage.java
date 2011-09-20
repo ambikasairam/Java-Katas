@@ -74,7 +74,9 @@ public class Arbitrage extends Kata {
     System.out.println("Currency Exchange Table:");
     for (int index = 0; index < dimension; index++) {
       Double[] row = new Double[dimension];
-      List<Double> data = KataUtils.createDoublesList(this.getLines().remove(0), " ");
+      @SuppressWarnings("unchecked")
+      List<Double> data =
+          (List<Double>) KataUtils.createList(this.getLines().remove(0), " ", KataEnums.DOUBLE);
       for (int pos = 0; pos < row.length; pos++) {
         if (pos == index) {
           row[pos] = 1.0;
