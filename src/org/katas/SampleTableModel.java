@@ -3,7 +3,7 @@ package org.katas;
 import javax.swing.table.DefaultTableModel;
 
 /**
- * Used to demonstrate how to use a table model with a JTable.
+ * Used to test how to use a table model with a JTable.
  * 
  * @author BJ Peter DeLaCruz
  */
@@ -12,9 +12,9 @@ public class SampleTableModel extends DefaultTableModel {
   /** Used for object serialization. */
   private static final long serialVersionUID = 1L;
   /** Maximum number of columns. */
-  private static final int NUM_COLUMNS = 2;
+  private static final int num_columns = 2;
   /** Holds the data stored in all of the columns. */
-  private final Object[][] DATA;
+  private final Object[][] data;
 
   /**
    * Creates a new SampleTableModel object with a table that will have a user-specified number of
@@ -24,7 +24,7 @@ public class SampleTableModel extends DefaultTableModel {
    * @param col Number of columns.
    */
   public SampleTableModel(int row, int col) {
-    this.DATA = new Object[row][col];
+    this.data = new Object[row][col];
   }
 
   /**
@@ -32,7 +32,7 @@ public class SampleTableModel extends DefaultTableModel {
    */
   @Override
   public void setValueAt(Object value, int row, int col) {
-    this.DATA[row][col] = value;
+    this.data[row][col] = value;
   }
 
   /**
@@ -40,7 +40,7 @@ public class SampleTableModel extends DefaultTableModel {
    */
   @Override
   public Object getValueAt(int row, int col) {
-    return this.DATA[row][col];
+    return this.data[row][col];
   }
 
   /**
@@ -71,7 +71,7 @@ public class SampleTableModel extends DefaultTableModel {
    */
   @Override
   public Class<?> getColumnClass(int columnIndex) {
-    if (columnIndex >= NUM_COLUMNS) {
+    if (columnIndex >= num_columns) {
       throw new IllegalArgumentException("Invalid column index.");
     }
     return (columnIndex == 0) ? Boolean.class : String.class;
@@ -82,6 +82,6 @@ public class SampleTableModel extends DefaultTableModel {
    */
   @Override
   public int getColumnCount() {
-    return NUM_COLUMNS;
+    return num_columns;
   }
 }

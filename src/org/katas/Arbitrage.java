@@ -102,7 +102,7 @@ public class Arbitrage extends Kata {
    */
   private List<String> getAllExchangeSequences(List<Character> characters) {
     List<String> permutations =
-        KataUtils.allPermutationsOfSubsequences(new HashSet<Character>(characters));
+        KataUtils.getAllPermutationsOfSubsequences(new HashSet<Character>(characters));
     Collections.sort(permutations);
 
     // Delete all strings with lengths less than 2.

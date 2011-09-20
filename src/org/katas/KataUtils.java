@@ -95,7 +95,7 @@ public final class KataUtils {
    * @param chars The set of N characters.
    * @return The list of permutations of strings with length 0 to N.
    */
-  public static List<String> allPermutationsOfSubsequences(Set<Character> chars) {
+  public static List<String> getAllPermutationsOfSubsequences(Set<Character> chars) {
 
     Set<Set<Character>> powerSetOfChars = generatePowerSet(chars);
 
