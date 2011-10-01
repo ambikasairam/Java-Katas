@@ -9,15 +9,15 @@ package org.katas;
 public class Bowling {
 
   /**
-   * Given a bowling record, determines final score.
+   * Given a bowling record, this method will calculate a bowler's final score.
    * 
    * @param score Bowling record.
    * @return Final score.
    * @throws IllegalArgumentException If bowling record is invalid.
    */
   public int getBowlingScore(String score) throws IllegalArgumentException {
-    if (score.length() > 21 || score.length() < 12) {
-      String msg = "Invalid bowling record: invalid length.";
+    if (score.length() > 21 || score.length() < 11) {
+      String msg = "Invalid bowling record: invalid bowling record length.";
       throw new IllegalArgumentException(msg);
     }
 
@@ -26,15 +26,9 @@ public class Bowling {
     int numFrames = 0;
     short counter = 0;
 
-    if (score.length() == 21) {
-      boolean isValid = true;
-      if (scores[18] != 'X' && scores[19] != '/') {
-        isValid = false;
-      }
-      if (!isValid) {
-        String msg = "Invalid bowling record: invalid tenth frame.";
-        throw new IllegalArgumentException(msg);
-      }
+    if (score.length() == 21 && scores[18] != 'X' && scores[19] != '/') {
+      String msg = "Invalid bowling record: invalid tenth frame.";
+      throw new IllegalArgumentException(msg);
     }
 
     for (int pos = 0; pos < score.length(); pos++) {
@@ -42,7 +36,7 @@ public class Bowling {
         if (pos < score.length() - 2) {
           // A slash should not come after an X.
           if (scores[pos + 1] == '/') {
-            String msg = "Invalid bowling record: X preceding /.";
+            String msg = "Invalid bowling record: X should not immediately precede /.";
             throw new IllegalArgumentException(msg);
           }
           if (scores[pos + 2] == '/') {
@@ -84,9 +78,13 @@ public class Bowling {
         if (counter % 2 == 0 && counter > 0) {
           numFrames++;
           counter = 0;
+          if (getScore(scores[pos]) + getScore(scores[pos - 1]) >= 10) {
+            String msg = "Invalid bowling record: second score in frame " + numFrames;
+            throw new IllegalArgumentException(msg + " should be / or less than first score.");
+          }
           // If the bowler got a strike on the first try in the 10th frame but didn't knock down
           // all of the pins on the bonus throw, don't add the last two scores.
-          if (pos == score.length() - 1 && scores[pos - 2] == 'X') {
+          if (numFrames > 10 && pos == score.length() - 1 && scores[pos - 2] == 'X') {
             numFrames--;
             totalScore -= (getScore(scores[pos]) + getScore(scores[pos - 1]));
           }
@@ -95,7 +93,7 @@ public class Bowling {
     }
 
     if (numFrames != 10) {
-      String msg = "Invalid bowling record: invalid number of frames.";
+      String msg = "Invalid bowling record: number of frames does not equal 10.";
       throw new IllegalArgumentException(msg);
     }
 
@@ -139,8 +137,8 @@ public class Bowling {
     System.out.println("XXXXXXXXX5/5 : " + score);
     score = bowling.getBowlingScore("XX5/XXXXXXXXX");
     System.out.println("XX5/XXXXXXXXX : " + score);
-    score = bowling.getBowlingScore("X5-5/5-5/5-5/5-5/55");
-    System.out.println("X5-5/5-5/5-5/5-5/55 : " + score);
+    score = bowling.getBowlingScore("X5-5/5-5/5-5/5-5/54");
+    System.out.println("X5-5/5-5/5-5/5-5/54 : " + score);
     score = bowling.getBowlingScore("X5-5/5-5/5-5/5-5/5/5");
     System.out.println("X5-5/5-5/5-5/5-5/5/5 : " + score);
     score = bowling.getBowlingScore("X5-5/5-5/5-5/5-5/X54");
@@ -149,13 +147,10 @@ public class Bowling {
     System.out.println("X5-5/5-5/5-5/5-5/X5/ : " + score);
     score = bowling.getBowlingScore("X5-5/5-5/5-5/5-5/XX5");
     System.out.println("X5-5/5-5/5-5/5-5/XX5 : " + score);
-
-    try {
-      score = bowling.getBowlingScore("X5-5/5-5/5-5/5-5/555");
-    }
-    catch (IllegalArgumentException e) {
-      System.out.println(e);
-    }
+    score = bowling.getBowlingScore("XXXXX5/XXX5-");
+    System.out.println("XXXXX5/XXX5- : " + score);
+    score = bowling.getBowlingScore("XXXXXXXXX5-");
+    System.out.println("XXXXXXXXX5- : " + score);
 
     try {
       score = bowling.getBowlingScore("5/5/5/5/5/5/5/5/5/5/5-");
@@ -185,5 +180,11 @@ public class Bowling {
       System.out.println(e);
     }
 
+    try {
+      score = bowling.getBowlingScore("555/5/5/5/5/5/5/5/5-");
+    }
+    catch (IllegalArgumentException e) {
+      System.out.println(e);
+    }
   }
 }

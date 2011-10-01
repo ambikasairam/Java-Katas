@@ -11,7 +11,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 /**
- * A sample program to test the Windows/Mac OS X look and feel of a Swing desktop application.
+ * A sample program to test the Windows/Mac OS X look and feel of a Swing application.
  * 
  * @author BJ Peter DeLaCruz
  */
@@ -31,8 +31,6 @@ public class HelloWorldSwingApp extends JPanel {
 
       /**
        * When the button is clicked, show four different types of messages.
-       *
-       * @param arg0 Not used.
        */
       @Override
       public void actionPerformed(ActionEvent arg0) {
@@ -53,8 +51,8 @@ public class HelloWorldSwingApp extends JPanel {
   }
 
   /**
-   * Set the look and feel of this Swing desktop application to a Windows/Mac OS X look and feel,
-   * and then display a window with a button in it.
+   * Set the look and feel of this Swing application to a Windows/Mac OS X look and feel, and then
+   * display a window with a button in it.
    * 
    * @param args None.
    */

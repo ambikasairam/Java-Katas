@@ -12,6 +12,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 /**
  * An Applet version of the command-line program Bowling in the org.katas package.
@@ -31,6 +33,25 @@ public class BowlingApplet extends JApplet {
    */
   @Override
   public void init() {
+    try {
+      UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+    }
+    catch (ClassNotFoundException e1) {
+      e1.printStackTrace();
+      return;
+    }
+    catch (InstantiationException e1) {
+      e1.printStackTrace();
+      return;
+    }
+    catch (IllegalAccessException e1) {
+      e1.printStackTrace();
+      return;
+    }
+    catch (UnsupportedLookAndFeelException e1) {
+      e1.printStackTrace();
+      return;
+    }
     JPanel panel1 = new JPanel();
     JLabel label1 = new JLabel("Bowling Score Calculator");
     label1.setFont(new Font("Arial", Font.BOLD, 16));
@@ -39,21 +60,17 @@ public class BowlingApplet extends JApplet {
 
     JPanel panel2 = new JPanel();
 
-    StringBuffer buffer = new StringBuffer();
-    String msg = "This program will calculate the final score for a bowling record.\n";
-    buffer.append(msg);
-    msg = "Simply enter a 10-frame bowling record in the textbox below.\n";
-    buffer.append(msg);
-    msg = "Here are some examples:\n\n";
-    buffer.append(msg);
-    msg = "XXXXXXXXXXXX (All strikes)\n\n";
-    buffer.append(msg);
-    msg = "5/5/5/5/5/5/5/5/5/5/5 (All spares)\n\n";
-    buffer.append(msg);
-    msg = "9-9-9-9-9-9-9-9-9-9- (Missed the last pin in all frames)\n\n";
-    buffer.append(msg);
-    msg = "X5-5/5-5/5-5/5-5/55 (One strike, four spares, four misses)\n\n";
-    buffer.append(msg);
+    StringBuffer buffer = new StringBuffer(500);
+    String info = "This program will calculate the final score for a bowling record.\n";
+    info += "Simply enter a 10-frame bowling record in the textbox below.\n";
+    info += "Here are some examples:\n\n";
+    buffer.append(info);
+
+    String example = "XXXXXXXXXXXX (All strikes)\n\n5/5/5/5/5/5/5/5/5/5/5 (All spares)\n\n";
+    example += "9-9-9-9-9-9-9-9-9-9- (Missed the last pin in all frames)\n\n";
+    example += "X5-5/5-5/5-5/5-5/54 (One strike, four spares, four misses)\n\n";
+    buffer.append(example);
+
     JTextArea instructions = new JTextArea(buffer.toString());
     instructions.setEditable(false);
 

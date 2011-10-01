@@ -199,7 +199,7 @@ public final class KataUtils {
    * Creates a list of objects of a particular data type from a string (usually, a line read in from
    * a file).
    * 
-   * @param line The string containing integers.
+   * @param line The string containing a specific data type.
    * @param delim The delimiter, e.g. a whitespace character.
    * @param type The data type of the objects in the list.
    * @return A list of objects of a particular data type, or <code>null</code> if problems were
@@ -325,5 +325,96 @@ public final class KataUtils {
       }
     }
     return list;
+  }
+
+  /**
+   * Given a list of strings, returns a concatenated string containing all of the strings in the
+   * list.
+   * 
+   * @param strings The list of strings.
+   * @return A concatenated string containing all of the strings in the list, separated by spaces.
+   */
+  public static String stringsListToString(List<String> strings) {
+    StringBuffer buffer = new StringBuffer();
+    for (String s : strings) {
+      String temp = s + " ";
+      buffer.append(temp);
+    }
+    return buffer.toString().substring(0, buffer.toString().length() - 1);
+  }
+
+  /**
+   * Given a string, a substring to replace, and a replacement substring, returns a list of strings
+   * that contains one replacement substring per string. For example,
+   * <code>replaceAllOccurences("A dog is a dog", "dog", "cat")</code>, where "dog" is the substring
+   * to replace and "cat" is the replacement substring, returns "A cat is a dog" and
+   * "A dog is a cat".
+   * 
+   * @param string The string that contains the substring to replace.
+   * @param oldString The substring to replace.
+   * @param newString The replacement substring.
+   * @return A list of strings that contains one replacement substring per string.
+   */
+  public static List<String> replace(String string, String oldString, String newString) {
+    List<String> tokens = new ArrayList<String>();
+    List<String> strings = new ArrayList<String>();
+    StringTokenizer tokenizer = new StringTokenizer(string, " ");
+    while (tokenizer.hasMoreTokens()) {
+      tokens.add(tokenizer.nextToken());
+    }
+    for (int index = 0; index < tokens.size(); index++) {
+      if (tokens.get(index).equals(oldString)) {
+        tokens.set(index, newString);
+        strings.add(stringsListToString(tokens));
+        tokens.set(index, oldString);
+      }
+    }
+    return strings;
+  }
+
+  /**
+   * Creates a list of playing cards from lines read in from a file.
+   * 
+   * @param lines Lines containing a list of playing cards (e.g. 2C, KS).
+   * @return A list of playing cards.
+   */
+  public static List<PlayingCard> createPlayingCards(List<String> lines) {
+    List<PlayingCard> playingCards = new ArrayList<PlayingCard>();
+    while (!lines.isEmpty()) {
+      if ("#".equals(lines.get(0))) {
+        break;
+      }
+
+      @SuppressWarnings("unchecked")
+      List<String> tokens =
+          (List<String>) KataUtils.createList(lines.remove(0), " ", KataEnums.STRING);
+      for (String card : tokens) {
+        playingCards.add(new PlayingCard(card, true));
+      }
+    }
+    return playingCards;
+  }
+
+  /**
+   * Given a number that represents currency, e.g. 40000, returns the same number as a string with a
+   * period inserted behind the second to last digit, e.g. 400.00.
+   * 
+   * @param value The number to format, e.g. 40000.
+   * @return The number formatted with a period behind the second to last digit, e.g. 400.00.
+   */
+  public static String getBalanceAsString(int value) {
+    String balance = value + "";
+    if (balance.length() == 2 && balance.contains("-")) {
+      balance = balance.replace("-", "-00");
+    }
+    else if (balance.length() == 2) {
+      balance = "0" + balance;
+    }
+    else if (balance.length() == 1) {
+      balance = "00" + balance;
+    }
+    balance =
+        balance.substring(0, balance.length() - 2) + "." + balance.substring(balance.length() - 2);
+    return balance;
   }
 }
