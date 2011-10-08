@@ -12,7 +12,7 @@ public class SampleTableModel extends DefaultTableModel {
   /** Used for object serialization. */
   private static final long serialVersionUID = 1L;
   /** Maximum number of columns. */
-  private static final int num_columns = 2;
+  private static final int NUM_COLUMNS = 5;
   /** Holds the data stored in all of the columns. */
   private final Object[][] data;
 
@@ -53,6 +53,12 @@ public class SampleTableModel extends DefaultTableModel {
       return "";
     case 1:
       return "Class";
+    case 2:
+      return "Instructor";
+    case 3:
+      return "Class Time";
+    case 4:
+      return "Number of Seats";
     default:
       throw new IllegalArgumentException("Invalid column index.");
     }
@@ -71,7 +77,7 @@ public class SampleTableModel extends DefaultTableModel {
    */
   @Override
   public Class<?> getColumnClass(int columnIndex) {
-    if (columnIndex >= num_columns) {
+    if (columnIndex >= NUM_COLUMNS) {
       throw new IllegalArgumentException("Invalid column index.");
     }
     return (columnIndex == 0) ? Boolean.class : String.class;
@@ -82,6 +88,6 @@ public class SampleTableModel extends DefaultTableModel {
    */
   @Override
   public int getColumnCount() {
-    return num_columns;
+    return NUM_COLUMNS;
   }
 }
