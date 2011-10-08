@@ -3,7 +3,8 @@ package org.katas;
 import javax.swing.table.DefaultTableModel;
 
 /**
- * Used to test how to use a table model with a JTable.
+ * Creates a table model that will be used to store information about ICS classes at the University
+ * of Hawaii at Manoa.
  * 
  * @author BJ Peter DeLaCruz
  */
@@ -17,8 +18,8 @@ public class SampleTableModel extends DefaultTableModel {
   private final Object[][] data;
 
   /**
-   * Creates a new SampleTableModel object with a table that will have a user-specified number of
-   * rows and columns.
+   * Creates a new SampleTableModel object that will have a user-specified number of rows and
+   * columns.
    * 
    * @param row Number of rows.
    * @param col Number of columns.

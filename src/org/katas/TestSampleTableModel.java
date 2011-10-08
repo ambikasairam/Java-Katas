@@ -8,7 +8,8 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 /**
- * Creates a table and adds rows and content to it using the custom table model.
+ * Creates a table that uses a SampleTableModel to store information about ICS classes at the
+ * University of Hawaii at Manoa.
  * 
  * @author BJ Peter DeLaCruz
  */
