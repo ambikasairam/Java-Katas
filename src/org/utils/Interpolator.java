@@ -17,8 +17,6 @@ public final class Interpolator {
     // Empty constructor.
   }
 
-  private static final Number NO_DATA = -1;
-
   /**
    * Interpolates a data point using the following linear interpolation formula:<br>
    * <br>
@@ -75,7 +73,7 @@ public final class Interpolator {
         for (Point<Number, Number> dataPoint : l) {
           Point<Number, Number> interpolatedDataPoint =
               new Point<Number, Number>();
-          interpolatedDataPoint.setValue(dataPoint.getX(), NO_DATA);
+          interpolatedDataPoint.setValue(dataPoint.getX(), Point.NO_DATA);
           newList.add(interpolatedDataPoint);
         }
       }
@@ -117,7 +115,7 @@ public final class Interpolator {
   private static void extrapolateEndpoints(List<Point<Number, Number>> list) {
     // Head of list
     int index = 0;
-    while (list.get(index).getY().equals(NO_DATA)) {
+    while (list.get(index).getY().equals(Point.NO_DATA)) {
       index++;
     }
     long value = list.get(index).getY().longValue();
@@ -127,7 +125,7 @@ public final class Interpolator {
 
     // Tail of list
     index = list.size() - 1;
-    while (list.get(index).getY().equals(NO_DATA)) {
+    while (list.get(index).getY().equals(Point.NO_DATA)) {
       index--;
     }
     value = list.get(index).getY().longValue();
@@ -145,9 +143,9 @@ public final class Interpolator {
     Validator.checkNull(list);
 
     for (int startIndex = 0, endIndex = 2; endIndex < list.size(); startIndex++, endIndex++) {
-      if (list.get(endIndex).getY().equals(NO_DATA)) {
+      if (list.get(endIndex).getY().equals(Point.NO_DATA)) {
         int temp = endIndex;
-        while (list.get(endIndex).getY().equals(NO_DATA)) {
+        while (list.get(endIndex).getY().equals(Point.NO_DATA)) {
           endIndex++;
         }
         list.set(temp,

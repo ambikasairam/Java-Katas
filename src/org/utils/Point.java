@@ -12,6 +12,8 @@ public class Point<X extends Number, Y extends Number> {
   private X xValue;
   private Y yValue;
 
+  protected static final Number NO_DATA = -1;
+
   /** Creates a Point object with no values. */
   public Point() {
     // Empty constructor.
