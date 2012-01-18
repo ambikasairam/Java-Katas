@@ -113,7 +113,7 @@ public final class Interpolator {
    * @param list A list of Points with values that need to be extrapolated at both ends.
    */
   private static void extrapolateEndpoints(List<Point<Number, Number>> list) {
-    Validator.checkNull(list);
+    Validator.checkIfNotEmpty(list);
 
     // Head of list
     int index = 0;

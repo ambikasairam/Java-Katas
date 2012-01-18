@@ -1,5 +1,7 @@
 package org.utils;
 
+import java.util.List;
+
 /**
  * A utility class that validates objects.
  * 
@@ -21,6 +23,21 @@ public final class Validator {
   public static void checkNull(Object object) {
     if (object == null) {
       throw new IllegalArgumentException("Null arguments are not allowed.");
+    }
+  }
+
+  /**
+   * Verifies that a list is not empty; throws an <code>IllegalArgumentException</code> if the list
+   * is null or empty.
+   * 
+   * @param list The list that cannot be null nor empty.
+   */
+  public static void checkIfNotEmpty(List<?> list) {
+    if (list == null) {
+      throw new IllegalArgumentException("list is null.");
+    }
+    if (list.isEmpty()) {
+      throw new IllegalArgumentException("list is empty.");
     }
   }
 
