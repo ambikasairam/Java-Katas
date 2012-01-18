@@ -13,7 +13,7 @@ import javax.swing.UnsupportedLookAndFeelException;
  * 
  * @author BJ Peter DeLaCruz
  */
-public class TestSampleTableModel {
+public class SampleTableModelTest {
 
   /**
    * Adds data to the sample JTable.

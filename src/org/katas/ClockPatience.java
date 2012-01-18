@@ -8,7 +8,7 @@ import java.util.Map;
 
 /**
  * This class creates a card game in which the computer takes a card from the top of a pile, flips
- * it over, and then puts it under another pile. See {@see #playGame()} for rules on how this game
+ * it over, and then puts it under another pile. See {@link #playGame()} for rules on how this game
  * is played.
  * 
  * @author BJ Peter DeLaCruz
@@ -34,14 +34,15 @@ public class ClockPatience extends Kata {
   }
 
   /**
-   * Turns on shuffling; shuffles the cards before dealing them. See {@see #dealCards()}.
+   * Turns on shuffling; shuffles the cards before dealing them. See {@link #dealCards()}.
    */
   public void enableShuffling() {
     this.enableShuffling = true;
   }
 
   /**
-   * Creates a set of 52 playing cards, deals them, and then plays the game. See {@see #playGame()}.
+   * Creates a set of 52 playing cards, deals them, and then plays the game. See {@link #playGame()}
+   * .
    */
   @Override
   public void processLines() {
