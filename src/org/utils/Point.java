@@ -8,7 +8,8 @@ package org.utils;
  * @param <X> A Number representing an X-axis value.
  * @param <Y> A Number representing a Y-axis value.
  */
-public class Point<X extends Number, Y extends Number> {
+public class Point<X extends Number, Y extends Number>
+    implements Comparable<Point<Number, Number>> {
   private X xValue;
   private Y yValue;
 
@@ -50,5 +51,32 @@ public class Point<X extends Number, Y extends Number> {
     Validator.checkNull(yValue);
     this.xValue = xValue;
     this.yValue = yValue;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public boolean equals(Object obj) {
+    if (!(obj instanceof Point<?, ?>)) {
+      return false;
+    }
+    @SuppressWarnings("unchecked")
+    Point<X, Y> point = (Point<X, Y>) obj;
+    if (this.xValue.equals(point.xValue) && (this.yValue.equals(point.yValue))) {
+      return true;
+    }
+    return false;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public int hashCode() {
+    return xValue.toString().hashCode() + yValue.toString().hashCode() + 7;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public int compareTo(Point<Number, Number> dataPoint) {
+    return (this.getX().longValue() < dataPoint.getX().longValue()) ? -1
+        : (this.getX().longValue() == dataPoint.getX().longValue()) ? 0 : 1;
   }
 }

@@ -2,7 +2,6 @@ package org.utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -51,13 +50,12 @@ public final class Interpolator {
   }
 
   /**
-   * Creates a list of Points that includes timestamps from all lists. The resulting list will
-   * contain Y-axis values that need to be interpolated.
+   * Adds all of the Points in all of the lists to a new list. The resulting list will be returned
+   * and will contain Y-axis values that need to be interpolated.
    * 
    * @param list A list of Points.
    * @param lists A list of lists of Points, which include <code>list</code>.
-   * @return A list of Points with timestamps from all lists and with Y-axis values that need to be
-   * interpolated.
+   * @return A list of Points whose Y-axis values need to be interpolated.
    */
   private static List<Point<Number, Number>> mergeLists(List<Point<Number, Number>> list,
       List<List<Point<Number, Number>>> lists) {
@@ -71,8 +69,7 @@ public final class Interpolator {
     for (List<Point<Number, Number>> l : lists) {
       if (!l.equals(list)) {
         for (Point<Number, Number> dataPoint : l) {
-          Point<Number, Number> interpolatedDataPoint =
-              new Point<Number, Number>();
+          Point<Number, Number> interpolatedDataPoint = new Point<Number, Number>();
           interpolatedDataPoint.setValue(dataPoint.getX(), Point.NO_DATA);
           newList.add(interpolatedDataPoint);
         }
@@ -80,21 +77,12 @@ public final class Interpolator {
     }
 
     // Sort the data points in newList in ascending order, e.g. from oldest to newest.
-    Collections.sort(newList, new Comparator<Point<Number, Number>>() {
-
-      @Override
-      public int compare(Point<Number, Number> firstDataPoint,
-          Point<Number, Number> secondDataPoint) {
-        return (firstDataPoint.getX().longValue() < secondDataPoint.getX().longValue()) ? -1
-            : (firstDataPoint.getX().longValue() == secondDataPoint.getX().longValue()) ? 0 : 1;
-      }
-
-    });
+    Collections.sort(newList);
 
     // If two data points with the same timestamp are in newList,
     // remove the data point that has a placeholder for interpolated data,
-    // i.e. only keep the data point that has real data, because that data was
-    // originally in list and no interpolation is needed.
+    // i.e. only keep the data point that has real data, because that data point
+    // was originally in list and no interpolation is needed.
     for (int index = 0; index < newList.size() - 1; index++) {
       if (newList.get(index).getX().equals(newList.get(index + 1).getX())) {
         newList.remove(newList.get(index + 1));
@@ -162,8 +150,8 @@ public final class Interpolator {
   }
 
   /**
-   * Returns a list containing timestamps from all lists, interpolating all missing values using
-   * linear interpolation. See {@link #interpolateDataPoint(Point, Point, Number)}.
+   * Returns a list containing data points, interpolating all missing values using linear
+   * interpolation. See {@link #interpolateDataPoint(Point, Point, Number)}.
    * 
    * @param list A list of Points.
    * @param lists A list of lists of Points, which include <code>list</code>.
@@ -179,4 +167,5 @@ public final class Interpolator {
     interpolateDataPoints(pointsList);
     return pointsList;
   }
+
 }
