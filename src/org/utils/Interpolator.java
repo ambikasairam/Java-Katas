@@ -91,10 +91,10 @@ public final class Interpolator {
 
     });
 
-    // If two data points with the same timestamps are in newList,
+    // If two data points with the same timestamp are in newList,
     // remove the data point that has a placeholder for interpolated data,
-    // i.e. only keep the data point that has real data, because that data was in
-    // list and no interpolation is needed.
+    // i.e. only keep the data point that has real data, because that data was
+    // originally in list and no interpolation is needed.
     for (int index = 0; index < newList.size() - 1; index++) {
       if (newList.get(index).getX().equals(newList.get(index + 1).getX())) {
         newList.remove(newList.get(index + 1));
