@@ -113,6 +113,8 @@ public final class Interpolator {
    * @param list A list of Points with values that need to be extrapolated at both ends.
    */
   private static void extrapolateEndpoints(List<Point<Number, Number>> list) {
+    Validator.checkNull(list);
+
     // Head of list
     int index = 0;
     while (list.get(index).getY().equals(Point.NO_DATA)) {
@@ -169,6 +171,9 @@ public final class Interpolator {
    */
   public static List<Point<Number, Number>> interpolate(List<Point<Number, Number>> list,
       List<List<Point<Number, Number>>> lists) {
+    Validator.checkNull(list);
+    Validator.checkNull(lists);
+
     List<Point<Number, Number>> pointsList = mergeLists(list, lists);
     extrapolateEndpoints(pointsList);
     interpolateDataPoints(pointsList);
