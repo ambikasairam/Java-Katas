@@ -118,10 +118,10 @@ public final class Interpolator {
 
     // Tail of list
     index = list.size() - 1;
-    while (index > 0 && list.get(index).getY().equals(Point.NO_DATA)) {
+    while (index > -1 && list.get(index).getY().equals(Point.NO_DATA)) {
       index--;
     }
-    if (index > 0) {
+    if (index > -1) {
       value = list.get(index).getY().longValue();
       for (int idx = list.size() - 1; idx > index; idx--) {
         list.get(idx).setValue(list.get(idx).getX(), value);
