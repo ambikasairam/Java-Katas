@@ -105,22 +105,27 @@ public final class Interpolator {
 
     // Head of list
     int index = 0;
-    while (list.get(index).getY().equals(Point.NO_DATA)) {
+    while (index < list.size() && list.get(index).getY().equals(Point.NO_DATA)) {
       index++;
     }
-    long value = list.get(index).getY().longValue();
-    for (int idx = 0; idx < index; idx++) {
-      list.get(idx).setValue(list.get(idx).getX(), value);
+    long value;
+    if (index < list.size()) {
+      value = list.get(index).getY().longValue();
+      for (int idx = 0; idx < index; idx++) {
+        list.get(idx).setValue(list.get(idx).getX(), value);
+      }
     }
 
     // Tail of list
     index = list.size() - 1;
-    while (list.get(index).getY().equals(Point.NO_DATA)) {
+    while (index > 0 && list.get(index).getY().equals(Point.NO_DATA)) {
       index--;
     }
-    value = list.get(index).getY().longValue();
-    for (int idx = list.size() - 1; idx > index; idx--) {
-      list.get(idx).setValue(list.get(idx).getX(), value);
+    if (index > 0) {
+      value = list.get(index).getY().longValue();
+      for (int idx = list.size() - 1; idx > index; idx--) {
+        list.get(idx).setValue(list.get(idx).getX(), value);
+      }
     }
   }
 
@@ -135,17 +140,21 @@ public final class Interpolator {
     for (int startIndex = 0, endIndex = 2; endIndex < list.size(); startIndex++, endIndex++) {
       if (list.get(endIndex).getY().equals(Point.NO_DATA)) {
         int temp = endIndex;
-        while (list.get(endIndex).getY().equals(Point.NO_DATA)) {
+        while (endIndex < list.size() && list.get(endIndex).getY().equals(Point.NO_DATA)) {
           endIndex++;
         }
-        list.set(temp,
-            interpolateDataPoint(list.get(startIndex), list.get(endIndex), list.get(temp).getX()));
+        if (endIndex < list.size()) {
+          list.set(temp,
+              interpolateDataPoint(list.get(startIndex), list.get(endIndex), list.get(temp).getX()));
+        }
         endIndex = temp;
       }
-      list.set(
-          startIndex + 1,
-          interpolateDataPoint(list.get(startIndex), list.get(endIndex), list.get(startIndex + 1)
-              .getX()));
+      if (list.get(startIndex + 1).getY().equals(Point.NO_DATA)) {
+        list.set(
+            startIndex + 1,
+            interpolateDataPoint(list.get(startIndex), list.get(endIndex), list.get(startIndex + 1)
+                .getX()));
+      }
     }
   }
 
