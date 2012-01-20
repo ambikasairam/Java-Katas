@@ -8,7 +8,8 @@ package org.utils;
  * @param <X> A Number representing an X-axis value.
  * @param <Y> A Number representing a Y-axis value.
  */
-public class Point<X extends Number, Y extends Number> implements Comparable<Point<Number, Number>> {
+public class Point<X extends Number, Y extends Number>
+    implements Comparable<Point<Number, Number>> {
   private X xValue;
   private Y yValue;
 

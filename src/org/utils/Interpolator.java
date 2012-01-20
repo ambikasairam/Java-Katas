@@ -145,7 +145,8 @@ public final class Interpolator {
         }
         if (endIndex < list.size()) {
           list.set(temp,
-              interpolateDataPoint(list.get(startIndex), list.get(endIndex), list.get(temp).getX()));
+              interpolateDataPoint(list.get(startIndex), list.get(endIndex),
+                  list.get(temp).getX()));
         }
         endIndex = temp;
       }
