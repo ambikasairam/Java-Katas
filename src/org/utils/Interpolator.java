@@ -30,18 +30,18 @@ public final class Interpolator {
    * @param timestamp The timestamp at which the Y-axis value is unknown.
    * @return A Point with an interpolated Y-axis value.
    */
-  private static Point<Number, Number> interpolateDataPoint(Point<Number, Number> leftDataPoint,
+  protected static Point<Number, Number> interpolateDataPoint(Point<Number, Number> leftDataPoint,
       Point<Number, Number> rightDataPoint, Number timestamp) {
     Validator.checkNull(leftDataPoint);
     Validator.checkNull(rightDataPoint);
     Validator.checkNull(timestamp);
 
-    long deltaX = rightDataPoint.getX().longValue() - leftDataPoint.getX().longValue();
-    float deltaY = rightDataPoint.getY().floatValue() - leftDataPoint.getY().floatValue();
+    double deltaX = rightDataPoint.getX().longValue() - leftDataPoint.getX().longValue();
+    double deltaY = rightDataPoint.getY().doubleValue() - leftDataPoint.getY().doubleValue();
 
-    long timeDifference = timestamp.longValue() - leftDataPoint.getX().longValue();
+    double timeDifference = timestamp.longValue() - leftDataPoint.getX().longValue();
 
-    float result = leftDataPoint.getY().floatValue() + timeDifference * (deltaY / deltaX);
+    double result = leftDataPoint.getY().doubleValue() + timeDifference * (deltaY / deltaX);
 
     Point<Number, Number> interpolatedResult = new Point<Number, Number>();
     interpolatedResult.setValue(timestamp, result);
@@ -50,14 +50,14 @@ public final class Interpolator {
   }
 
   /**
-   * Adds all of the Points in all of the lists to a new list. The resulting list will be returned
+   * Adds all of the data points in all of the lists to a new list. The new list will be returned
    * and will contain Y-axis values that need to be interpolated.
    * 
-   * @param list A list of Points.
-   * @param lists A list of lists of Points, which include <code>list</code>.
-   * @return A list of Points whose Y-axis values need to be interpolated.
+   * @param list A list of data points.
+   * @param lists A list of lists of data points, which include <code>list</code>.
+   * @return A list of data points whose Y-axis values need to be interpolated.
    */
-  private static List<Point<Number, Number>> mergeLists(List<Point<Number, Number>> list,
+  protected static List<Point<Number, Number>> mergeLists(List<Point<Number, Number>> list,
       List<List<Point<Number, Number>>> lists) {
     Validator.checkNull(list);
     Validator.checkNull(lists);
@@ -76,7 +76,8 @@ public final class Interpolator {
       }
     }
 
-    // Sort the data points in newList in ascending order, e.g. from oldest to newest.
+    // Sort the data points in newList in ascending order, e.g. from oldest to
+    // newest.
     Collections.sort(newList);
 
     // If two data points with the same timestamp are in newList,
@@ -98,19 +99,22 @@ public final class Interpolator {
    * found; if values at the end of a list are missing, fills them in using the last value that is
    * found.
    * 
-   * @param list A list of Points with values that need to be extrapolated at both ends.
+   * @param list A list of data points with values that need to be extrapolated at both ends.
    */
-  private static void extrapolateEndpoints(List<Point<Number, Number>> list) {
-    Validator.checkIfNotEmpty(list);
+  protected static void extrapolateEndpoints(List<Point<Number, Number>> list) {
+    Validator.checkNull(list);
+    if (list.isEmpty()) {
+      throw new IllegalArgumentException("list is empty.");
+    }
 
     // Head of list
     int index = 0;
     while (index < list.size() && list.get(index).getY().equals(Point.NO_DATA)) {
       index++;
     }
-    long value;
+    double value;
     if (index < list.size()) {
-      value = list.get(index).getY().longValue();
+      value = list.get(index).getY().doubleValue();
       for (int idx = 0; idx < index; idx++) {
         list.get(idx).setValue(list.get(idx).getX(), value);
       }
@@ -118,24 +122,38 @@ public final class Interpolator {
 
     // Tail of list
     index = list.size() - 1;
-    while (index > -1 && list.get(index).getY().equals(Point.NO_DATA)) {
-      index--;
-    }
     if (index > -1) {
-      value = list.get(index).getY().longValue();
-      for (int idx = list.size() - 1; idx > index; idx--) {
-        list.get(idx).setValue(list.get(idx).getX(), value);
+      while (index > -1 && list.get(index).getY().equals(Point.NO_DATA)) {
+        index--;
+      }
+      if (index > -1) {
+        value = list.get(index).getY().doubleValue();
+        for (int idx = list.size() - 1; idx > index; idx--) {
+          list.get(idx).setValue(list.get(idx).getX(), value);
+        }
       }
     }
   }
 
   /**
-   * Iterates through a list of Points and interpolates all missing values.
+   * Iterates through a list of data points and interpolates all missing values.<br>
+   * <br>
    * 
-   * @param list A list of Points with values that need to be interpolated.
+   * <b>Important</b>: The {@link #extrapolateEndpoints(List)} method should be called before
+   * calling this method. Otherwise, an <code>IllegalArgumentException</code> will be thrown if a
+   * data point at either end of the list is missing.
+   * 
+   * @param list A list of data points with values that need to be interpolated.
    */
-  private static void interpolateDataPoints(List<Point<Number, Number>> list) {
+  protected static void interpolateDataPoints(List<Point<Number, Number>> list) {
     Validator.checkNull(list);
+    if (!list.isEmpty() && list.get(0).getY().equals(Point.NO_DATA)) {
+      throw new IllegalArgumentException("Missing left endpoint.");
+    }
+
+    if (list.size() == 2 && list.get(1).getY().equals(Point.NO_DATA)) {
+      throw new IllegalArgumentException("Missing right endpoint.");
+    }
 
     for (int startIndex = 0, endIndex = 2; endIndex < list.size(); startIndex++, endIndex++) {
       if (list.get(endIndex).getY().equals(Point.NO_DATA)) {
@@ -147,6 +165,9 @@ public final class Interpolator {
           list.set(temp,
               interpolateDataPoint(list.get(startIndex), list.get(endIndex),
                   list.get(temp).getX()));
+        }
+        else {
+          throw new IllegalArgumentException("Missing right endpoint.");
         }
         endIndex = temp;
       }
@@ -163,9 +184,9 @@ public final class Interpolator {
    * Returns a list containing data points, interpolating all missing values using linear
    * interpolation. See {@link #interpolateDataPoint(Point, Point, Number)}.
    * 
-   * @param list A list of Points.
-   * @param lists A list of lists of Points, which include <code>list</code>.
-   * @return A list of Points with timestamps, and real and interpolated data.
+   * @param list A list of data points.
+   * @param lists A list of lists of data points, which include <code>list</code>.
+   * @return A list of data points with timestamps, and real and interpolated data.
    */
   public static List<Point<Number, Number>> interpolate(List<Point<Number, Number>> list,
       List<List<Point<Number, Number>>> lists) {

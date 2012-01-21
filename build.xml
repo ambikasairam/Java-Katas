@@ -6,7 +6,7 @@
   <import file="common.build.xml" />
 
   <!-- Library versions -->
-  <property name="junit.version" value="4.5" />
+  <property name="junit.version" value="4.9" />
   <property name="wattdepot.version" value="1.4.903" />
   
   <target name="install-libraries" description="Install libraries needed for compilation">

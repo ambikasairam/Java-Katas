@@ -7,7 +7,7 @@
   <import file="build.xml" />
 
   <!-- Initializations for Ivy-based download of FindBugs and associated libraries -->
-  <property name="findbugs.version" value="1.3.8" />
+  <property name="findbugs.version" value="1.3.9" />
   <property name="findbugs.install.dir" location="${lib.dir}/findbugs" />
   <target name="install-findbugs" depends="install-ivy">
     <ivy:retrieve module="findbugs" organisation="edu.umd.cs" revision="${findbugs.version}" pattern="${lib.dir}/findbugs/[artifact].[ext]" sync="true" inline="true" log="download-only" type="jar,report" />
