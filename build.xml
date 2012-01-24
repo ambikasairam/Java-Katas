@@ -76,7 +76,7 @@
   <target name="compile" depends="install-ivy, install-libraries" description="Compiles the code and copies resource files to build.classes.dir">
     <!-- Now compile the code into build/classes -->
     <mkdir dir="${build.classes.dir}" />
-    <javac srcdir="${src.dir}" destdir="${build.classes.dir}" debug="on" includeAntRuntime="no">
+    <javac srcdir="${src.dir}" destdir="${build.classes.dir}" debug="on" excludes="**/Chart.java" includeAntRuntime="no">
       <classpath refid="compile.classpath" />
       <compilerarg value="-Xlint:all" />
       <compilerarg value="-Werror" />

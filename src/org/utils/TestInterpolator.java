@@ -172,7 +172,7 @@ public class TestInterpolator {
   public void interpolateDataPointsTest() {
     this.dataPoints1.get(0).setValue(100, 100.0);
     this.dataPoints1.get(8).setValue(500, 300.0);
-    Interpolator.interpolateDataPoints(this.dataPoints1);
+    Interpolator.interpolateDataPoints(this.dataPoints1, 0);
     assertEquals(MESSAGE, this.dataPoints1.get(0).getY(), 100.0);
     assertEquals("should be equal to 125", this.dataPoints1.get(1).getY(), 125.0);
     assertEquals("should be equal to 150", this.dataPoints1.get(2).getY(), 150.0);
@@ -191,7 +191,7 @@ public class TestInterpolator {
   @Test(expected = IllegalArgumentException.class)
   public void interpolateDataPointsMissingLeftDataPointTest() {
     this.dataPoints1.get(0).setValue(100, 100.0);
-    Interpolator.interpolateDataPoints(this.dataPoints1);
+    Interpolator.interpolateDataPoints(this.dataPoints1, 0);
   }
 
   /**
@@ -203,7 +203,7 @@ public class TestInterpolator {
     List<Point<Number, Number>> dataPoints = new ArrayList<Point<Number, Number>>();
     dataPoints.add(new Point<Number, Number>(100, 100));
     dataPoints.add(new Point<Number, Number>(200, Point.NO_DATA));
-    Interpolator.interpolateDataPoints(dataPoints);
+    Interpolator.interpolateDataPoints(dataPoints, 0);
   }
 
   /**
@@ -213,7 +213,7 @@ public class TestInterpolator {
   @Test(expected = IllegalArgumentException.class)
   public void interpolateDataPointsMissingRightDataPointTest() {
     this.dataPoints1.get(8).setValue(500, 300.0);
-    Interpolator.interpolateDataPoints(this.dataPoints1);
+    Interpolator.interpolateDataPoints(this.dataPoints1, 0);
   }
 
   /**

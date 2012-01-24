@@ -41,7 +41,7 @@ public final class Interpolator {
 
     double timeDifference = timestamp.longValue() - leftDataPoint.getX().longValue();
 
-    double result = leftDataPoint.getY().doubleValue() + timeDifference * (deltaY / deltaX);
+    double result = leftDataPoint.getY().doubleValue() + (timeDifference * (deltaY / deltaX));
 
     Point<Number, Number> interpolatedResult = new Point<Number, Number>();
     interpolatedResult.setValue(timestamp, result);
@@ -100,8 +100,9 @@ public final class Interpolator {
    * found.
    * 
    * @param list A list of data points with values that need to be extrapolated at both ends.
+   * @return The index from which to start interpolation.
    */
-  protected static void extrapolateEndpoints(List<Point<Number, Number>> list) {
+  protected static int extrapolateEndpoints(List<Point<Number, Number>> list) {
     Validator.checkNull(list);
     if (list.isEmpty()) {
       throw new IllegalArgumentException("list is empty.");
@@ -112,6 +113,9 @@ public final class Interpolator {
     while (index < list.size() && list.get(index).getY().equals(Point.NO_DATA)) {
       index++;
     }
+    // Save the index where the first data point is located. Interpolation should begin at that
+    // index.
+    int startIndex = index;
     double value;
     if (index < list.size()) {
       value = list.get(index).getY().doubleValue();
@@ -133,6 +137,7 @@ public final class Interpolator {
         }
       }
     }
+    return startIndex;
   }
 
   /**
@@ -144,8 +149,11 @@ public final class Interpolator {
    * data point at either end of the list is missing.
    * 
    * @param list A list of data points with values that need to be interpolated.
+   * @param start The index from which to start interpolation. It is assumed that any missing data
+   * points at the beginning of <code>list</code> have been extrapolated already, so begin
+   * interpolation at <code>start</code>.
    */
-  protected static void interpolateDataPoints(List<Point<Number, Number>> list) {
+  protected static void interpolateDataPoints(List<Point<Number, Number>> list, int start) {
     Validator.checkNull(list);
     if (!list.isEmpty() && list.get(0).getY().equals(Point.NO_DATA)) {
       throw new IllegalArgumentException("Missing left endpoint.");
@@ -155,16 +163,17 @@ public final class Interpolator {
       throw new IllegalArgumentException("Missing right endpoint.");
     }
 
-    for (int startIndex = 0, endIndex = 2; endIndex < list.size(); startIndex++, endIndex++) {
+    for (int startIndex = start, endIndex = start + 2; endIndex < list.size();
+        startIndex += 2, endIndex += 2) {
       if (list.get(endIndex).getY().equals(Point.NO_DATA)) {
         int temp = endIndex;
         while (endIndex < list.size() && list.get(endIndex).getY().equals(Point.NO_DATA)) {
           endIndex++;
         }
         if (endIndex < list.size()) {
+          Number timestamp = list.get(temp).getX();
           list.set(temp,
-              interpolateDataPoint(list.get(startIndex), list.get(endIndex),
-                  list.get(temp).getX()));
+              interpolateDataPoint(list.get(startIndex), list.get(endIndex), timestamp));
         }
         else {
           throw new IllegalArgumentException("Missing right endpoint.");
@@ -194,8 +203,12 @@ public final class Interpolator {
     Validator.checkNull(lists);
 
     List<Point<Number, Number>> pointsList = mergeLists(list, lists);
-    extrapolateEndpoints(pointsList);
-    interpolateDataPoints(pointsList);
+    int startIndex = extrapolateEndpoints(pointsList);
+    // Start interpolation from startIndex, which is the first data point in list BEFORE
+    // the merge. The reason we start here is that any missing data points at the beginning
+    // of list have been extrapolated already, and there could be missing data immediately
+    // following the data point at startIndex.
+    interpolateDataPoints(pointsList, startIndex);
     return pointsList;
   }
 
