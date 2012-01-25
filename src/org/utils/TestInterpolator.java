@@ -217,10 +217,11 @@ public class TestInterpolator {
   }
 
   /**
-   * Tests the {@link Interpolator#interpolate(List, List)} method.
+   * Tests the {@link Interpolator#interpolate(List, List)} method with one data point missing
+   * between two data points.
    */
   @Test
-  public void interpolateTest() {
+  public void interpolateMissingOneDataPointTest() {
     List<Point<Number, Number>> dataPoints1 = new ArrayList<Point<Number, Number>>();
     dataPoints1.add(new Point<Number, Number>(100, 100));
     dataPoints1.add(new Point<Number, Number>(150, 150));
@@ -245,7 +246,7 @@ public class TestInterpolator {
         Interpolator.interpolate(dataPoints1, this.dataPointsLists);
     assertEquals(MESSAGE, dataPoints.get(0).getY(), 100.0);
     assertEquals(MESSAGE, dataPoints.get(1).getY(), 100);
-    assertEquals("should be equal to 150", dataPoints.get(2).getY(), 150);
+    assertEquals("should be equal to 150", dataPoints.get(2).getY(), 150.0);
     assertEquals("should be equal to 200", dataPoints.get(3).getY(), 200.0);
     assertEquals("should be equal to 250", dataPoints.get(4).getY(), 250.0);
     assertEquals("should be equal to 300", dataPoints.get(5).getY(), 300.0);
@@ -254,5 +255,55 @@ public class TestInterpolator {
     assertEquals("should be equal to 450", dataPoints.get(8).getY(), 450.0);
     assertEquals("should be equal to 500", dataPoints.get(9).getY(), 500);
     assertEquals("should be equal to 500", dataPoints.get(10).getY(), 500.0);
+  }
+
+  /**
+   * Tests the {@link Interpolator#interpolate(List, List)} method with more than one data point
+   * missing between two data points.
+   */
+  @Test
+  public void interpolateMissingDataPointsTest() {
+    List<Point<Number, Number>> dataPoints1 = new ArrayList<Point<Number, Number>>();
+    dataPoints1.add(new Point<Number, Number>(100, 100));
+    dataPoints1.add(new Point<Number, Number>(1000, 1000));
+
+    List<Point<Number, Number>> dataPoints2 = new ArrayList<Point<Number, Number>>();
+    dataPoints2.add(new Point<Number, Number>(50, Point.NO_DATA));
+    dataPoints2.add(new Point<Number, Number>(150, 600));
+    dataPoints2.add(new Point<Number, Number>(180, 180));
+    dataPoints2.add(new Point<Number, Number>(200, 400));
+    dataPoints2.add(new Point<Number, Number>(250, 500));
+    dataPoints2.add(new Point<Number, Number>(300, 400));
+    dataPoints2.add(new Point<Number, Number>(350, 600));
+    dataPoints2.add(new Point<Number, Number>(360, 640));
+    dataPoints2.add(new Point<Number, Number>(365, 650));
+    dataPoints2.add(new Point<Number, Number>(400, 200));
+    dataPoints2.add(new Point<Number, Number>(450, 400));
+    dataPoints2.add(new Point<Number, Number>(500, 200));
+    dataPoints2.add(new Point<Number, Number>(550, 750));
+    dataPoints2.add(new Point<Number, Number>(600, 500));
+    dataPoints2.add(new Point<Number, Number>(650, 250));
+    dataPoints2.add(new Point<Number, Number>(700, 500));
+    dataPoints2.add(new Point<Number, Number>(750, 750));
+    dataPoints2.add(new Point<Number, Number>(800, 100));
+    dataPoints2.add(new Point<Number, Number>(850, 200));
+    dataPoints2.add(new Point<Number, Number>(900, 300));
+    dataPoints2.add(new Point<Number, Number>(950, 300));
+    dataPoints2.add(new Point<Number, Number>(1000, 200));
+    dataPoints2.add(new Point<Number, Number>(1050, 100));
+
+    this.dataPointsLists.clear();
+    this.dataPointsLists.add(dataPoints1);
+    this.dataPointsLists.add(dataPoints2);
+
+    List<Point<Number, Number>> dataPoints =
+        Interpolator.interpolate(dataPoints1, this.dataPointsLists);
+    assertEquals(MESSAGE, dataPoints.get(0).getY(), 100.0);
+    // Start at x = 150. Stop at x = 950. X should be equal to Y.
+    for (int index = 2; index < dataPoints.size() - 2; index++) {
+      String msg = "should be equal to " + dataPoints.get(index).getX().doubleValue();
+      assertEquals(msg, dataPoints.get(index).getX().doubleValue(), dataPoints.get(index).getY());
+    }
+    assertEquals("should be equal to 1000", dataPoints.get(dataPoints.size() - 1).getY(), 1000.0);
   }
 }

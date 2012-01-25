@@ -155,7 +155,7 @@ public final class Interpolator {
    */
   protected static void interpolateDataPoints(List<Point<Number, Number>> list, int start) {
     Validator.checkNull(list);
-    if (!list.isEmpty() && list.get(0).getY().equals(Point.NO_DATA)) {
+    if (!list.isEmpty() && list.get(start).getY().equals(Point.NO_DATA)) {
       throw new IllegalArgumentException("Missing left endpoint.");
     }
 
@@ -165,26 +165,36 @@ public final class Interpolator {
 
     for (int startIndex = start, endIndex = start + 2; endIndex < list.size();
         startIndex += 2, endIndex += 2) {
+      // More than one data point is missing, so all of the data points between
+      // startIndex and endIndex have to be interpolated in this iteration.
       if (list.get(endIndex).getY().equals(Point.NO_DATA)) {
-        int temp = endIndex;
-        while (endIndex < list.size() && list.get(endIndex).getY().equals(Point.NO_DATA)) {
-          endIndex++;
+        int tempEnd = endIndex;
+        // Find the first data point that has data.
+        while (tempEnd < list.size() && list.get(tempEnd).getY().equals(Point.NO_DATA)) {
+          tempEnd++;
         }
-        if (endIndex < list.size()) {
-          Number timestamp = list.get(temp).getX();
-          list.set(temp,
-              interpolateDataPoint(list.get(startIndex), list.get(endIndex), timestamp));
-        }
-        else {
+        if (tempEnd == list.size()) {
           throw new IllegalArgumentException("Missing right endpoint.");
         }
-        endIndex = temp;
+
+        int tempStart = startIndex;
+        // Interpolate all of the data points between tempStart and tempEnd.
+        while (tempStart + 1 < tempEnd) {
+          Number tstamp = list.get(tempStart + 1).getX();
+          list.set(tempStart + 1,
+              interpolateDataPoint(list.get(tempStart), list.get(tempEnd), tstamp));
+          tempStart++;
+        }
+        // Reset the indices.
+        startIndex = tempStart - 1;
+        endIndex = tempStart + 1;
       }
-      if (list.get(startIndex + 1).getY().equals(Point.NO_DATA)) {
+      // Only one data point is missing.
+      else if (list.get(startIndex + 1).getY().equals(Point.NO_DATA)) {
+        Number tstamp = list.get(startIndex + 1).getX();
         list.set(
             startIndex + 1,
-            interpolateDataPoint(list.get(startIndex), list.get(endIndex), list.get(startIndex + 1)
-                .getX()));
+            interpolateDataPoint(list.get(startIndex), list.get(endIndex), tstamp));
       }
     }
   }
