@@ -30,6 +30,15 @@ public class Point<X extends Number, Y extends Number>
     setValue(xValue, yValue);
   }
 
+  /**
+   * Creates a Point object from an existing Point object.
+   * 
+   * @param point The Point object whose x- and y-values are to be copied to this object.
+   */
+  public Point(Point<X, Y> point) {
+    setValue(point.xValue, point.yValue);
+  }
+
   /** @return The X-axis value. */
   public X getX() {
     return this.xValue;
@@ -78,5 +87,11 @@ public class Point<X extends Number, Y extends Number>
   public int compareTo(Point<Number, Number> dataPoint) {
     return (this.getX().longValue() < dataPoint.getX().longValue()) ? -1 : (this.getX()
         .equals(dataPoint.getX())) ? 0 : 1;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public String toString() {
+    return "(" + this.getX() + ", " + this.getY() + ")";
   }
 }
