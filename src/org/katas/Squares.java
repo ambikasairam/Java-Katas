@@ -129,12 +129,11 @@ public class Squares extends Kata {
   private void addHorizLineToSet(Set<Line> lines, Line lineToAdd, List<Line> list) {
     if (lineToAdd.getDirection().equals(Direction.HORIZONTAL)) {
       for (Line line : list) {
-        if (line.getDirection().equals(Direction.HORIZONTAL)) {
-          if (lineToAdd.getStartPoint().getY().equals(line.getStartPoint().getY())
-              && lineToAdd.getEndPoint().getY().equals(line.getEndPoint().getY())) {
-            lines.add(lineToAdd);
-            lines.add(line);
-          }
+        if (line.getDirection().equals(Direction.HORIZONTAL)
+            && lineToAdd.getStartPoint().getY().equals(line.getStartPoint().getY())
+            && lineToAdd.getEndPoint().getY().equals(line.getEndPoint().getY())) {
+          lines.add(lineToAdd);
+          lines.add(line);
         }
       }
     }
@@ -151,12 +150,11 @@ public class Squares extends Kata {
   private void addVertLineToSet(Set<Line> lines, Line lineToAdd, List<Line> list) {
     if (lineToAdd.getDirection().equals(Direction.VERTICAL)) {
       for (Line line : list) {
-        if (line.getDirection().equals(Direction.VERTICAL)) {
-          if (lineToAdd.getStartPoint().getX().equals(line.getStartPoint().getX())
-              && lineToAdd.getEndPoint().getX().equals(line.getEndPoint().getX())) {
-            lines.add(lineToAdd);
-            lines.add(line);
-          }
+        if (line.getDirection().equals(Direction.VERTICAL)
+            && lineToAdd.getStartPoint().getX().equals(line.getStartPoint().getX())
+            && lineToAdd.getEndPoint().getX().equals(line.getEndPoint().getX())) {
+          lines.add(lineToAdd);
+          lines.add(line);
         }
       }
     }
@@ -172,8 +170,8 @@ public class Squares extends Kata {
    * 
    * @param direction The direction of the line from which to start.
    * @param lines The list of lines containing both horizontal and vertical lines.
-   * @return The last line, or <code>null</code> if the line from which to start did not
-   * have the same x- and y-values for the start point.
+   * @return The last line, or <code>null</code> if the line from which to start did not have the
+   * same x- and y-values for the start point.
    */
   private Line followLinePath(Direction direction, List<Line> lines) {
     Line firstLine = null, lastLine = null;
@@ -182,7 +180,8 @@ public class Squares extends Kata {
     for (int index = 0; index < lines.size(); index++) {
       firstLine = lines.get(index);
       startPoint = firstLine.getStartPoint();
-      if (firstLine.getDirection().equals(direction) && startPoint.getX().equals(startPoint.getY())) {
+      boolean isSameValues = startPoint.getX().equals(startPoint.getY());
+      if (firstLine.getDirection().equals(direction) && isSameValues) {
         lastLine = getLine(firstLine.getEndPoint(), lines);
         break;
       }
@@ -224,10 +223,12 @@ public class Squares extends Kata {
   }
 
   /**
+   * Puts all horizontal and vertical lines into a hash map where the keys represent either rows or
+   * columns in which the lines in the array lists are found.
    * 
-   * 
-   * @param lines
-   * @param rowsColumns
+   * @param lines The list containing both horizontal and vertical lines.
+   * @param rowsColumns An initially empty hash map that will contain array lists of horizontal and
+   * vertical lines.
    */
   private void organizeLines(List<Line> lines, Map<Integer, ArrayList<Line>> rowsColumns) {
     // Gather all horizontal lines.
