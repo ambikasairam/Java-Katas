@@ -2,13 +2,14 @@ package org.katas;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.StringTokenizer;
-import java.util.TreeMap;
 import org.katas.Line.Direction;
 import org.utils.Point;
 
@@ -21,7 +22,6 @@ import org.utils.Point;
 public class Squares extends Kata {
 
   private int dimension;
-  private final Set<Line> lines = new HashSet<Line>();
 
   /** {@inheritDoc} */
   @Override
@@ -32,29 +32,22 @@ public class Squares extends Kata {
         this.dimension = Integer.parseInt(this.getLines().remove(0));
         int numLines = Integer.parseInt(this.getLines().remove(0));
 
+        Set<Line> linesSet = new HashSet<Line>();
         while (!this.getLines().isEmpty() && this.getLines().get(0).length() > 1) {
-          processLine();
+          processLine(linesSet);
         }
 
-        if (this.lines.size() != numLines) {
-          String msg = "Expected " + numLines + " lines.";
-          throw new IllegalArgumentException(msg + " Found " + this.lines.size());
+        if (linesSet.size() != numLines) {
+          String msg = "Expected " + numLines + " lines. Found " + linesSet.size() + ".";
+          throw new IllegalArgumentException(msg);
         }
 
-        List<Line> lines = new ArrayList<Line>(this.lines);
+        List<Line> lines = new ArrayList<Line>(linesSet);
         Collections.sort(lines);
 
-        Map<Integer, Integer> numSquaresMap = new TreeMap<Integer, Integer>();
-        List<String> coordinates = new ArrayList<String>();
-        for (int index = 0; index < lines.size() - 1; index++) {
-          Point<Number, Number> startPoint = lines.get(index).getStartPoint();
-          if (startPoint.equals(lines.get(index + 1).getStartPoint())
-              && startPoint.getX().equals(startPoint.getY())) {
-            findSquare(lines, index, numSquaresMap, coordinates);
-          }
-        }
-        printResults(numSquaresMap, coordinates);
-        this.lines.clear();
+        Map<Integer, ArrayList<Line>> rowsColumns = new HashMap<Integer, ArrayList<Line>>();
+        organizeLines(lines, rowsColumns);
+        findSquares(rowsColumns);
       }
     }
     catch (NumberFormatException e) {
@@ -64,8 +57,10 @@ public class Squares extends Kata {
 
   /**
    * Processes a line that contains either a start or end point for a horizontal or vertical line.
+   * 
+   * @param lines The set of lines to which a line will be added.
    */
-  private void processLine() {
+  private void processLine(Set<Line> lines) {
     String line = this.getLines().remove(0);
     StringTokenizer tokenizer = new StringTokenizer(line);
     if (tokenizer.countTokens() == 3) {
@@ -75,12 +70,12 @@ public class Squares extends Kata {
       if ("H".equals(direction)) {
         Line horizLine = new Line(Direction.HORIZONTAL, i, j);
         verifyLine(horizLine);
-        this.lines.add(horizLine);
+        lines.add(horizLine);
       }
       else if ("V".equals(direction)) {
-        Line vertLine = new Line(Direction.VERTICAL, i, j);
+        Line vertLine = new Line(Direction.VERTICAL, j, i);
         verifyLine(vertLine);
-        this.lines.add(vertLine);
+        lines.add(vertLine);
       }
       else {
         throw new IllegalArgumentException("Illegal value for direction: " + direction);
@@ -89,6 +84,189 @@ public class Squares extends Kata {
     else {
       String msg = "Expected direction, row index, and column index.";
       throw new IllegalArgumentException(msg + " Found [" + line + "].");
+    }
+  }
+
+  /**
+   * Finds squares by following line paths from a start point on one line to an end point on a
+   * different line.
+   * 
+   * @param rowsColumns The map containing array lists of lines. A key represents a row or column in
+   * which a line is found. A value is an array list containing lines found in that row or column.
+   */
+  private void findSquares(Map<Integer, ArrayList<Line>> rowsColumns) {
+    List<Entry<Integer, ArrayList<Line>>> rowsColumnsList =
+        new ArrayList<Entry<Integer, ArrayList<Line>>>(rowsColumns.entrySet());
+    Set<Line> linesSet = new LinkedHashSet<Line>();
+    for (int i = 0; i < rowsColumnsList.size() - 1; i++) {
+      for (int j = i + 1; j < rowsColumnsList.size(); j++) {
+        for (Line line : rowsColumnsList.get(i).getValue()) {
+          addHorizLineToSet(linesSet, line, rowsColumnsList.get(j).getValue());
+          addVertLineToSet(linesSet, line, rowsColumnsList.get(j).getValue());
+        }
+
+        List<Line> lines = new ArrayList<Line>(linesSet);
+
+        Line lastHorizLine = followLinePath(Direction.VERTICAL, lines);
+        Line lastVertLine = followLinePath(Direction.HORIZONTAL, lines);
+        if (lastHorizLine != null && lastVertLine != null
+            && lastHorizLine.getEndPoint().equals(lastVertLine.getEndPoint())) {
+          System.out.println("A square was found.");
+        }
+        linesSet.clear();
+      }
+    }
+  }
+
+  /**
+   * Adds a horizontal line to a set of lines.
+   * 
+   * @param lines The set of lines to which a horizontal line will be added.
+   * @param lineToAdd The horizontal line to add.
+   * @param list The list of lines containing horizontal and vertical lines from which all
+   * horizontal lines in a specific row will be added to the given set.
+   */
+  private void addHorizLineToSet(Set<Line> lines, Line lineToAdd, List<Line> list) {
+    if (lineToAdd.getDirection().equals(Direction.HORIZONTAL)) {
+      for (Line line : list) {
+        if (line.getDirection().equals(Direction.HORIZONTAL)) {
+          if (lineToAdd.getStartPoint().getY().equals(line.getStartPoint().getY())
+              && lineToAdd.getEndPoint().getY().equals(line.getEndPoint().getY())) {
+            lines.add(lineToAdd);
+            lines.add(line);
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Adds a vertical line to a set of lines.
+   * 
+   * @param lines The set of lines to which a vertical line will be added.
+   * @param lineToAdd The vertical line to add.
+   * @param list The list of lines containing horizontal and vertical lines from which all vertical
+   * lines in a specific column will be added to the given set.
+   */
+  private void addVertLineToSet(Set<Line> lines, Line lineToAdd, List<Line> list) {
+    if (lineToAdd.getDirection().equals(Direction.VERTICAL)) {
+      for (Line line : list) {
+        if (line.getDirection().equals(Direction.VERTICAL)) {
+          if (lineToAdd.getStartPoint().getX().equals(line.getStartPoint().getX())
+              && lineToAdd.getEndPoint().getX().equals(line.getEndPoint().getX())) {
+            lines.add(lineToAdd);
+            lines.add(line);
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Follows a path from a start point on one line to an end point on a different line. The start
+   * point should have the same x- and y-values. Otherwise, the value for <code>lastLine</code> will
+   * be <code>null</code>, and the method will return. If both x- and y-values are the same, the
+   * method will iterate through the given list of lines until a line with the same x- and y-values
+   * for the end point is found or the end of the list is reached (in which case a square was not
+   * found).
+   * 
+   * @param direction The direction of the line from which to start.
+   * @param lines The list of lines containing both horizontal and vertical lines.
+   * @return The last line, or <code>null</code> if the line from which to start did not
+   * have the same x- and y-values for the start point.
+   */
+  private Line followLinePath(Direction direction, List<Line> lines) {
+    Line firstLine = null, lastLine = null;
+    Point<Number, Number> startPoint = null, endPoint = null;
+
+    for (int index = 0; index < lines.size(); index++) {
+      firstLine = lines.get(index);
+      startPoint = firstLine.getStartPoint();
+      if (firstLine.getDirection().equals(direction) && startPoint.getX().equals(startPoint.getY())) {
+        lastLine = getLine(firstLine.getEndPoint(), lines);
+        break;
+      }
+    }
+    if (lastLine == null) {
+      return null;
+    }
+
+    for (int index = 0; index < lines.size(); index++) {
+      startPoint = lines.get(index).getStartPoint();
+      endPoint = lastLine.getEndPoint();
+      if (startPoint.equals(endPoint) || endPoint.getX().equals(endPoint.getY())) {
+        if (endPoint.getX().equals(endPoint.getY())) {
+          System.out.println(firstLine + " * " + lastLine);
+          return lastLine;
+        }
+        lastLine = getLine(lines.get(index).getEndPoint(), lines);
+        index = 0;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Returns a line that has the same x- and y-values for the start point as <code>point</code>.
+   * 
+   * @param point The point to check against.
+   * @param lines The list of horizontal and vertical lines.
+   * @return A line that has the same x- and y-values for the start point as <code>point</code>, or
+   * <code>null</code> if no line is found.
+   */
+  private Line getLine(Point<Number, Number> point, List<Line> lines) {
+    for (Line line : lines) {
+      if (line.getStartPoint().equals(point)) {
+        return line;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * 
+   * 
+   * @param lines
+   * @param rowsColumns
+   */
+  private void organizeLines(List<Line> lines, Map<Integer, ArrayList<Line>> rowsColumns) {
+    // Gather all horizontal lines.
+    Map<Integer, ArrayList<Line>> rows = new HashMap<Integer, ArrayList<Line>>();
+    for (Line line : lines) {
+      if (line.getDirection().equals(Direction.HORIZONTAL)) {
+        int row = line.getStartPoint().getX().intValue();
+        if (!rows.containsKey(row)) {
+          rows.put(row, new ArrayList<Line>());
+        }
+        rows.get(row).add(line);
+      }
+    }
+
+    // Gather all vertical lines.
+    Map<Integer, ArrayList<Line>> columns = new HashMap<Integer, ArrayList<Line>>();
+    for (Line line : lines) {
+      if (line.getDirection().equals(Direction.VERTICAL)) {
+        int row = line.getStartPoint().getY().intValue();
+        if (!columns.containsKey(row)) {
+          columns.put(row, new ArrayList<Line>());
+        }
+        columns.get(row).add(line);
+      }
+    }
+
+    // Gather all horizontal lines in row N and all vertical lines in column N, put them together in
+    // an array list, and store the array list at key N.
+    for (Entry<Integer, ArrayList<Line>> entry : rows.entrySet()) {
+      if (!rowsColumns.containsKey(entry.getKey())) {
+        rowsColumns.put(entry.getKey(), new ArrayList<Line>());
+      }
+      rowsColumns.get(entry.getKey()).addAll(entry.getValue());
+    }
+    for (Entry<Integer, ArrayList<Line>> entry : columns.entrySet()) {
+      if (!rowsColumns.containsKey(entry.getKey())) {
+        rowsColumns.put(entry.getKey(), new ArrayList<Line>());
+      }
+      rowsColumns.get(entry.getKey()).addAll(entry.getValue());
     }
   }
 
@@ -106,120 +284,6 @@ public class Squares extends Kata {
     if (line.getEndPoint().getX().intValue() > this.dimension
         || line.getStartPoint().getY().intValue() > this.dimension) {
       throw new IllegalArgumentException("Point lies outside the grid: " + line.getEndPoint());
-    }
-  }
-
-  /**
-   * Finds a square; if found, the coordinates for the square will be printed to the screen, and the
-   * number of squares of that size will be incremented by one.
-   * 
-   * @param lines The lines to check whether they form a square.
-   * @param startIndex The index of the line whose start point from which to start the search.
-   * @param numSquaresMap The map containing the number of squares of a particular size found.
-   * @param coordinates A list of strings representing the coordinates for the squares found.
-   */
-  private void findSquare(List<Line> lines, int startIndex, Map<Integer, Integer> numSquaresMap,
-      List<String> coordinates) {
-    for (int idx = 0; idx < lines.size() - 1; idx++) {
-      List<Point<Number, Number>> horizPoints = new ArrayList<Point<Number, Number>>();
-      List<Point<Number, Number>> vertPoints = new ArrayList<Point<Number, Number>>();
-      Point<Number, Number> horizEndPoint, vertEndPoint;
-      // Sometimes, a start point for a vertical line would appear first. Other times, a
-      // start point for a horizontal line would appear first.
-      if (lines.get(idx).getDirection() == Direction.HORIZONTAL) {
-        horizEndPoint = findEndPoint(lines, startIndex, horizPoints);
-        vertEndPoint = findEndPoint(lines, startIndex + 1, vertPoints);
-      }
-      else {
-        vertEndPoint = findEndPoint(lines, startIndex, vertPoints);
-        horizEndPoint = findEndPoint(lines, startIndex + 1, horizPoints);
-      }
-
-      if (horizEndPoint.equals(vertEndPoint)) {
-        coordinates.add(processSquare(horizPoints, vertPoints, numSquaresMap));
-        break;
-      }
-    }
-  }
-
-  /**
-   * Finds all of the points from the start point at the given index to the end point, inclusive.
-   * 
-   * @param lines The lines whose start and end points are to be checked.
-   * @param startIndex The index of the line whose start point from which to start the search.
-   * @param points An initially empty list of points that will contain all of the points from the
-   * start point to the end point, inclusive.
-   * @return The end point.
-   */
-  private Point<Number, Number> findEndPoint(List<Line> lines, int startIndex,
-      List<Point<Number, Number>> points) {
-    Point<Number, Number> end = lines.get(startIndex).getEndPoint();
-    points.add(lines.get(startIndex).getStartPoint());
-    for (Line line : lines) {
-      if (line.getStartPoint().equals(end)) {
-        points.add(end);
-        end = line.getEndPoint();
-      }
-    }
-    points.add(end);
-    return end;
-  }
-
-  /**
-   * Processes a square by incrementing the number of squares of that particular size found and
-   * constructing the coordinates for that square.
-   * 
-   * @param horizPoints The horizontal points for the square.
-   * @param vertPoints The vertical points for the square.
-   * @param numSquaresMap The map containing the number of squares of a particular size found.
-   * @return A string representing the coordinates for a square.
-   */
-  private String processSquare(List<Point<Number, Number>> horizPoints,
-      List<Point<Number, Number>> vertPoints, Map<Integer, Integer> numSquaresMap) {
-    Point<Number, Number> lastHorizPoint = horizPoints.get(horizPoints.size() - 1);
-    int size = lastHorizPoint.getX().intValue() - horizPoints.get(0).getX().intValue();
-    if (numSquaresMap.containsKey(size)) {
-      numSquaresMap.put(size, numSquaresMap.get(size) + 1);
-    }
-    else {
-      numSquaresMap.put(size, 1);
-    }
-    StringBuffer coord = new StringBuffer();
-    String space = " ";
-    for (Point<Number, Number> p : horizPoints) {
-      coord.append(p);
-      coord.append(space);
-    }
-    String nl = "\n";
-    coord.append(nl);
-    for (Point<Number, Number> p : vertPoints) {
-      coord.append(p);
-      coord.append(space);
-    }
-    return coord.toString();
-  }
-
-  /**
-   * Prints the results of processing a group of lines to the screen.
-   * 
-   * @param numSquaresMap The map containing the number of squares of a particular size found.
-   * @param coordinates A list of strings representing the coordinates for the squares found.
-   */
-  private void printResults(Map<Integer, Integer> numSquaresMap, List<String> coordinates) {
-    for (Entry<Integer, Integer> entry : numSquaresMap.entrySet()) {
-      String msg = entry.getValue() + " ";
-      if (entry.getValue() == 1) {
-        msg += "square";
-      }
-      else {
-        msg += "squares";
-      }
-      msg += " of size " + entry.getKey();
-      System.out.println(msg);
-    }
-    System.out.println("\n=========================\n\nSquares found:\n");
-    for (String coords : coordinates) {
-      System.out.println(coords + "\n");
     }
   }
 

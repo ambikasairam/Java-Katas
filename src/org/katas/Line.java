@@ -50,14 +50,25 @@ public class Line implements Comparable<Line> {
     this.start = new Point<Number, Number>(x, y);
     switch (this.direction) {
     case HORIZONTAL:
-      this.end = new Point<Number, Number>(x + 1, y);
+      this.end = new Point<Number, Number>(x, y + 1);
       break;
     case VERTICAL:
-      this.end = new Point<Number, Number>(x, y + 1);
+      this.end = new Point<Number, Number>(x + 1, y);
       break;
     default:
       throw new IllegalArgumentException("Illegal value for direction: " + direction);
     }
+  }
+
+  /**
+   * Creates a new line from an existing line.
+   * 
+   * @param line The line whose information is copied to this line.
+   */
+  public Line(Line line) {
+    this.direction = line.direction;
+    this.start = line.start;
+    this.end = line.end;
   }
 
   /** @return The direction of the line. */
