@@ -21,20 +21,19 @@ import org.utils.Point;
  */
 public class Squares extends Kata {
 
-  private int dimension;
-
   /** {@inheritDoc} */
   @Override
   public void processLines() {
     try {
+      int problemNum = 1;
       while (!this.getLines().isEmpty()) {
 
-        this.dimension = Integer.parseInt(this.getLines().remove(0));
+        int dimension = Integer.parseInt(this.getLines().remove(0)) + 1;
         int numLines = Integer.parseInt(this.getLines().remove(0));
 
         Set<Line> linesSet = new HashSet<Line>();
         while (!this.getLines().isEmpty() && this.getLines().get(0).length() > 1) {
-          processLine(linesSet);
+          processLine(linesSet, dimension);
         }
 
         if (linesSet.size() != numLines) {
@@ -45,6 +44,7 @@ public class Squares extends Kata {
         List<Line> lines = new ArrayList<Line>(linesSet);
         Collections.sort(lines);
 
+        System.out.println("Problem #" + problemNum++ + "\n");
         Map<Integer, ArrayList<Line>> rowsColumns = new HashMap<Integer, ArrayList<Line>>();
         organizeLines(lines, rowsColumns);
         findSquares(rowsColumns);
@@ -59,8 +59,9 @@ public class Squares extends Kata {
    * Processes a line that contains either a start or end point for a horizontal or vertical line.
    * 
    * @param lines The set of lines to which a line will be added.
+   * @param dimension The number of points in a row or column in the grid.
    */
-  private void processLine(Set<Line> lines) {
+  private void processLine(Set<Line> lines, int dimension) {
     String line = this.getLines().remove(0);
     StringTokenizer tokenizer = new StringTokenizer(line);
     if (tokenizer.countTokens() == 3) {
@@ -69,12 +70,12 @@ public class Squares extends Kata {
       int j = Integer.parseInt(tokenizer.nextToken());
       if ("H".equals(direction)) {
         Line horizLine = new Line(Direction.HORIZONTAL, i, j);
-        verifyLine(horizLine);
+        verifyLine(horizLine, dimension);
         lines.add(horizLine);
       }
       else if ("V".equals(direction)) {
         Line vertLine = new Line(Direction.VERTICAL, j, i);
-        verifyLine(vertLine);
+        verifyLine(vertLine, dimension);
         lines.add(vertLine);
       }
       else {
@@ -98,6 +99,7 @@ public class Squares extends Kata {
     List<Entry<Integer, ArrayList<Line>>> rowsColumnsList =
         new ArrayList<Entry<Integer, ArrayList<Line>>>(rowsColumns.entrySet());
     Set<Line> linesSet = new LinkedHashSet<Line>();
+    Map<Integer, Integer> counts = new HashMap<Integer, Integer>();
     for (int i = 0; i < rowsColumnsList.size() - 1; i++) {
       for (int j = i + 1; j < rowsColumnsList.size(); j++) {
         for (Line line : rowsColumnsList.get(i).getValue()) {
@@ -107,15 +109,42 @@ public class Squares extends Kata {
 
         List<Line> lines = new ArrayList<Line>(linesSet);
 
-        Line lastHorizLine = followLinePath(Direction.VERTICAL, lines);
-        Line lastVertLine = followLinePath(Direction.HORIZONTAL, lines);
-        if (lastHorizLine != null && lastVertLine != null
-            && lastHorizLine.getEndPoint().equals(lastVertLine.getEndPoint())) {
-          System.out.println("A square was found.");
+        List<Line> horizLines = followLinePath(Direction.VERTICAL, lines);
+        List<Line> vertLines = followLinePath(Direction.HORIZONTAL, lines);
+        if (horizLines != null && vertLines != null
+            && horizLines.get(1).getEndPoint().equals(vertLines.get(1).getEndPoint())) {
+          int start = horizLines.get(0).getStartPoint().getX().intValue();
+          int end = horizLines.get(1).getEndPoint().getX().intValue();
+          int size = (start > end) ? start - end : end - start;
+          if (!counts.containsKey(size)) {
+            counts.put(size, 0);
+          }
+          counts.put(size, counts.get(size) + 1);
         }
         linesSet.clear();
       }
     }
+    printResults(counts);
+  }
+
+  /**
+   * Prints the number of squares of a particular size found.
+   * 
+   * @param counts The map containing the number of squares of a particular size found.
+   */
+  private void printResults(Map<Integer, Integer> counts) {
+    if (counts.isEmpty()) {
+      System.out.println("No completed squares can be found.");
+    }
+    else {
+      for (Entry<Integer, Integer> entry : counts.entrySet()) {
+        System.out.print(entry.getValue() + " square");
+        System.out.print((entry.getValue() > 1) ? "s" : "");
+        System.out.println(" of size " + entry.getKey());
+      }
+    }
+    System.out.println();
+    System.out.println("**********************************\n");
   }
 
   /**
@@ -170,10 +199,10 @@ public class Squares extends Kata {
    * 
    * @param direction The direction of the line from which to start.
    * @param lines The list of lines containing both horizontal and vertical lines.
-   * @return The last line, or <code>null</code> if the line from which to start did not have the
-   * same x- and y-values for the start point.
+   * @return A list containing the first and last lines, or <code>null</code> if the line from which
+   * to start did not have the same x- and y-values for the start point.
    */
-  private Line followLinePath(Direction direction, List<Line> lines) {
+  private List<Line> followLinePath(Direction direction, List<Line> lines) {
     Line firstLine = null, lastLine = null;
     Point<Number, Number> startPoint = null, endPoint = null;
 
@@ -195,8 +224,11 @@ public class Squares extends Kata {
       endPoint = lastLine.getEndPoint();
       if (startPoint.equals(endPoint) || endPoint.getX().equals(endPoint.getY())) {
         if (endPoint.getX().equals(endPoint.getY())) {
-          System.out.println(firstLine + " * " + lastLine);
-          return lastLine;
+          // System.out.println(firstLine + " * " + lastLine);
+          List<Line> results = new ArrayList<Line>();
+          results.add(firstLine);
+          results.add(lastLine);
+          return results;
         }
         lastLine = getLine(lines.get(index).getEndPoint(), lines);
         index = 0;
@@ -275,15 +307,16 @@ public class Squares extends Kata {
    * Verifies that a line is within the grid.
    * 
    * @param line The line to verify.
+   * @param dimension The number of points in a row or column in the grid.
    * @throws IllegalArgumentException If the start or end point of the line is not within the grid.
    */
-  private void verifyLine(Line line) {
-    if (line.getStartPoint().getX().intValue() > this.dimension
-        || line.getStartPoint().getY().intValue() > this.dimension) {
+  private void verifyLine(Line line, int dimension) {
+    if (line.getStartPoint().getX().intValue() > dimension
+        || line.getStartPoint().getY().intValue() > dimension) {
       throw new IllegalArgumentException("Point lies outside the grid: " + line.getStartPoint());
     }
-    if (line.getEndPoint().getX().intValue() > this.dimension
-        || line.getStartPoint().getY().intValue() > this.dimension) {
+    if (line.getEndPoint().getX().intValue() > dimension
+        || line.getEndPoint().getY().intValue() > dimension) {
       throw new IllegalArgumentException("Point lies outside the grid: " + line.getEndPoint());
     }
   }
