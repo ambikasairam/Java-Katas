@@ -9,18 +9,19 @@ import java.util.StringTokenizer;
  * 
  * @author BJ Peter DeLaCruz <bjpeter@hawaii.edu>
  */
-public class EquationSolver extends Kata {
+public class LinearEquationSolver extends Kata {
 
   /** {@inheritDoc} */
   @Override
   public void processLines() {
     int numLines = 0;
     try {
-      numLines = Integer.parseInt(this.getLines().remove(0));
+      numLines = Integer.parseInt(this.getLines().get(0));
+      this.getLines().remove(0);
     }
     catch (NumberFormatException e) {
-      System.err.print("Invalid argument. ");
-      System.err.println("Expected a value for the number of equations to process.");
+      System.err.print("Invalid argument: " + this.getLines().get(0));
+      System.err.println(". Expected a value for the number of equations to process.");
       return;
     }
 
@@ -38,7 +39,8 @@ public class EquationSolver extends Kata {
       List<String> constantsR = new ArrayList<String>();
 
       if (!equation.contains("=")) {
-        throw new IllegalArgumentException("Invalid equation: missing right-hand side.");
+        System.err.println("Invalid equation: " + equation + ". Missing right-hand side.");
+        continue;
       }
 
       // Process left-hand side first.
@@ -57,16 +59,13 @@ public class EquationSolver extends Kata {
       // Sum variables and constants on left-hand side first and then right-hand side.
       int variableL = sumList(variablesL);
       int constantL = sumList(constantsL);
-      System.out.println(variableL + "\t" + constantL);
 
       int variableR = sumList(variablesR);
       int constantR = sumList(constantsR);
-      System.out.println(variableR + "\t" + constantR);
 
       // Solve for each side.
       int variableSum = variableL - variableR;
       int constantSum = constantR - constantL;
-      System.out.println(variableSum + "\t" + constantSum);
 
       // Print results.
       if (variableSum == 0 && constantSum == 0) {
@@ -183,7 +182,7 @@ public class EquationSolver extends Kata {
       return;
     }
 
-    EquationSolver solver = new EquationSolver();
+    LinearEquationSolver solver = new LinearEquationSolver();
     solver.setLines(KataUtils.readLines(args[0]));
 
     if (solver.getLines() != null) {
