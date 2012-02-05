@@ -56,31 +56,66 @@ public class LinearEquationSolver extends Kata {
         processSide(tokenizer, variablesR, constantsR);
       }
 
-      // Sum variables and constants on left-hand side first and then right-hand side.
-      int variableL = sumList(variablesL);
-      int constantL = sumList(constantsL);
+      solve(variablesL, constantsL, variablesR, constantsR);
+    }
+  }
 
-      int variableR = sumList(variablesR);
-      int constantR = sumList(constantsR);
+  /**
+   * Solves the current equation by processing the lists of variables and constants.
+   * 
+   * @param variablesL The list of variables that appear on the left-hand side.
+   * @param constantsL The list of constants that appear on the right-hand side.
+   * @param variablesR The list of variables that appear on the left-hand side.
+   * @param constantsR The list of constants that appear on the right-hand side.
+   * @return <ul>
+   * <li><b>NaN</b> if the equation cannot be solved.</li>
+   * <li><b>Infinity</b> if there are an infinite number of solutions.</li>
+   * <li>The solution, if one exists.</li>
+   * </ul>
+   */
+  protected static double solve(List<String> variablesL, List<String> constantsL,
+      List<String> variablesR, List<String> constantsR) {
+    // Sum variables and constants on left-hand side first and then right-hand side.
+    int variableL = sumList(variablesL);
+    int constantL = sumList(constantsL);
 
-      // Solve for each side.
-      int variableSum = variableL - variableR;
-      int constantSum = constantR - constantL;
+    int variableR = sumList(variablesR);
+    int constantR = sumList(constantsR);
 
-      // Print results.
-      if (variableSum == 0 && constantSum == 0) {
-        System.out.println("IDENTITY");
-      }
-      else if (variableSum == 0) {
-        System.out.println("IMPOSSIBLE");
-      }
-      else if (constantSum == 0) {
-        System.out.println(0);
+    // Solve for each side.
+    int variableSum = variableL - variableR;
+    int constantSum = constantR - constantL;
+    if (variableSum < 0 && constantSum < 0) {
+      variableSum *= -1;
+      constantSum *= -1;
+    }
+    else if (constantR == 0 && constantL < 0) {
+      constantSum *= -1;
+    }
+
+    // Print results.
+    if (variableSum == 0 && constantSum == 0) {
+      System.out.println("IDENTITY");
+      return Double.POSITIVE_INFINITY;
+    }
+    else if (variableSum == 0) {
+      System.out.println("IMPOSSIBLE");
+      return Double.NaN;
+    }
+    else if (constantSum == 0) {
+      System.out.println(0);
+      return 0.0;
+    }
+    else {
+      double result = 0.0;
+      if (variableSum > 1) {
+        result = (double) constantSum / (double) variableSum;
       }
       else {
-        double result = (double) variableSum / (double) constantSum;
-        System.out.println(result);
+        result = constantSum;
       }
+      System.out.println(result);
+      return result;
     }
   }
 
@@ -95,6 +130,9 @@ public class LinearEquationSolver extends Kata {
     for (String s : strings) {
       if (s.contains("x")) {
         sum += extractConstant(s);
+      }
+      else if (s.contains("+")) {
+        sum += Integer.parseInt(s.substring(1));
       }
       else {
         sum += Integer.parseInt(s);
@@ -113,7 +151,7 @@ public class LinearEquationSolver extends Kata {
    * finished processing), false otherwise (in which case the right-hand side is finished
    * processing).
    */
-  private static boolean processSide(StringTokenizer tokenizer, List<String> variables,
+  protected static boolean processSide(StringTokenizer tokenizer, List<String> variables,
       List<String> constants) {
     String token = tokenizer.nextToken();
     if (token.indexOf('x') != -1) {
@@ -160,6 +198,9 @@ public class LinearEquationSolver extends Kata {
       return -1;
     }
     else if ((variable.contains("-") || variable.contains("+")) && variable.contains("x")) {
+      if (variable.contains("+")) {
+        return Integer.parseInt(variable.substring(1, variable.indexOf('x')));
+      }
       return Integer.parseInt(variable.substring(0, variable.indexOf('x')));
     }
     else if (variable.contains("x")) {
