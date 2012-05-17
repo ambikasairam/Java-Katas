@@ -163,8 +163,8 @@ public final class Interpolator {
       throw new IllegalArgumentException("Missing right endpoint.");
     }
 
-    for (int startIndex = start, endIndex = start + 2; endIndex < list.size();
-        startIndex += 2, endIndex += 2) {
+    for (int startIndex = start, endIndex = start + 2; endIndex < list.size(); startIndex += 2,
+        endIndex += 2) {
       // More than one data point is missing, so all of the data points between
       // startIndex and endIndex have to be interpolated in this iteration.
       if (list.get(endIndex).getY().equals(Point.NO_DATA)) {
@@ -192,9 +192,49 @@ public final class Interpolator {
       // Only one data point is missing.
       else if (list.get(startIndex + 1).getY().equals(Point.NO_DATA)) {
         Number tstamp = list.get(startIndex + 1).getX();
-        list.set(
-            startIndex + 1,
+        list.set(startIndex + 1,
             interpolateDataPoint(list.get(startIndex), list.get(endIndex), tstamp));
+      }
+    }
+  }
+
+  /**
+   * Adds points for missing data to lists. For example:
+   * 
+   * <pre>
+   * Timestamp | Value:
+   * ------------------
+   * 12000000  | 500
+   * 12000001  | 0
+   * 12500000  | 0
+   * ...
+   * 15000000  | 500
+   * 15999999  | 500
+   * 16000000  | 0
+   * </pre>
+   * 
+   * <b>Important:</b> Call this method <u>first</u> before calling <code>interpolate</code>.<br>
+   * <br>
+   * 
+   * @param lists The list that contains lists to which to add points for missing data.
+   * @see Interpolator#interpolate(List, List)
+   */
+  public static void addZeroDataPoints(List<List<Point<Number, Number>>> lists) {
+    Validator.checkNull(lists);
+
+    for (List<Point<Number, Number>> list : lists) {
+      for (int index = 1; index < list.size() - 1; index++) {
+        if (list.get(index).getY().floatValue() == 0.0
+            && !list.get(index - 1).getX().equals(list.get(index).getX())) {
+          list.add(index, new Point<Number, Number>(list.get(index - 1).getX().longValue() + 1, 0));
+          index++;
+        }
+        if (list.get(index).getY().floatValue() == 0.0
+            && !list.get(index + 1).getX().equals(list.get(index).getX())) {
+          list.add(index + 1, new Point<Number, Number>(list.get(index + 1).getX().longValue() - 1,
+              0));
+          index++;
+        }
       }
     }
   }
