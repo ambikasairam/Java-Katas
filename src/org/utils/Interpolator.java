@@ -205,11 +205,11 @@ public final class Interpolator {
    * Timestamp | Value:
    * ------------------
    * 12000000  | 500
-   * 12000001  | 0
+   * 12000001  | 0      // This point was inserted by this method.
    * 12500000  | 0
    * ...
    * 15000000  | 500
-   * 15999999  | 500
+   * 15999999  | 500    // This point was inserted by this method.
    * 16000000  | 0
    * </pre>
    * 
@@ -237,6 +237,26 @@ public final class Interpolator {
         }
       }
     }
+  }
+
+  /**
+   * Given a list of lists of points that need to be interpolated, returns a new list that contains
+   * lists of interpolated points. The original list is not modified.
+   * 
+   * @param lists The list of lists of points that need to be interpolated.
+   * @return A new list that contains lists of interpolated points.
+   */
+  public static List<List<Point<Number, Number>>> getInterpolatedLists(
+      List<List<Point<Number, Number>>> lists) {
+    List<List<Point<Number, Number>>> tempList = new ArrayList<List<Point<Number, Number>>>(lists);
+    Interpolator.addZeroDataPoints(tempList);
+
+    List<List<Point<Number, Number>>> results = new ArrayList<List<Point<Number, Number>>>();
+    for (List<Point<Number, Number>> list : tempList) {
+      results.add(Interpolator.interpolate(list, tempList));
+    }
+
+    return results;
   }
 
   /**
