@@ -213,13 +213,16 @@ public final class Interpolator {
    * 16000000  | 0
    * </pre>
    * 
-   * <b>Important:</b> Call this method <u>first</u> before calling <code>interpolate</code>.<br>
+   * <b>Important:</b> Call this method <u>first</u> before calling {@link #interpolate(List, List)}
+   * . It's preferable to call {@link #getInterpolatedLists(List)} instead, which adds points for
+   * missing data in all of the lists first and then interpolates the data in each list.<br>
    * <br>
    * 
    * @param lists The list that contains lists to which to add points for missing data.
    * @see Interpolator#interpolate(List, List)
+   * @see Interpolator#getInterpolatedLists(List)
    */
-  public static void addZeroDataPoints(List<List<Point<Number, Number>>> lists) {
+  public static void addMissingPoints(List<List<Point<Number, Number>>> lists) {
     Validator.checkNull(lists);
 
     for (List<Point<Number, Number>> list : lists) {
@@ -240,20 +243,21 @@ public final class Interpolator {
   }
 
   /**
-   * Given a list of lists of points that need to be interpolated, returns a new list that contains
-   * lists of interpolated points. The original list is not modified.
+   * Given a list of lists of data points, returns a new list that contains lists of interpolated
+   * data.
    * 
    * @param lists The list of lists of points that need to be interpolated.
    * @return A new list that contains lists of interpolated points.
+   * @see Interpolator#addMissingPoints(List)
+   * @see Interpolator#interpolate(List, List)
    */
   public static List<List<Point<Number, Number>>> getInterpolatedLists(
       List<List<Point<Number, Number>>> lists) {
-    List<List<Point<Number, Number>>> tempList = new ArrayList<List<Point<Number, Number>>>(lists);
-    Interpolator.addZeroDataPoints(tempList);
+    Interpolator.addMissingPoints(lists);
 
     List<List<Point<Number, Number>>> results = new ArrayList<List<Point<Number, Number>>>();
-    for (List<Point<Number, Number>> list : tempList) {
-      results.add(Interpolator.interpolate(list, tempList));
+    for (List<Point<Number, Number>> list : lists) {
+      results.add(Interpolator.interpolate(list, lists));
     }
 
     return results;
@@ -261,11 +265,17 @@ public final class Interpolator {
 
   /**
    * Returns a list containing data points, interpolating all missing values using linear
-   * interpolation. See {@link #interpolateDataPoint(Point, Point, Number)}.
+   * interpolation. See {@link #interpolateDataPoint(Point, Point, Number)}.<br>
+   * <br>
+   * <b>Important:</b> Be sure to call {@link #addMissingPoints(List)} <u>first</u> or just call
+   * {@link #getInterpolatedLists(list)} instead.<br>
+   * <br>
    * 
    * @param list A list of data points.
    * @param lists A list of lists of data points, which include <code>list</code>.
    * @return A list of data points with timestamps, and real and interpolated data.
+   * @see Interpolator#addMissingPoints(List)
+   * @see Interpolator#getInterpolatedLists(List)
    */
   public static List<Point<Number, Number>> interpolate(List<Point<Number, Number>> list,
       List<List<Point<Number, Number>>> lists) {
