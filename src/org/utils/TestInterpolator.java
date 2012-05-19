@@ -258,6 +258,39 @@ public class TestInterpolator {
   }
 
   /**
+   * Tests the {@link Interpolator#addMissingPoints(List)} method.
+   */
+  @Test
+  public void addMissingPointsTest() {
+    List<Point<Number, Number>> dataPoints1 = new ArrayList<Point<Number, Number>>();
+    dataPoints1.add(new Point<Number, Number>(0, 0));
+    dataPoints1.add(new Point<Number, Number>(100, 100));
+    dataPoints1.add(new Point<Number, Number>(150, 150));
+    dataPoints1.add(new Point<Number, Number>(200, 0));
+    dataPoints1.add(new Point<Number, Number>(300, 0));
+    dataPoints1.add(new Point<Number, Number>(400, 0));
+    dataPoints1.add(new Point<Number, Number>(500, 350));
+    dataPoints1.add(new Point<Number, Number>(501, 0));
+    dataPoints1.add(new Point<Number, Number>(600, 0));
+    dataPoints1.add(new Point<Number, Number>(700, 500));
+    dataPoints1.add(new Point<Number, Number>(701, 0));
+    dataPoints1.add(new Point<Number, Number>(702, 600));
+    dataPoints1.add(new Point<Number, Number>(704, 0));
+
+    this.dataPointsLists.clear();
+    this.dataPointsLists.add(dataPoints1);
+
+    Interpolator.addMissingPoints(this.dataPointsLists);
+    assertEquals("should be equal to 99", dataPoints1.get(1).getX().longValue(), 99L);
+    assertEquals("should be equal to 151", dataPoints1.get(4).getX().longValue(), 151L);
+    assertEquals("should be equal to 499", dataPoints1.get(8).getX().longValue(), 499L);
+    assertEquals("should be equal to 501", dataPoints1.get(10).getX().longValue(), 501L);
+    assertEquals("should be equal to 699", dataPoints1.get(12).getX().longValue(), 699L);
+    assertEquals("should be equal to 701", dataPoints1.get(14).getX().longValue(), 701L);
+    assertEquals("should be equal to 703", dataPoints1.get(16).getX().longValue(), 703L);
+  }
+
+  /**
    * Tests the {@link Interpolator#interpolate(List, List)} method with more than one data point
    * missing between two data points.
    */

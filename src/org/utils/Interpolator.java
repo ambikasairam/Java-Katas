@@ -226,20 +226,50 @@ public final class Interpolator {
     Validator.checkNull(lists);
 
     for (List<Point<Number, Number>> list : lists) {
-      for (int index = 1; index < list.size() - 1; index++) {
-        if (list.get(index).getY().floatValue() == 0.0
-            && !list.get(index - 1).getX().equals(list.get(index).getX())) {
-          list.add(index, new Point<Number, Number>(list.get(index - 1).getX().longValue() + 1, 0));
-          index++;
-        }
-        if (list.get(index).getY().floatValue() == 0.0
-            && !list.get(index + 1).getX().equals(list.get(index).getX())) {
-          list.add(index + 1, new Point<Number, Number>(list.get(index + 1).getX().longValue() - 1,
-              0));
-          index++;
-        }
+      for (int index = 0; index < list.size() - 1; index++) {
+        long prevTimestamp = list.get(index + 1).getX().longValue() - 1;
+        addToList(list, index, prevTimestamp);
+      }
+      Collections.reverse(list);
+      for (int index = 0; index < list.size() - 1; index++) {
+        long nextTimestamp = list.get(index + 1).getX().longValue() + 1;
+        addToList(list, index, nextTimestamp);
+      }
+      Collections.reverse(list);
+    }
+  }
+
+  /**
+   * Adds a point for missing data to a list.
+   * 
+   * @param list The list to which to add a point.
+   * @param index The index in the list at which to add a point.
+   * @param timestamp The timestamp.
+   */
+  private static void addToList(List<Point<Number, Number>> list, int index, long timestamp) {
+    if (list.get(index).getY().floatValue() == 0.0
+        && list.get(index + 1).getY().floatValue() != 0.0) {
+      Point<Number, Number> dto = new Point<Number, Number>(timestamp, 0);
+      if (!containsPoint(dto.getX(), list)) {
+        list.add(index + 1, dto);
       }
     }
+  }
+
+  /**
+   * Returns true if the list contains a point at the given timestamp, false otherwise.
+   * 
+   * @param timestamp The timestamp.
+   * @param list The list to check.
+   * @return True if the list contains a point at the given timestamp, false otherwise.
+   */
+  private static boolean containsPoint(Number timestamp, List<Point<Number, Number>> list) {
+    for (Point<Number, Number> dto : list) {
+      if (timestamp.longValue() == dto.getX().longValue()) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /**
