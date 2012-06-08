@@ -3,6 +3,7 @@ package org.utils;
 import java.awt.Component;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -51,15 +52,15 @@ public class CustomScrollPane extends JScrollPane {
      * 
      * @return The parent scroll pane, or null if none exists.
      */
-    private JScrollPane getParentScrollPane() {
+    private JPanel getParentPanel() {
       Component parent = getParent();
-      while (!(parent instanceof JScrollPane) && parent != null) {
+      while (!(parent instanceof JPanel) && parent != null) {
         parent = parent.getParent();
       }
       if (parent == null) {
         return null;
       }
-      return (JScrollPane) parent;
+      return (JPanel) parent;
     }
 
     /** Creates a new mouse wheel listener. */
@@ -74,7 +75,7 @@ public class CustomScrollPane extends JScrollPane {
      */
     @Override
     public void mouseWheelMoved(MouseWheelEvent event) {
-      JScrollPane parent = getParentScrollPane();
+      JPanel parent = getParentPanel();
       if (parent == null) {
         CustomScrollPane.this.removeMouseWheelListener(this);
         return;
@@ -82,11 +83,11 @@ public class CustomScrollPane extends JScrollPane {
 
       // User reaches the top.
       if (event.getWheelRotation() < 0 && bar.getValue() == 0 && previousValue == 0) {
-        parent.dispatchEvent(cloneEvent(event));
+        parent.dispatchEvent(cloneEvent(event, parent));
       }
       // User reaches the bottom.
       else if (bar.getValue() == getMax() && previousValue == getMax()) {
-        parent.dispatchEvent(cloneEvent(event));
+        parent.dispatchEvent(cloneEvent(event, parent));
       }
       previousValue = bar.getValue();
     }
@@ -104,12 +105,14 @@ public class CustomScrollPane extends JScrollPane {
      * Returns a new copy of the mouse wheel event.
      * 
      * @param event The event to copy.
+     * @param parent The source of the event, i.e. the component that is getting the forwarded
+     * event.
      * @return A copy of the given mouse wheel event.
      */
-    private MouseWheelEvent cloneEvent(MouseWheelEvent event) {
-      return new MouseWheelEvent(getParentScrollPane(), event.getID(), event.getWhen(),
-          event.getModifiers(), 1, 1, event.getClickCount(), false, event.getScrollType(),
-          event.getScrollAmount(), event.getWheelRotation());
+    private MouseWheelEvent cloneEvent(MouseWheelEvent event, JPanel parent) {
+      return new MouseWheelEvent(parent, event.getID(), event.getWhen(), event.getModifiers(), 1,
+          1, event.getClickCount(), false, event.getScrollType(), event.getScrollAmount(),
+          event.getWheelRotation());
     }
   }
 }
