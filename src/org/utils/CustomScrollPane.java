@@ -45,7 +45,6 @@ public class CustomScrollPane extends JScrollPane {
 
     private JScrollBar bar;
     private int previousValue = 0;
-    private JScrollPane parentScrollPane;
 
     /**
      * Returns the parent scroll pane, or null if none exists.
@@ -53,16 +52,14 @@ public class CustomScrollPane extends JScrollPane {
      * @return The parent scroll pane, or null if none exists.
      */
     private JScrollPane getParentScrollPane() {
-      if (parentScrollPane == null) {
-        Component parent = getParent();
-        while (!(parent instanceof JScrollPane) && parent != null) {
-          parent = parent.getParent();
-        }
-        if (parent != null) {
-          parentScrollPane = (JScrollPane) parent;
-        }
+      Component parent = getParent();
+      while (!(parent instanceof JScrollPane) && parent != null) {
+        parent = parent.getParent();
       }
-      return parentScrollPane;
+      if (parent == null) {
+        return null;
+      }
+      return (JScrollPane) parent;
     }
 
     /** Creates a new mouse wheel listener. */
