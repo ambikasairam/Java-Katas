@@ -55,6 +55,7 @@ public class HistoryGrading {
       if (!this.getStudentResponses(reader)) {
         return false;
       }
+      reader.close();
     }
     catch (IOException e) {
       System.out.println("Problem reading in file: " + e);
