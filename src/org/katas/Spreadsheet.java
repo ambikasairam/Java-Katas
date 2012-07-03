@@ -141,7 +141,7 @@ public class Spreadsheet extends Kata {
     int sum = 0;
     while (tokenizer.hasMoreTokens()) {
       List<Integer> coords = this.getCoordinates(tokenizer.nextToken());
-      if (rowIndex == coords.toArray()[0] && colIndex == coords.toArray()[1]) {
+      if (rowIndex == coords.get(0).intValue() && colIndex == coords.get(1).intValue()) {
         String msg = "Cyclic dependency detected in formula " + formula;
         msg += " for row " + (rowIndex + 1) + ", column " + (colIndex + 1) + ".";
         throw new IllegalArgumentException(msg);

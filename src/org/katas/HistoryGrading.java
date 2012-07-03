@@ -1,8 +1,10 @@
 package org.katas;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -46,7 +48,9 @@ public class HistoryGrading {
     }
 
     try {
-      BufferedReader reader = new BufferedReader(new FileReader(filename));
+      BufferedReader reader =
+          new BufferedReader(new InputStreamReader(new FileInputStream(new File(filename)),
+              "UTF-16"));
 
       if (!this.getTotalHistoricalEvents(reader) || !this.getHistoricalEvents(reader)) {
         return false;

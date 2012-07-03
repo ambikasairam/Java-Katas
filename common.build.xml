@@ -13,7 +13,10 @@
   <condition property="java.6.available">
     <contains string="${java.version}" substring="1.6" />
   </condition>
-  <fail message="This package requires Java 6." unless="java.6.available" />
+  <condition property="java.6.available">
+    <contains string="${java.version}" substring="1.7" />
+  </condition>
+  <fail message="This package requires Java 6 or better." unless="java.6.available" />
 
   <!-- Make sure we're running Ant 1.8.  -->
   <condition property="ant.1.8.available">

@@ -78,6 +78,7 @@ public class BowlingApplet extends JApplet {
     JButton submit = new JButton("Calculate Score");
 
     ActionListener actionListener = new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent actionEvent) {
         final JDialog dlg = new JDialog();
         Bowling bowling = new Bowling();
@@ -93,6 +94,7 @@ public class BowlingApplet extends JApplet {
         JButton ok = new JButton("OK");
         dlg.add(results);
         ok.addActionListener(new ActionListener() {
+          @Override
           public void actionPerformed(ActionEvent actionEvent) {
             dlg.dispose();
           }

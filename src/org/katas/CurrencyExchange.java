@@ -45,6 +45,7 @@ public class CurrencyExchange {
    * 
    * @return A string displaying the exchange sequence and profit.
    */
+  @Override
   public String toString() {
     return this.exchangeSequence + ": " + this.profit;
   }

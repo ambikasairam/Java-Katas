@@ -1,8 +1,10 @@
 package org.katas;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -305,7 +307,9 @@ public final class KataUtils {
     List<String> list = new ArrayList<String>();
     BufferedReader reader = null;
     try {
-      reader = new BufferedReader(new FileReader(filename));
+      reader =
+          new BufferedReader(new InputStreamReader(new FileInputStream(new File(filename)),
+              "UTF-16"));
       String line = "";
       while ((line = reader.readLine()) != null) {
         list.add(line);
@@ -317,7 +321,9 @@ public final class KataUtils {
     }
     finally {
       try {
-        reader.close();
+        if (reader != null) {
+          reader.close();
+        }
       }
       catch (IOException e) {
         System.err.println(e.getMessage());

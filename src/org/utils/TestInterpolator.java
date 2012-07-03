@@ -156,12 +156,11 @@ public class TestInterpolator {
   /**
    * Tests the {@link Interpolator#extrapolateEndpoints(List)} method with no data points.
    */
-  @SuppressWarnings("static-access")
   @Test
   public void extrapolateEndpointsNoDataPointsTest() {
     Interpolator.extrapolateEndpoints(this.dataPoints1);
-    for (Point<Number, Number> Point : this.dataPoints1) {
-      assertEquals("should be equal to a placeholder value", Point.getY(), Point.NO_DATA);
+    for (Point<Number, Number> point : this.dataPoints1) {
+      assertEquals("should be equal to a placeholder value", point.getY(), Point.NO_DATA);
     }
   }
 
