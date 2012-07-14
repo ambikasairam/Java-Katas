@@ -5,9 +5,8 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
-import java.awt.event.WindowEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
-import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -25,15 +24,16 @@ import org.jlpt.client.table.ExportAction;
 import org.jlpt.client.table.JlptTable;
 import org.jlpt.client.table.JlptTableModel;
 import org.jlpt.common.db.DbManagerImpl;
+import org.jlpt.common.ui.CloseAction;
 import org.jlpt.common.ui.StatusBar;
-import org.utils.Validator;
+import org.jlpt.common.ui.UiUtils;
+import org.jlpt.common.utils.Validator;
 
 /**
  * The main UI for the client.
  * 
  * @author BJ Peter DeLaCruz
  */
-@SuppressWarnings("serial")
 public class ClientMain {
 
   /**
@@ -65,7 +65,7 @@ public class ClientMain {
     JPanel panel = new JPanel(new BorderLayout());
     JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
     JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-    addButtons(buttonPanel);
+    addButtons(frame, buttonPanel);
     addSearchFields(searchPanel);
     panel.add(buttonPanel, BorderLayout.NORTH);
     panel.add(scrollPane, BorderLayout.CENTER);
@@ -96,6 +96,7 @@ public class ClientMain {
     int height = screenSize.height;
     int width = screenSize.width;
     frame.setSize(width / 2, height / 2);
+    frame.setResizable(false);
 
     // Center on screen.
     frame.setLocationRelativeTo(null);
@@ -105,10 +106,21 @@ public class ClientMain {
   /**
    * Adds buttons to the panel above the table.
    * 
+   * @param frame 
    * @param buttonPanel The panel to which to add buttons.
    */
-  private void addButtons(JPanel buttonPanel) {
+  private void addButtons(final JFrame frame, JPanel buttonPanel) {
     JButton addEntryButton = new JButton("Add Entry");
+    addEntryButton.addActionListener(new ActionListener() {
+
+      @Override
+      public void actionPerformed(ActionEvent arg0) {
+        AddEntryDialogBox addEntryDialogBox = new AddEntryDialogBox();
+        UiUtils.centerComponentOnParent(frame, addEntryDialogBox);
+        addEntryDialogBox.setVisible(true);
+      }
+
+    });
     JButton removeEntryButton = new JButton("Remove Selected Entry");
     JButton updateEntryButton = new JButton("Update Selected Entry");
     buttonPanel.add(addEntryButton);
@@ -139,21 +151,13 @@ public class ClientMain {
    * @param menuBar The menu bar to which to add menus.
    * @param table The table that contains Japanese words and their English meanings.
    */
-  private void addMenuItems(final JFrame frame, JMenuBar menuBar, JTable table) {
+  private void addMenuItems(JFrame frame, JMenuBar menuBar, JTable table) {
     Validator.checkNull(menuBar);
 
     JMenu optionsMenu = new JMenu("Options");
     optionsMenu.add(new ExportAction(table, optionsMenu));
     optionsMenu.add(new JSeparator());
-    optionsMenu.add(new AbstractAction("Exit") {
-
-      @Override
-      public void actionPerformed(ActionEvent event) {
-        WindowEvent windowClosing = new WindowEvent(frame, WindowEvent.WINDOW_CLOSING);
-        frame.dispatchEvent(windowClosing);
-      }
-
-    });
+    optionsMenu.add(new CloseAction(frame));
     menuBar.add(optionsMenu);
   }
 

@@ -11,7 +11,7 @@ import javax.swing.JTable;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.jlpt.common.datamodel.JapaneseEntry;
 import org.jlpt.common.utils.FileUtils;
-import org.utils.Validator;
+import org.jlpt.common.utils.Validator;
 
 /**
  * An action that will export the contents of a table to a CSV file.
