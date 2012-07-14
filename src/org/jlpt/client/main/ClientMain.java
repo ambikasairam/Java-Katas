@@ -11,18 +11,21 @@ import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import org.jlpt.client.table.ExportAction;
 import org.jlpt.client.table.JlptTable;
 import org.jlpt.client.table.JlptTableModel;
 import org.jlpt.common.db.DbManagerImpl;
+import org.jlpt.common.ui.StatusBar;
 import org.utils.Validator;
 
 /**
@@ -61,13 +64,17 @@ public class ClientMain {
 
     JPanel panel = new JPanel(new BorderLayout());
     JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+    JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
     addButtons(buttonPanel);
+    addSearchFields(searchPanel);
     panel.add(buttonPanel, BorderLayout.NORTH);
     panel.add(scrollPane, BorderLayout.CENTER);
+    panel.add(searchPanel, BorderLayout.SOUTH);
 
     setProperties(frame);
 
     frame.add(panel, BorderLayout.CENTER);
+    addStatusBar(frame);
 
     frame.setJMenuBar(menuBar);
     // frame.pack();
@@ -80,7 +87,7 @@ public class ClientMain {
    * @param frame The client frame.
    */
   private void setProperties(JFrame frame) {
-    frame.setTitle("JLPT Study");
+    frame.setTitle("JLPT Study (ALPHA version)");
     frame.setIconImage(new ImageIcon(ClientMain.class.getResource("jpn-flag.png")).getImage());
     frame.setLayout(new BorderLayout());
 
@@ -112,6 +119,20 @@ public class ClientMain {
   }
 
   /**
+   * Adds a text field and button to the search panel.
+   * 
+   * @param searchPanel The search panel to which to add a text field and button.
+   */
+  private void addSearchFields(JPanel searchPanel) {
+    JTextField searchField = new JTextField();
+    int defaultHeight = searchField.getPreferredSize().height;
+    searchField.setPreferredSize(new Dimension(250, defaultHeight));
+    searchPanel.add(searchField);
+    JButton searchButton = new JButton("Search");
+    searchPanel.add(searchButton);
+  }
+
+  /**
    * Adds menus and menu items to the menu bar.
    * 
    * @param frame The frame for the client application.
@@ -134,6 +155,18 @@ public class ClientMain {
 
     });
     menuBar.add(optionsMenu);
+  }
+
+  /**
+   * Adds a status bar to the given frame.
+   * 
+   * @param frame The frame to which to add the status bar.
+   */
+  private void addStatusBar(JFrame frame) {
+    StatusBar statusBar = new StatusBar();
+    JLabel label = new JLabel("   Current status: Normal");
+    statusBar.add(label);
+    frame.add(statusBar, BorderLayout.SOUTH);
   }
 
   /**
