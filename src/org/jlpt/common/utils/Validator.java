@@ -1,4 +1,4 @@
-package org.jlpt.utils;
+package org.jlpt.common.utils;
 
 import java.util.List;
 

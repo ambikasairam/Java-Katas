@@ -1,4 +1,4 @@
-package org.jlpt.table;
+package org.jlpt.client.table;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,9 +10,9 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import org.jlpt.model.JapaneseEntry;
-import org.jlpt.utils.FileUtils;
-import org.jlpt.utils.Validator;
+import org.jlpt.common.datamodel.JapaneseEntry;
+import org.jlpt.common.utils.FileUtils;
+import org.jlpt.common.utils.Validator;
 
 /**
  * A popup menu that is displayed when the user right-clicks on an entry in the table.
@@ -56,7 +56,7 @@ public class JlptMenu extends JPopupMenu {
       List<JapaneseEntry> entries = ((JlptTableModel) table.getModel()).getEntries();
       List<String> lines = new ArrayList<>();
       for (JapaneseEntry entry : entries) {
-        lines.add(entry.getJword() + "," + entry.getRomaji() + "," + entry.getEnglishMeaning());
+        lines.add(entry.getJword() + "," + entry.getReading() + "," + entry.getEnglishMeaning());
       }
       JFileChooser chooser = new JFileChooser();
       FileNameExtensionFilter filter =

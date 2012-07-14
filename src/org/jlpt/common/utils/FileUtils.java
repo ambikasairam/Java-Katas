@@ -1,4 +1,4 @@
-package org.jlpt.utils;
+package org.jlpt.common.utils;
 
 import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JFrame;
@@ -19,9 +20,9 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.event.MouseInputAdapter;
-import org.jlpt.model.JapaneseEntry;
-import org.jlpt.table.JlptMenu;
-import org.jlpt.table.JlptTableModel;
+import org.jlpt.client.table.JlptMenu;
+import org.jlpt.client.table.JlptTableModel;
+import org.jlpt.common.datamodel.JapaneseEntry;
 
 /**
  * Utility class that contains methods for reading from and writing to a file. Contains a
@@ -46,6 +47,7 @@ public final class FileUtils {
    */
   public static List<String> readFile(URL url) throws IOException {
     Validator.checkNull(url);
+
     return readFile(url.getFile());
   }
 
@@ -77,11 +79,25 @@ public final class FileUtils {
   /**
    * Writes the given list of strings (lines) to the given file.
    * @param lines The lines to write to the file.
+   * @param path The path representing the file to write to.
+   * @throws IOException If there are problems writing to the file.
+   */
+  public static void writeToFile(List<String> lines, Path path) throws IOException {
+    Validator.checkNotEmpty(lines);
+    Validator.checkNull(path);
+
+    writeToFile(lines, path.toFile());
+  }
+
+  /**
+   * Writes the given list of strings (lines) to the given file.
+   * @param lines The lines to write to the file.
    * @param file The file to write to.
    * @throws IOException If there are problems writing to the file.
    */
   public static void writeToFile(List<String> lines, File file) throws IOException {
     Validator.checkNotEmpty(lines);
+    Validator.checkNull(file);
 
     FileOutputStream fstream = new FileOutputStream(file);
     OutputStreamWriter out = new OutputStreamWriter(fstream, "UTF8");

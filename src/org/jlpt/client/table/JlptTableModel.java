@@ -1,9 +1,9 @@
-package org.jlpt.table;
+package org.jlpt.client.table;
 
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
-import org.jlpt.model.JapaneseEntry;
+import org.jlpt.common.datamodel.JapaneseEntry;
 
 /**
  * A table model that displays Japanese words and their English meanings in a JTable.
@@ -61,7 +61,7 @@ public class JlptTableModel extends AbstractTableModel {
     case 0:
       return entry.getJword();
     case 1:
-      return entry.getRomaji();
+      return entry.getReading();
     case 2:
       return entry.getEnglishMeaning();
     default:
