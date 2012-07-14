@@ -39,7 +39,7 @@
     <mkdir dir="${pmd.dir}" />
     <pmd rulesetfiles="${pmd.rulesets.file}"
          shortFilenames="true"
-         targetjdk="1.5"
+         targetjdk="1.7"
          failuresPropertyName="pmd.failure.count"
          failonerror="${pmd.failonerror}"
          failOnRuleViolation="${pmd.failonerror}">
