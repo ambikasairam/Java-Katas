@@ -45,7 +45,7 @@ public class JlptTableModel extends AbstractTableModel {
     case 0:
       return "Kana/Kanji";
     case 1:
-      return "Romaji";
+      return "Reading";
     case 2:
       return "English Meaning";
     default:

@@ -1,6 +1,5 @@
 package org.jlpt.common.utils;
 
-import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -15,12 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import javax.swing.event.MouseInputAdapter;
-import org.jlpt.client.table.JlptMenu;
+import org.jlpt.client.table.JlptTable;
 import org.jlpt.client.table.JlptTableModel;
 import org.jlpt.common.datamodel.JapaneseEntry;
 
@@ -138,20 +133,7 @@ public final class FileUtils {
       JFrame frame = new JFrame();
       frame.setTitle("JLPT Study v0.1");
       JlptTableModel model = new JlptTableModel(entries);
-      final JTable table = new JTable(model);
-      table.setShowVerticalLines(false);
-      table.addMouseListener(new MouseInputAdapter() {
-
-        @Override
-        public void mouseClicked(MouseEvent event) {
-          if (SwingUtilities.isRightMouseButton(event)) {
-            JlptMenu menu = new JlptMenu(table);
-            menu.show(table, event.getX(), event.getY());
-          }
-        }
-
-      });
-      table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+      JlptTable table = new JlptTable(model);
       JScrollPane pane =
           new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
               JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
