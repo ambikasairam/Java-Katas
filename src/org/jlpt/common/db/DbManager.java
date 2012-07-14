@@ -19,20 +19,20 @@ public interface DbManager {
   public void addEntry(JapaneseEntry entry);
 
   /**
-   * Removes an entry from the database. The entry has to already exist. Otherwise, an
-   * <code>EntryDoesNotExistException</code> will be thrown.
+   * Removes an entry from the database. The entry <u>must</u> already exist.
    * 
    * @param entry The entry to remove.
+   * @throws EntryDoesNotExistException If the entry currently does not exist in the database.
    */
-  public void removeEntry(JapaneseEntry entry);
+  public void removeEntry(JapaneseEntry entry) throws EntryDoesNotExistException;
 
   /**
-   * Updates an entry in the database. The entry has to already exist. Otherwise, an
-   * <code>EntryDoesNotExistException</code> will be thrown.
+   * Updates an entry in the database. The entry <u>must</u> already exist.
    * 
    * @param entry The entry to update.
+   * @throws EntryDoesNotExistException If the entry currently does not exist in the database.
    */
-  public void updateEntry(JapaneseEntry entry);
+  public void updateEntry(JapaneseEntry entry) throws EntryDoesNotExistException;
 
   /**
    * Finds one or more entries in the database using the given regular expression pattern.

@@ -67,12 +67,12 @@ public class DbManagerImpl implements DbManager {
 
   /** {@inheritDoc} */
   @Override
-  public void removeEntry(JapaneseEntry entry) {
+  public void removeEntry(JapaneseEntry entry) throws EntryDoesNotExistException {
     Validator.checkNull(entry);
 
     JapaneseEntry oldEntry = this.entriesMap.get(entry.getJword());
     if (oldEntry == null) {
-      // TODO: Add EntryDoesNotExistException.
+      throw new EntryDoesNotExistException(entry);
     }
     this.entriesMap.remove(entry.getJword());
     // TODO: Add logger.
@@ -80,12 +80,12 @@ public class DbManagerImpl implements DbManager {
 
   /** {@inheritDoc} */
   @Override
-  public void updateEntry(JapaneseEntry entry) {
+  public void updateEntry(JapaneseEntry entry) throws EntryDoesNotExistException {
     Validator.checkNull(entry);
 
     JapaneseEntry oldEntry = this.entriesMap.get(entry.getJword());
     if (oldEntry == null) {
-      // TODO: Add EntryDoesNotExistException.
+      throw new EntryDoesNotExistException(entry);
     }
     this.entriesMap.put(entry.getJword(), entry);
     // TODO: Add logger.
