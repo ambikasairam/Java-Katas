@@ -75,4 +75,9 @@ public class JlptTableModel extends AbstractTableModel {
     return false;
   }
 
+  /** @return A copy of the entries in this table model. */
+  public List<JapaneseEntry> getEntries() {
+    return new ArrayList<>(this.rows);
+  }
+
 }
