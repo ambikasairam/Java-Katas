@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -113,6 +114,21 @@ public class DbManagerImpl implements DbManager {
     synchronized (this.fileLock) {
       FileUtils.writeToFile(entries, Paths.get(this.fileLocation));
     }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public List<JapaneseEntry> getEntries() {
+    List<JapaneseEntry> entries = new ArrayList<>(this.entriesMap.values());
+    Collections.sort(entries, new Comparator<JapaneseEntry>() {
+
+      @Override
+      public int compare(JapaneseEntry entry1, JapaneseEntry entry2) {
+        return entry1.getJword().compareTo(entry2.getJword());
+      }
+
+    });
+    return entries;
   }
 
   /** Prints the contents of the map for debugging purposes only. */

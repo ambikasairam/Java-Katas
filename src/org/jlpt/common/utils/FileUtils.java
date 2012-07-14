@@ -113,7 +113,7 @@ public final class FileUtils {
    */
   public static void main(String... args) {
     if (args.length != 1) {
-      System.err.println("Need filename.");
+      System.err.println("Need file name.");
       return;
     }
 

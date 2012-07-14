@@ -42,6 +42,9 @@ public interface DbManager {
    */
   public List<JapaneseEntry> find(String regexPattern);
 
+  /** @return A list of all entries in the database. */
+  public List<JapaneseEntry> getEntries();
+
   /**
    * A thread-safe method that will save the entries in the map to the database file.
    * 
