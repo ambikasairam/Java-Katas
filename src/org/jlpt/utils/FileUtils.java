@@ -98,12 +98,16 @@ public final class FileUtils {
   /**
    * Tests the <code>readFile</code> methods.
    * 
-   * @param args None.
+   * @param args The name of the file.
    */
   public static void main(String... args) {
+    if (args.length != 1) {
+      System.err.println("Need filename.");
+      return;
+    }
+
     try {
-      String filename = "C:\\Users\\BJ Peter DeLaCruz\\workspace\\Katas\\";
-      List<String> lines = readFile(filename + "src\\org\\jlpt\\utils\\japanese_words.csv");
+      List<String> lines = readFile(args[0]);
       List<JapaneseEntry> entries = new ArrayList<>();
       for (String line : lines) {
         String[] words = line.split(";");
