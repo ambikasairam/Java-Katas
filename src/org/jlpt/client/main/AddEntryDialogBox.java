@@ -5,12 +5,21 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.WindowEvent;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import org.jlpt.common.datamodel.JapaneseEntry;
+import org.jlpt.common.db.DbManager;
 import org.jlpt.common.ui.CloseAction;
+import org.utils.Validator;
 
 /**
  * A dialog box in which users can add a new JLPT entry to the database. An entry consists of a
@@ -21,12 +30,24 @@ import org.jlpt.common.ui.CloseAction;
 @SuppressWarnings("serial")
 public class AddEntryDialogBox extends JFrame {
 
+  private final DbManager databaseManager;
+  private final JTextField jwordTextField;
+  private final JTextField readingTextField;
+  private final JTextField engTextField;
+  private final JButton okButton;
+
   /**
    * Creates a new AddEntryDialogBox. All of the UI components are added here.
+   * 
+   * @param databaseManager The database manager.
    */
-  public AddEntryDialogBox() {
+  public AddEntryDialogBox(DbManager databaseManager) {
     super("Add Entry");
+    Validator.checkNull(databaseManager);
 
+    this.databaseManager = databaseManager;
+
+    setIconImage(new ImageIcon(AddEntryDialogBox.class.getResource("jpn-flag.png")).getImage());
     setLayout(new BorderLayout());
 
     GridBagLayout grid = new GridBagLayout();
@@ -35,16 +56,17 @@ public class AddEntryDialogBox extends JFrame {
 
     JPanel panel = new JPanel(grid);
 
-    JLabel kanaKanjiLabel = new JLabel("     Kana/Kanji: ");
-    grid.setConstraints(kanaKanjiLabel, constraints);
-    panel.add(kanaKanjiLabel);
+    JLabel jwordLabel = new JLabel("     Kana/Kanji: ");
+    grid.setConstraints(jwordLabel, constraints);
+    panel.add(jwordLabel);
 
-    JTextField kanaKanjiTextField = new JTextField();
-    int defaultHeight = kanaKanjiTextField.getPreferredSize().height;
-    kanaKanjiTextField.setPreferredSize(new Dimension(250, defaultHeight));
+    this.jwordTextField = new JTextField();
+    int defaultHeight = this.jwordTextField.getPreferredSize().height;
+    this.jwordTextField.setPreferredSize(new Dimension(250, defaultHeight));
+    this.jwordTextField.addKeyListener(new KeyListenerImpl());
     constraints.gridwidth = GridBagConstraints.REMAINDER;
-    grid.setConstraints(kanaKanjiTextField, constraints);
-    panel.add(kanaKanjiTextField);
+    grid.setConstraints(this.jwordTextField, constraints);
+    panel.add(this.jwordTextField);
 
     JLabel readingLabel = new JLabel("        Reading: ");
     constraints.weightx = 0.0;
@@ -52,11 +74,12 @@ public class AddEntryDialogBox extends JFrame {
     grid.setConstraints(readingLabel, constraints);
     panel.add(readingLabel);
 
-    JTextField readingTextField = new JTextField();
-    readingTextField.setPreferredSize(new Dimension(250, defaultHeight));
+    this.readingTextField = new JTextField();
+    this.readingTextField.setPreferredSize(new Dimension(250, defaultHeight));
+    this.readingTextField.addKeyListener(new KeyListenerImpl());
     constraints.gridwidth = GridBagConstraints.REMAINDER;
-    grid.setConstraints(readingTextField, constraints);
-    panel.add(readingTextField);
+    grid.setConstraints(this.readingTextField, constraints);
+    panel.add(this.readingTextField);
 
     JLabel engLabel = new JLabel("English Meaning: ");
     constraints.weightx = 0.0;
@@ -64,25 +87,89 @@ public class AddEntryDialogBox extends JFrame {
     grid.setConstraints(engLabel, constraints);
     panel.add(engLabel);
 
-    JTextField engTextField = new JTextField();
-    engTextField.setPreferredSize(new Dimension(250, defaultHeight));
+    this.engTextField = new JTextField();
+    this.engTextField.setPreferredSize(new Dimension(250, defaultHeight));
+    this.engTextField.addKeyListener(new KeyListenerImpl());
     constraints.gridwidth = GridBagConstraints.REMAINDER;
-    grid.setConstraints(engTextField, constraints);
-    panel.add(engTextField);
+    grid.setConstraints(this.engTextField, constraints);
+    panel.add(this.engTextField);
 
     add(panel, BorderLayout.CENTER);
 
     JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-    JButton okButton = new JButton("OK");
-    okButton.setEnabled(false);
+    this.okButton = new JButton("OK");
+    this.okButton.setEnabled(false);
+    this.okButton.addActionListener(new AddEntryAction());
     JButton cancelButton = new JButton("Cancel");
     cancelButton.addActionListener(new CloseAction(this));
-    buttonPanel.add(okButton);
+    buttonPanel.add(this.okButton);
     buttonPanel.add(cancelButton);
     add(buttonPanel, BorderLayout.SOUTH);
 
     setSize(400, 150);
     setResizable(false);
+  }
+
+  /**
+   * An action that will an entry into the database when the user clicks on the OK button.
+   * 
+   * @author BJ Peter DeLaCruz
+   */
+  private class AddEntryAction implements ActionListener {
+
+    /** {@inheritDoc} */
+    @Override
+    public void actionPerformed(ActionEvent event) {
+      String jword = jwordTextField.getText();
+      String reading = readingTextField.getText();
+      String englishMeaning = engTextField.getText();
+      JapaneseEntry entry = new JapaneseEntry(jword, reading, englishMeaning);
+      databaseManager.addEntry(entry);
+      WindowEvent windowClosing =
+          new WindowEvent(AddEntryDialogBox.this, WindowEvent.WINDOW_CLOSING);
+      AddEntryDialogBox.this.dispatchEvent(windowClosing);
+    }
+
+  }
+
+  /**
+   * A key listener that will enable the OK button once the user inputs text in all three text
+   * fields.
+   * 
+   * @author BJ Peter DeLaCruz
+   */
+  private class KeyListenerImpl implements KeyListener {
+
+    /** {@inheritDoc} */
+    @Override
+    public void keyPressed(KeyEvent event) {
+      // Do nothing.
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void keyReleased(KeyEvent event) {
+      if (jwordTextField.getText().isEmpty()) {
+        okButton.setEnabled(false);
+        return;
+      }
+      if (readingTextField.getText().isEmpty()) {
+        okButton.setEnabled(false);
+        return;
+      }
+      if (engTextField.getText().isEmpty()) {
+        okButton.setEnabled(false);
+        return;
+      }
+      okButton.setEnabled(true);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void keyTyped(KeyEvent event) {
+      // Do nothing.
+    }
+
   }
 
 }

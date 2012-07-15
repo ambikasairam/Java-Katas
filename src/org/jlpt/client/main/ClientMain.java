@@ -23,6 +23,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import org.jlpt.client.table.ExportAction;
 import org.jlpt.client.table.JlptTable;
 import org.jlpt.client.table.JlptTableModel;
+import org.jlpt.common.db.DbManager;
 import org.jlpt.common.db.DbManagerImpl;
 import org.jlpt.common.ui.CloseAction;
 import org.jlpt.common.ui.StatusBar;
@@ -36,13 +37,17 @@ import org.jlpt.common.utils.Validator;
  */
 public class ClientMain {
 
+  private final DbManager databaseManager;
+
   /**
    * Creates a new ClientMain instance. Creates the client UI and displays it to the user's screen.
    * 
    * @param databaseManager The database manager.
    */
-  public ClientMain(DbManagerImpl databaseManager) {
+  public ClientMain(DbManager databaseManager) {
     Validator.checkNull(databaseManager);
+
+    this.databaseManager = databaseManager;
 
     JFrame frame = new JFrame();
     try {
@@ -115,17 +120,17 @@ public class ClientMain {
 
       @Override
       public void actionPerformed(ActionEvent arg0) {
-        AddEntryDialogBox addEntryDialogBox = new AddEntryDialogBox();
+        AddEntryDialogBox addEntryDialogBox = new AddEntryDialogBox(databaseManager);
         UiUtils.centerComponentOnParent(frame, addEntryDialogBox);
         addEntryDialogBox.setVisible(true);
       }
 
     });
+    JButton updateEntryButton = new JButton("Edit Selected Entry");
     JButton removeEntryButton = new JButton("Remove Selected Entry");
-    JButton updateEntryButton = new JButton("Update Selected Entry");
     buttonPanel.add(addEntryButton);
-    buttonPanel.add(removeEntryButton);
     buttonPanel.add(updateEntryButton);
+    buttonPanel.add(removeEntryButton);
     removeEntryButton.setEnabled(false);
     updateEntryButton.setEnabled(false);
   }
