@@ -143,6 +143,7 @@ public class ClientMain {
 
     // Center on screen.
     frame.setLocationRelativeTo(null);
+    UiUtils.setEscKey(frame);
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
   }
 

@@ -17,6 +17,7 @@ import javax.swing.JTextField;
 import org.jlpt.common.datamodel.JapaneseEntry;
 import org.jlpt.common.db.DbManager;
 import org.jlpt.common.ui.CloseAction;
+import org.jlpt.common.ui.UiUtils;
 import org.jlpt.common.utils.Validator;
 
 /**
@@ -106,6 +107,7 @@ public class JlptEntryDialogBox extends JFrame {
 
     setSize(400, 150);
     setResizable(false);
+    UiUtils.setEscKey(this);
   }
 
   /**

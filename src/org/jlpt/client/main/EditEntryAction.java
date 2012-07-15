@@ -55,6 +55,7 @@ public class EditEntryAction extends AbstractAction {
     this.dialogBox.getClientMainFrame().updateTable();
     WindowEvent windowClosing = new WindowEvent(this.dialogBox, WindowEvent.WINDOW_CLOSING);
     this.dialogBox.dispatchEvent(windowClosing);
+    // TODO: Programmically select the entry that was just updated.
   }
 
 }
