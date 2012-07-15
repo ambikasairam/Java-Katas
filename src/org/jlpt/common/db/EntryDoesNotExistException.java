@@ -20,7 +20,7 @@ public class EntryDoesNotExistException extends Exception {
    * @param entry The entry that does not currently exist in the database.
    */
   public EntryDoesNotExistException(JapaneseEntry entry) {
-    super("The following entry does not exist in the database: " + entry.toString());
+    super("The following entry does not exist in the database: " + entry);
   }
 
 }

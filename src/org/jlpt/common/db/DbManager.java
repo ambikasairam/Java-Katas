@@ -12,11 +12,12 @@ import org.jlpt.common.datamodel.JapaneseEntry;
 public interface DbManager {
 
   /**
-   * Adds an entry to the database.
+   * Adds an entry to the database. The entry <code>must</u> not already exist.
    * 
    * @param entry The entry to add.
+   * @throws EntryAlreadyExistsException If the entry already exists in the database.
    */
-  public void addEntry(JapaneseEntry entry);
+  public void addEntry(JapaneseEntry entry) throws EntryAlreadyExistsException;
 
   /**
    * Removes an entry from the database. The entry <u>must</u> already exist.

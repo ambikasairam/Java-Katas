@@ -38,6 +38,8 @@ import org.jlpt.common.utils.Validator;
 public class ClientMain {
 
   private final DbManager databaseManager;
+  private final JlptTable table;
+  private final JFrame frame;
 
   /**
    * Creates a new ClientMain instance. Creates the client UI and displays it to the user's screen.
@@ -49,7 +51,10 @@ public class ClientMain {
 
     this.databaseManager = databaseManager;
 
-    JFrame frame = new JFrame();
+    JlptTableModel model = new JlptTableModel(databaseManager.getEntries());
+    this.table = new JlptTable(model);
+
+    this.frame = new JFrame();
     try {
       UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
     }
@@ -58,32 +63,40 @@ public class ClientMain {
       e.printStackTrace();
       return;
     }
-    JlptTableModel model = new JlptTableModel(databaseManager.getEntries());
-    JlptTable table = new JlptTable(model);
     JScrollPane scrollPane =
-        new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+        new JScrollPane(this.table, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
             JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
     JMenuBar menuBar = new JMenuBar();
-    addMenuItems(frame, menuBar, table);
+    addMenuItems(this.frame, menuBar, this.table);
 
     JPanel panel = new JPanel(new BorderLayout());
     JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
     JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-    addButtons(frame, buttonPanel);
+    addButtons(this.frame, buttonPanel);
     addSearchFields(searchPanel);
     panel.add(buttonPanel, BorderLayout.NORTH);
     panel.add(scrollPane, BorderLayout.CENTER);
     panel.add(searchPanel, BorderLayout.SOUTH);
 
-    setProperties(frame);
+    setProperties(this.frame);
 
-    frame.add(panel, BorderLayout.CENTER);
-    addStatusBar(frame);
+    this.frame.add(panel, BorderLayout.CENTER);
+    addStatusBar(this.frame);
 
-    frame.setJMenuBar(menuBar);
+    this.frame.setJMenuBar(menuBar);
     // frame.pack();
-    frame.setVisible(true);
+    this.frame.setVisible(true);
+  }
+
+  /**
+   * Updates the table with the most recent entries in the database.
+   */
+  public void updateTable() {
+    this.table.setModel(new JlptTableModel(this.databaseManager.getEntries()));
+    this.frame.invalidate();
+    this.frame.validate();
+    this.frame.repaint();
   }
 
   /**
@@ -111,7 +124,7 @@ public class ClientMain {
   /**
    * Adds buttons to the panel above the table.
    * 
-   * @param frame 
+   * @param frame The main client frame.
    * @param buttonPanel The panel to which to add buttons.
    */
   private void addButtons(final JFrame frame, JPanel buttonPanel) {
@@ -120,7 +133,8 @@ public class ClientMain {
 
       @Override
       public void actionPerformed(ActionEvent arg0) {
-        AddEntryDialogBox addEntryDialogBox = new AddEntryDialogBox(databaseManager);
+        AddEntryDialogBox addEntryDialogBox =
+            new AddEntryDialogBox(databaseManager, ClientMain.this);
         UiUtils.centerComponentOnParent(frame, addEntryDialogBox);
         addEntryDialogBox.setVisible(true);
       }

@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -18,6 +19,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import org.jlpt.common.datamodel.JapaneseEntry;
 import org.jlpt.common.db.DbManager;
+import org.jlpt.common.db.EntryAlreadyExistsException;
 import org.jlpt.common.ui.CloseAction;
 import org.utils.Validator;
 
@@ -31,6 +33,7 @@ import org.utils.Validator;
 public class AddEntryDialogBox extends JFrame {
 
   private final DbManager databaseManager;
+  private final ClientMain client;
   private final JTextField jwordTextField;
   private final JTextField readingTextField;
   private final JTextField engTextField;
@@ -40,12 +43,15 @@ public class AddEntryDialogBox extends JFrame {
    * Creates a new AddEntryDialogBox. All of the UI components are added here.
    * 
    * @param databaseManager The database manager.
+   * @param client The client application.
    */
-  public AddEntryDialogBox(DbManager databaseManager) {
+  public AddEntryDialogBox(DbManager databaseManager, ClientMain client) {
     super("Add Entry");
     Validator.checkNull(databaseManager);
+    Validator.checkNull(client);
 
     this.databaseManager = databaseManager;
+    this.client = client;
 
     setIconImage(new ImageIcon(AddEntryDialogBox.class.getResource("jpn-flag.png")).getImage());
     setLayout(new BorderLayout());
@@ -124,7 +130,22 @@ public class AddEntryDialogBox extends JFrame {
       String reading = readingTextField.getText();
       String englishMeaning = engTextField.getText();
       JapaneseEntry entry = new JapaneseEntry(jword, reading, englishMeaning);
-      databaseManager.addEntry(entry);
+      try {
+        databaseManager.addEntry(entry);
+      }
+      catch (EntryAlreadyExistsException e) {
+        // TODO: Add logger. Show popup message. Then return.
+        
+        return;
+      }
+      try {
+        databaseManager.save();
+      }
+      catch (IOException e) {
+        // TODO: Add logger.
+        System.err.println(e);
+      }
+      client.updateTable();
       WindowEvent windowClosing =
           new WindowEvent(AddEntryDialogBox.this, WindowEvent.WINDOW_CLOSING);
       AddEntryDialogBox.this.dispatchEvent(windowClosing);

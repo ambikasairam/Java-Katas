@@ -53,14 +53,25 @@ public class DbManagerImpl implements DbManager {
         continue;
       }
       JapaneseEntry entry = new JapaneseEntry(line[0], line[1], line[2]);
-      addEntry(entry);
+      try {
+        addEntry(entry);
+      }
+      catch (EntryAlreadyExistsException e) {
+        // An exception shouldn't be thrown here because the database manager is being created for
+        // the first time, so don't do anything here.
+      }
     }
   }
 
   /** {@inheritDoc} */
   @Override
-  public void addEntry(JapaneseEntry entry) {
+  public void addEntry(JapaneseEntry entry) throws EntryAlreadyExistsException {
     Validator.checkNull(entry);
+
+    JapaneseEntry oldEntry = this.entriesMap.get(entry.getJword());
+    if (oldEntry != null && oldEntry.equals(entry)) {
+      throw new EntryAlreadyExistsException(entry);
+    }
 
     this.entriesMap.put(entry.getJword(), entry);
     // TODO: Add logger.
