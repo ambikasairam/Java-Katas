@@ -5,12 +5,10 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.WindowEvent;
-import java.io.IOException;
+import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -19,18 +17,17 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import org.jlpt.common.datamodel.JapaneseEntry;
 import org.jlpt.common.db.DbManager;
-import org.jlpt.common.db.EntryAlreadyExistsException;
 import org.jlpt.common.ui.CloseAction;
-import org.utils.Validator;
+import org.jlpt.common.utils.Validator;
 
 /**
- * A dialog box in which users can add a new JLPT entry to the database. An entry consists of a
- * Japanese word, its reading, and its meaning in English.
+ * A dialog box in which users can add or modify a JLPT entry. An entry consists of a Japanese word,
+ * its reading, and its meaning in English.
  * 
  * @author BJ Peter DeLaCruz
  */
 @SuppressWarnings("serial")
-public class AddEntryDialogBox extends JFrame {
+public class JlptEntryDialogBox extends JFrame {
 
   private final DbManager databaseManager;
   private final ClientMain client;
@@ -40,12 +37,12 @@ public class AddEntryDialogBox extends JFrame {
   private final JButton okButton;
 
   /**
-   * Creates a new AddEntryDialogBox. All of the UI components are added here.
+   * Creates a new JlptEntryDialogBox. All of the UI components are added here.
    * 
    * @param databaseManager The database manager.
    * @param client The client application.
    */
-  public AddEntryDialogBox(DbManager databaseManager, ClientMain client) {
+  public JlptEntryDialogBox(DbManager databaseManager, ClientMain client) {
     super("Add Entry");
     Validator.checkNull(databaseManager);
     Validator.checkNull(client);
@@ -53,7 +50,7 @@ public class AddEntryDialogBox extends JFrame {
     this.databaseManager = databaseManager;
     this.client = client;
 
-    setIconImage(new ImageIcon(AddEntryDialogBox.class.getResource("jpn-flag.png")).getImage());
+    setIconImage(new ImageIcon(JlptEntryDialogBox.class.getResource("jpn-flag.png")).getImage());
     setLayout(new BorderLayout());
 
     GridBagLayout grid = new GridBagLayout();
@@ -103,9 +100,8 @@ public class AddEntryDialogBox extends JFrame {
     add(panel, BorderLayout.CENTER);
 
     JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-    this.okButton = new JButton("OK");
+    this.okButton = new JButton();
     this.okButton.setEnabled(false);
-    this.okButton.addActionListener(new AddEntryAction());
     JButton cancelButton = new JButton("Cancel");
     cancelButton.addActionListener(new CloseAction(this));
     buttonPanel.add(this.okButton);
@@ -117,40 +113,66 @@ public class AddEntryDialogBox extends JFrame {
   }
 
   /**
-   * An action that will an entry into the database when the user clicks on the OK button.
+   * Sets the values of the text fields.
    * 
-   * @author BJ Peter DeLaCruz
+   * @param entry The entry that contains the values used to populate the text fields.
    */
-  private class AddEntryAction implements ActionListener {
+  public void setTextFields(JapaneseEntry entry) {
+    Validator.checkNull(entry);
 
-    /** {@inheritDoc} */
-    @Override
-    public void actionPerformed(ActionEvent event) {
-      String jword = jwordTextField.getText();
-      String reading = readingTextField.getText();
-      String englishMeaning = engTextField.getText();
-      JapaneseEntry entry = new JapaneseEntry(jword, reading, englishMeaning);
-      try {
-        databaseManager.addEntry(entry);
-      }
-      catch (EntryAlreadyExistsException e) {
-        // TODO: Add logger. Show popup message. Then return.
-        
-        return;
-      }
-      try {
-        databaseManager.save();
-      }
-      catch (IOException e) {
-        // TODO: Add logger.
-        System.err.println(e);
-      }
-      client.updateTable();
-      WindowEvent windowClosing =
-          new WindowEvent(AddEntryDialogBox.this, WindowEvent.WINDOW_CLOSING);
-      AddEntryDialogBox.this.dispatchEvent(windowClosing);
+    this.jwordTextField.setText(entry.getJword());
+    this.readingTextField.setText(entry.getReading());
+    this.engTextField.setText(entry.getEnglishMeaning());
+  }
+
+  /**
+   * Removes the previous actions and then sets the given action for the OK button.
+   * 
+   * @param action The action for the OK button.
+   */
+  public void setOkButtonAction(AbstractAction action) {
+    Validator.checkNull(action);
+
+    for (ActionListener listener : this.okButton.getActionListeners()) {
+      this.okButton.removeActionListener(listener);
     }
+    this.okButton.addActionListener(action);
+  }
 
+  /**
+   * Sets the text for the OK button.
+   * 
+   * @param text The text for the OK button.
+   */
+  public void setOkButtonText(String text) {
+    Validator.checkNotEmptyString(text);
+
+    this.okButton.setText(text);
+  }
+
+  /** @return The Japanese word entered in the Kana/Kanji text field. */
+  public String getJwordText() {
+    return this.jwordTextField.getText();
+  }
+
+  /** @return The reading entered in the Reading text field. */
+  public String getReadingText() {
+    return this.readingTextField.getText();
+  }
+
+  /** @return The English meaning entered in the English Meaning text field. */
+  public String getEngMeaningText() {
+    return this.engTextField.getText();
+  }
+
+  /** @return The database manager. */
+  public DbManager getDbManager() {
+    return this.databaseManager;
+  }
+
+  /** @return The main client frame. */
+  public ClientMain getClientMainFrame() {
+    return this.client;
   }
 
   /**
