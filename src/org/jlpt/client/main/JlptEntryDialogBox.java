@@ -6,7 +6,6 @@ import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
@@ -66,7 +65,6 @@ public class JlptEntryDialogBox extends JFrame {
     this.jwordTextField = new JTextField();
     int defaultHeight = this.jwordTextField.getPreferredSize().height;
     this.jwordTextField.setPreferredSize(new Dimension(250, defaultHeight));
-    this.jwordTextField.addKeyListener(new KeyListenerImpl());
     constraints.gridwidth = GridBagConstraints.REMAINDER;
     grid.setConstraints(this.jwordTextField, constraints);
     panel.add(this.jwordTextField);
@@ -79,7 +77,6 @@ public class JlptEntryDialogBox extends JFrame {
 
     this.readingTextField = new JTextField();
     this.readingTextField.setPreferredSize(new Dimension(250, defaultHeight));
-    this.readingTextField.addKeyListener(new KeyListenerImpl());
     constraints.gridwidth = GridBagConstraints.REMAINDER;
     grid.setConstraints(this.readingTextField, constraints);
     panel.add(this.readingTextField);
@@ -92,7 +89,6 @@ public class JlptEntryDialogBox extends JFrame {
 
     this.engTextField = new JTextField();
     this.engTextField.setPreferredSize(new Dimension(250, defaultHeight));
-    this.engTextField.addKeyListener(new KeyListenerImpl());
     constraints.gridwidth = GridBagConstraints.REMAINDER;
     grid.setConstraints(this.engTextField, constraints);
     panel.add(this.engTextField);
@@ -123,6 +119,30 @@ public class JlptEntryDialogBox extends JFrame {
     this.jwordTextField.setText(entry.getJword());
     this.readingTextField.setText(entry.getReading());
     this.engTextField.setText(entry.getEnglishMeaning());
+  }
+
+  /**
+   * Sets the key listener for all three text fields.
+   * 
+   * @param listener The listener for the three text fields.
+   */
+  public void setKeyListener(KeyListener listener) {
+    Validator.checkNull(listener);
+
+    for (KeyListener l : this.jwordTextField.getKeyListeners()) {
+      this.jwordTextField.removeKeyListener(l);
+    }
+    this.jwordTextField.addKeyListener(listener);
+
+    for (KeyListener l : this.readingTextField.getKeyListeners()) {
+      this.readingTextField.removeKeyListener(l);
+    }
+    this.readingTextField.addKeyListener(listener);
+
+    for (KeyListener l : this.engTextField.getKeyListeners()) {
+      this.engTextField.removeKeyListener(l);
+    }
+    this.engTextField.addKeyListener(listener);
   }
 
   /**
@@ -175,44 +195,9 @@ public class JlptEntryDialogBox extends JFrame {
     return this.client;
   }
 
-  /**
-   * A key listener that will enable the OK button once the user inputs text in all three text
-   * fields.
-   * 
-   * @author BJ Peter DeLaCruz
-   */
-  private class KeyListenerImpl implements KeyListener {
-
-    /** {@inheritDoc} */
-    @Override
-    public void keyPressed(KeyEvent event) {
-      // Do nothing.
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void keyReleased(KeyEvent event) {
-      if (jwordTextField.getText().isEmpty()) {
-        okButton.setEnabled(false);
-        return;
-      }
-      if (readingTextField.getText().isEmpty()) {
-        okButton.setEnabled(false);
-        return;
-      }
-      if (engTextField.getText().isEmpty()) {
-        okButton.setEnabled(false);
-        return;
-      }
-      okButton.setEnabled(true);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void keyTyped(KeyEvent event) {
-      // Do nothing.
-    }
-
+  /** @param enabled True to enable the OK button, false otherwise. */
+  public void setOkButtonEnabled(boolean enabled) {
+    this.okButton.setEnabled(enabled);
   }
 
 }

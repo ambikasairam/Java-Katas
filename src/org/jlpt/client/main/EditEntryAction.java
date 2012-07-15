@@ -5,25 +5,26 @@ import java.awt.event.WindowEvent;
 import java.io.IOException;
 import javax.swing.AbstractAction;
 import org.jlpt.common.datamodel.JapaneseEntry;
-import org.jlpt.common.db.EntryAlreadyExistsException;
+import org.jlpt.common.db.EntryDoesNotExistException;
 import org.jlpt.common.utils.Validator;
 
 /**
- * An action that will add an entry to the database when the user clicks on the OK button.
+ * An action that will update an already existing entry in the database when the user clicks on the
+ * OK button.
  * 
  * @author BJ Peter DeLaCruz
  */
 @SuppressWarnings("serial")
-public class AddEntryAction extends AbstractAction {
+public class EditEntryAction extends AbstractAction {
 
   private final JlptEntryDialogBox dialogBox;
 
   /**
-   * Creates a new AddEntryAction.
+   * Creates a new EditEntryAction.
    * 
    * @param dialogBox The dialog box to which to add this action.
    */
-  public AddEntryAction(JlptEntryDialogBox dialogBox) {
+  public EditEntryAction(JlptEntryDialogBox dialogBox) {
     Validator.checkNull(dialogBox);
 
     this.dialogBox = dialogBox;
@@ -34,12 +35,12 @@ public class AddEntryAction extends AbstractAction {
   public void actionPerformed(ActionEvent event) {
     String jword = this.dialogBox.getJwordText();
     String reading = this.dialogBox.getReadingText();
-    String englishMeaning = this.dialogBox.getEngMeaningText();
-    JapaneseEntry entry = new JapaneseEntry(jword, reading, englishMeaning);
+    String engMeaning = this.dialogBox.getEngMeaningText();
+    JapaneseEntry entry = new JapaneseEntry(jword, reading, engMeaning);
     try {
-      this.dialogBox.getDbManager().addEntry(entry);
+      this.dialogBox.getDbManager().updateEntry(entry);
     }
-    catch (EntryAlreadyExistsException e) {
+    catch (EntryDoesNotExistException e) {
       // TODO: Add logger. Show popup message. Then return.
 
       return;
@@ -52,8 +53,7 @@ public class AddEntryAction extends AbstractAction {
       System.err.println(e);
     }
     this.dialogBox.getClientMainFrame().updateTable();
-    WindowEvent windowClosing =
-        new WindowEvent(this.dialogBox, WindowEvent.WINDOW_CLOSING);
+    WindowEvent windowClosing = new WindowEvent(this.dialogBox, WindowEvent.WINDOW_CLOSING);
     this.dialogBox.dispatchEvent(windowClosing);
   }
 

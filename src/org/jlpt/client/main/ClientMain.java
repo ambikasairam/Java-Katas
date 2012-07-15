@@ -9,7 +9,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
-import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -40,7 +39,6 @@ import org.jlpt.common.utils.Validator;
  * 
  * @author BJ Peter DeLaCruz
  */
-@SuppressWarnings("serial")
 public class ClientMain {
 
   private final DbManager databaseManager;
@@ -167,6 +165,7 @@ public class ClientMain {
             new JlptEntryDialogBox(databaseManager, ClientMain.this);
         addEntryDialogBox.setOkButtonAction(new AddEntryAction(addEntryDialogBox));
         addEntryDialogBox.setOkButtonText("Add");
+        addEntryDialogBox.setKeyListener(new AddKeyListener(addEntryDialogBox));
         UiUtils.centerComponentOnParent(frame, addEntryDialogBox);
         addEntryDialogBox.setVisible(true);
       }
@@ -181,15 +180,9 @@ public class ClientMain {
         JlptEntryDialogBox editEntryDialogBox =
             new JlptEntryDialogBox(databaseManager, ClientMain.this);
         editEntryDialogBox.setTextFields(selectedEntry);
-        editEntryDialogBox.setOkButtonAction(new AbstractAction() {
-
-          @Override
-          public void actionPerformed(ActionEvent event) {
-            
-          }
-
-        });
+        editEntryDialogBox.setOkButtonAction(new EditEntryAction(editEntryDialogBox));
         editEntryDialogBox.setOkButtonText("Update");
+        editEntryDialogBox.setKeyListener(new EditKeyListener(editEntryDialogBox, selectedEntry));
         UiUtils.centerComponentOnParent(frame, editEntryDialogBox);
         editEntryDialogBox.setVisible(true);
       }

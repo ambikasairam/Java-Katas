@@ -99,7 +99,7 @@ public class DbManagerImpl implements DbManager {
     if (oldEntry == null) {
       throw new EntryDoesNotExistException(entry);
     }
-    this.entriesMap.put(entry.getJword(), entry);
+    this.entriesMap.put(oldEntry.getJword(), entry);
     // TODO: Add logger.
   }
 
