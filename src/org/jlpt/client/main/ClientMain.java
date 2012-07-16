@@ -1,20 +1,28 @@
 package org.jlpt.client.main;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
@@ -29,6 +37,8 @@ import org.jlpt.client.table.JlptTableModel;
 import org.jlpt.common.datamodel.JapaneseEntry;
 import org.jlpt.common.db.DbManager;
 import org.jlpt.common.db.DbManagerImpl;
+import org.jlpt.common.db.EntryDoesNotExistException;
+import org.jlpt.common.db.InvalidRegExPatternException;
 import org.jlpt.common.ui.CloseAction;
 import org.jlpt.common.ui.StatusBar;
 import org.jlpt.common.ui.UiUtils;
@@ -47,6 +57,7 @@ public class ClientMain {
   private JButton editButton;
   private JButton removeButton;
   private JapaneseEntry selectedEntry;
+  private JLabel statusLabel;
 
   /**
    * Creates a new ClientMain instance. Creates the client UI and displays it to the user's screen.
@@ -89,6 +100,8 @@ public class ClientMain {
     JScrollPane scrollPane =
         new JScrollPane(this.table, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
             JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+    scrollPane.getViewport().setOpaque(false);
+    scrollPane.setBackground(Color.WHITE);
 
     JMenuBar menuBar = new JMenuBar();
     addMenuItems(this.frame, menuBar, this.table);
@@ -117,6 +130,20 @@ public class ClientMain {
    */
   public void updateTable() {
     this.table.setModel(new JlptTableModel(this.databaseManager.getEntries()));
+    this.frame.invalidate();
+    this.frame.validate();
+    this.frame.repaint();
+  }
+
+  /**
+   * Updates the table with a list of entries.
+   * 
+   * @param entries The list of entries used to populate the table.
+   */
+  public void updateTable(List<JapaneseEntry> entries) {
+    Validator.checkNull(entries);
+
+    this.table.setModel(new JlptTableModel(entries));
     this.frame.invalidate();
     this.frame.validate();
     this.frame.repaint();
@@ -164,6 +191,7 @@ public class ClientMain {
       public void actionPerformed(ActionEvent arg0) {
         JlptEntryDialogBox addEntryDialogBox =
             new JlptEntryDialogBox(databaseManager, ClientMain.this);
+        addEntryDialogBox.setTitle("Add Entry");
         addEntryDialogBox.setOkButtonAction(new AddEntryAction(addEntryDialogBox));
         addEntryDialogBox.setOkButtonText("Add");
         addEntryDialogBox.setKeyListener(new AddKeyListener(addEntryDialogBox));
@@ -180,6 +208,7 @@ public class ClientMain {
       public void actionPerformed(ActionEvent event) {
         JlptEntryDialogBox editEntryDialogBox =
             new JlptEntryDialogBox(databaseManager, ClientMain.this);
+        editEntryDialogBox.setTitle("Edit Entry");
         editEntryDialogBox.setTextFields(selectedEntry);
         editEntryDialogBox.setOkButtonAction(new EditEntryAction(editEntryDialogBox));
         editEntryDialogBox.setOkButtonText("Update");
@@ -191,6 +220,31 @@ public class ClientMain {
     });
     buttonPanel.add(this.editButton);
     this.removeButton = new JButton("Remove Selected Entry");
+    this.removeButton.addActionListener(new ActionListener() {
+
+      @Override
+      public void actionPerformed(ActionEvent event) {
+        String msg = "Are you sure you want to delete the following entry from the database?\n\n";
+        msg += selectedEntry.getEntryAsString("   ") + "\n\n";
+        String title = "Remove Selected Entry";
+        int option = JOptionPane.showConfirmDialog(frame, msg, title, JOptionPane.YES_NO_OPTION);
+        if (option == JOptionPane.NO_OPTION) {
+          return;
+        }
+        try {
+          databaseManager.removeEntry(selectedEntry);
+        }
+        catch (EntryDoesNotExistException e) {
+          // TODO: Add logger.
+          System.err.println("Unable to remove selected entry from database: " + selectedEntry);
+          return;
+        }
+        msg = "   Successfully deleted " + selectedEntry.getJword() + " from the database.";
+        statusLabel.setText(msg);
+        updateTable();
+      }
+
+    });
     buttonPanel.add(this.removeButton);
     this.editButton.setEnabled(false);
     this.removeButton.setEnabled(false);
@@ -204,12 +258,71 @@ public class ClientMain {
   private void addSearchFields(JPanel searchPanel) {
     Validator.checkNull(searchPanel);
 
-    JTextField searchField = new JTextField();
+    final JButton searchButton = new JButton("Search");
+    final JTextField searchField = new JTextField();
+    searchField.addFocusListener(new FocusListener() {
+
+      @Override
+      public void focusGained(FocusEvent arg0) {
+        String msg = "<html>&nbsp;&nbsp;&nbsp;Enter the regular expression ";
+        msg += "pattern you want to use. For example, <b>[ab]+out</b> and <b>^&#x3042</b> ";
+        msg += "are valid patterns.</html>";
+        statusLabel.setText(msg);
+      }
+
+      @Override
+      public void focusLost(FocusEvent arg0) {
+        // Do nothing.
+      }
+
+    });
+    searchField.addKeyListener(new KeyAdapter() {
+
+      @Override
+      public void keyReleased(KeyEvent event) {
+        searchButton.setEnabled(!searchField.getText().isEmpty());
+      }
+
+    });
     int defaultHeight = searchField.getPreferredSize().height;
     searchField.setPreferredSize(new Dimension(250, defaultHeight));
     searchPanel.add(searchField);
-    JButton searchButton = new JButton("Search");
+    searchButton.setEnabled(false);
+    final JButton clearResultsButton = new JButton("Clear Results");
+    clearResultsButton.addActionListener(new ActionListener() {
+
+      @Override
+      public void actionPerformed(ActionEvent arg0) {
+        statusLabel.setText("");
+        updateTable();
+        clearResultsButton.setEnabled(false);
+      }
+
+    });
+    searchButton.addActionListener(new ActionListener() {
+
+      @Override
+      public void actionPerformed(ActionEvent event) {
+        List<JapaneseEntry> results;
+        try {
+          results = databaseManager.find(searchField.getText());
+        }
+        catch (InvalidRegExPatternException e) {
+          // TODO: Add logger.
+          String msg = "A problem was encountered while trying to find entries in the database: ";
+          msg += "\n\n" + e.getMessage() + "\n\n";
+          JOptionPane.showMessageDialog(frame, msg, "Error", JOptionPane.ERROR_MESSAGE);
+          return;
+        }
+        statusLabel.setText("   Found " + results.size() + " entries.");
+        updateTable(results);
+        clearResultsButton.setEnabled(true);
+      }
+
+    });
     searchPanel.add(searchButton);
+    clearResultsButton.setEnabled(false);
+    searchPanel.add(clearResultsButton);
   }
 
   /**
@@ -229,6 +342,11 @@ public class ClientMain {
     optionsMenu.add(new JSeparator());
     optionsMenu.add(new CloseAction(frame));
     menuBar.add(optionsMenu);
+
+    JMenu helpMenu = new JMenu("Help");
+    helpMenu.add(new JMenuItem("About"));
+    helpMenu.add(new JMenuItem("User Guide"));
+    menuBar.add(helpMenu);
   }
 
   /**
@@ -240,8 +358,8 @@ public class ClientMain {
     Validator.checkNull(frame);
 
     StatusBar statusBar = new StatusBar();
-    JLabel label = new JLabel("   Current status: Normal");
-    statusBar.add(label);
+    this.statusLabel = new JLabel("   Current status: Normal");
+    statusBar.add(this.statusLabel);
     frame.add(statusBar, BorderLayout.SOUTH);
   }
 

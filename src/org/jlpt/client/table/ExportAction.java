@@ -56,7 +56,7 @@ public class ExportAction extends AbstractAction {
         FileUtils.writeToFile(lines, chooser.getSelectedFile());
       }
       catch (IOException e) {
-        // TODO: Replace with logger.
+        // TODO: Add logger.
         System.err.println("There was a problem writing to the file.");
       }
     }

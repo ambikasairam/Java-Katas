@@ -43,7 +43,6 @@ public class JlptEntryDialogBox extends JFrame {
    * @param client The client application.
    */
   public JlptEntryDialogBox(DbManager databaseManager, ClientMain client) {
-    super("Add Entry");
     Validator.checkNull(databaseManager);
     Validator.checkNull(client);
 

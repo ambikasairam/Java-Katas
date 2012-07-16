@@ -9,6 +9,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 import org.jlpt.common.datamodel.JapaneseEntry;
 import org.jlpt.common.utils.FileUtils;
 import org.jlpt.common.utils.ParsingUtils;
@@ -49,7 +52,7 @@ public class DbManagerImpl implements DbManager {
     for (String[] line : parsedLines) {
       if (line.length != 3) {
         // Ignore entries that do not have exactly three fields.
-        // TODO: Add logging here.
+        // TODO: Add logger.
         continue;
       }
       JapaneseEntry entry = new JapaneseEntry(line[0], line[1], line[2]);
@@ -105,11 +108,43 @@ public class DbManagerImpl implements DbManager {
 
   /** {@inheritDoc} */
   @Override
-  public List<JapaneseEntry> find(String regexPattern) {
-    Validator.checkNotEmptyString(regexPattern);
+  public List<JapaneseEntry> find(String regexPattern) throws InvalidRegExPatternException {
+    Validator.checkNull(regexPattern);
 
-    // TODO Use regular expression to find entry.
-    return null;
+    if (regexPattern.isEmpty()) {
+      throw new InvalidRegExPatternException("Empty regular expression pattern.");
+    }
+
+    Pattern pattern = null;
+    try {
+      pattern = Pattern.compile(regexPattern);
+    }
+    catch (PatternSyntaxException exception) {
+      throw new InvalidRegExPatternException(exception.getMessage());
+    }
+
+    List<JapaneseEntry> results = new ArrayList<>();
+    for (Entry<String, JapaneseEntry> entries : this.entriesMap.entrySet()) {
+      JapaneseEntry entry = entries.getValue();
+      Matcher matcher = pattern.matcher(entry.getJword());
+      if (matcher.find()) {
+        results.add(entry);
+        continue;
+      }
+      matcher = pattern.matcher(entry.getReading());
+      if (matcher.find()) {
+        results.add(entry);
+        continue;
+      }
+      matcher = pattern.matcher(entry.getEnglishMeaning());
+      if (matcher.find()) {
+        results.add(entry);
+      }
+    }
+
+    sortEntries(results);
+
+    return results;
   }
 
   /** {@inheritDoc} */
@@ -131,6 +166,18 @@ public class DbManagerImpl implements DbManager {
   @Override
   public List<JapaneseEntry> getEntries() {
     List<JapaneseEntry> entries = new ArrayList<>(this.entriesMap.values());
+    sortEntries(entries);
+    return entries;
+  }
+
+  /**
+   * Sorts the list of entries in ascending order by Japanese word.
+   * 
+   * @param entries The list of entries to sort.
+   */
+  private void sortEntries(List<JapaneseEntry> entries) {
+    Validator.checkNull(entries);
+
     Collections.sort(entries, new Comparator<JapaneseEntry>() {
 
       @Override
@@ -139,7 +186,6 @@ public class DbManagerImpl implements DbManager {
       }
 
     });
-    return entries;
   }
 
   /** Prints the contents of the map for debugging purposes only. */

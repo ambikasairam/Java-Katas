@@ -40,8 +40,9 @@ public interface DbManager {
    * 
    * @param regexPattern The regular expression pattern to use for the search.
    * @return A list of entries, may be empty if none are found.
+   * @throws InvalidRegExPatternException If the regular expression pattern is invalid.
    */
-  public List<JapaneseEntry> find(String regexPattern);
+  public List<JapaneseEntry> find(String regexPattern) throws InvalidRegExPatternException;
 
   /** @return A list of all entries in the database. */
   public List<JapaneseEntry> getEntries();
