@@ -35,11 +35,10 @@ public class JlptMenu extends JPopupMenu {
   /**
    * Sets the point at which the mouse right-clicked.
    * 
-   * @param x The x-coordinate.
-   * @param y The y-coordinate.
+   * @param point The point.
    */
-  public void setPoint(int x, int y) {
-    this.point = new Point(x, y);
+  public void setPoint(Point point) {
+    this.point = new Point(point.x, point.y);
   }
 
   /** @return The point at which the mouse right-clicked. */

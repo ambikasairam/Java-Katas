@@ -143,7 +143,7 @@ public class ClientMain {
     });
     this.table.getPopupMenu().add(addMenuItem);
 
-    JMenuItem editMenuItem = new JMenuItem("Edit Entry");
+    JMenuItem editMenuItem = new JMenuItem("Edit Selected Entry");
     editMenuItem.addActionListener(new ActionListener() {
 
       @Override
@@ -160,7 +160,7 @@ public class ClientMain {
     });
     this.table.getPopupMenu().add(editMenuItem);
 
-    JMenuItem removeMenuItem = new JMenuItem("Remove Entry");
+    JMenuItem removeMenuItem = new JMenuItem("Remove Selected Entry");
     removeMenuItem.addActionListener(new ActionListener() {
 
       @Override

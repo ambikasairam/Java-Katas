@@ -18,6 +18,7 @@ public class JlptTable extends JTable {
 
   /**
    * Creates a JlptTable instance.
+   * 
    * @param model The table model that contains Japanese words and their English meanings.
    */
   public JlptTable(JlptTableModel model) {
@@ -31,7 +32,15 @@ public class JlptTable extends JTable {
       @Override
       public void mouseClicked(MouseEvent event) {
         if (SwingUtilities.isRightMouseButton(event)) {
-          menu.setPoint(event.getX(), event.getY());
+          int row = rowAtPoint(event.getPoint());
+          if (row >= 0 && row < getRowCount()) {
+            setRowSelectionInterval(row, row);
+          }
+          else {
+            clearSelection();
+          }
+
+          menu.setPoint(event.getPoint());
           menu.show(JlptTable.this, event.getX(), event.getY());
         }
       }
