@@ -2,6 +2,7 @@ package org.jlpt.client.table;
 
 import java.awt.Point;
 import javax.swing.JPopupMenu;
+import javax.swing.JSeparator;
 import javax.swing.JTable;
 import org.jlpt.common.utils.Validator;
 
@@ -25,6 +26,7 @@ public class JlptMenu extends JPopupMenu {
     Validator.checkNull(table);
 
     add(new ExportAction(table, this));
+    add(new JSeparator());
 
     // TODO: Add a Copy Entry to Clipboard menu item later.
 

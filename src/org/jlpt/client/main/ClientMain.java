@@ -80,22 +80,9 @@ public class ClientMain {
 
     JlptTableModel model = new JlptTableModel(databaseManager.getEntries());
     this.table = new JlptTable(model);
-    JMenuItem editMenuItem = new JMenuItem("Edit Entry");
-    editMenuItem.addActionListener(new ActionListener() {
 
-      @Override
-      public void actionPerformed(ActionEvent event) {
-        int row = table.rowAtPoint(table.getPopupMenu().getPoint());
-        // TODO: Clean up this code.
-        String jword = table.getValueAt(row, 0).toString();
-        String reading = table.getValueAt(row, 1).toString();
-        String engMeaning = table.getValueAt(row, 2).toString();
-        JapaneseEntry entry = new JapaneseEntry(jword, reading, engMeaning);
-        UiUtils.displayEditEntryDialogBox(databaseManager, ClientMain.this, entry);
-      }
+    addPopupMenuItems();
 
-    });
-    this.table.getPopupMenu().add(editMenuItem);
     this.table.addMouseListener(new MouseInputAdapter() {
 
       @Override
@@ -139,6 +126,50 @@ public class ClientMain {
     this.frame.setJMenuBar(menuBar);
     // frame.pack();
     this.frame.setVisible(true);
+  }
+
+  /**
+   * Adds menu items to the right-click popup menu.
+   */
+  private void addPopupMenuItems() {
+    JMenuItem addMenuItem = new JMenuItem("Add New Entry");
+    addMenuItem.addActionListener(new ActionListener() {
+
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        UiUtils.displayAddEntryDialogBox(databaseManager, ClientMain.this);
+      }
+
+    });
+    this.table.getPopupMenu().add(addMenuItem);
+
+    JMenuItem editMenuItem = new JMenuItem("Edit Entry");
+    editMenuItem.addActionListener(new ActionListener() {
+
+      @Override
+      public void actionPerformed(ActionEvent event) {
+        int row = table.rowAtPoint(table.getPopupMenu().getPoint());
+        // TODO: Clean up this code.
+        String jword = table.getValueAt(row, 0).toString();
+        String reading = table.getValueAt(row, 1).toString();
+        String engMeaning = table.getValueAt(row, 2).toString();
+        JapaneseEntry entry = new JapaneseEntry(jword, reading, engMeaning);
+        UiUtils.displayEditEntryDialogBox(databaseManager, ClientMain.this, entry);
+      }
+
+    });
+    this.table.getPopupMenu().add(editMenuItem);
+
+    JMenuItem removeMenuItem = new JMenuItem("Remove Entry");
+    removeMenuItem.addActionListener(new ActionListener() {
+
+      @Override
+      public void actionPerformed(ActionEvent event) {
+        displayRemoveEntryConfirmDialogBox("Remove Entry");
+      }
+
+    });
+    this.table.getPopupMenu().add(removeMenuItem);
   }
 
   /**
@@ -200,19 +231,12 @@ public class ClientMain {
     Validator.checkNull(frame);
     Validator.checkNull(buttonPanel);
 
-    JButton addButton = new JButton("Add Entry");
+    JButton addButton = new JButton("Add New Entry");
     addButton.addActionListener(new ActionListener() {
 
       @Override
       public void actionPerformed(ActionEvent arg0) {
-        JlptEntryDialogBox addEntryDialogBox =
-            new JlptEntryDialogBox(databaseManager, ClientMain.this);
-        addEntryDialogBox.setTitle("Add Entry");
-        addEntryDialogBox.setOkButtonAction(new AddEntryAction(addEntryDialogBox));
-        addEntryDialogBox.setOkButtonText("Add");
-        addEntryDialogBox.setKeyListener(new AddKeyListener(addEntryDialogBox));
-        UiUtils.centerComponentOnParent(frame, addEntryDialogBox);
-        addEntryDialogBox.setVisible(true);
+        UiUtils.displayAddEntryDialogBox(databaseManager, ClientMain.this);
       }
 
     });
@@ -232,24 +256,7 @@ public class ClientMain {
 
       @Override
       public void actionPerformed(ActionEvent event) {
-        String msg = "Are you sure you want to delete the following entry from the database?\n\n";
-        msg += selectedEntry.getEntryAsString("   ") + "\n\n";
-        String title = "Remove Selected Entry";
-        int option = JOptionPane.showConfirmDialog(frame, msg, title, JOptionPane.YES_NO_OPTION);
-        if (option == JOptionPane.NO_OPTION) {
-          return;
-        }
-        try {
-          databaseManager.removeEntry(selectedEntry);
-        }
-        catch (EntryDoesNotExistException e) {
-          // TODO: Add logger.
-          System.err.println("Unable to remove selected entry from database: " + selectedEntry);
-          return;
-        }
-        msg = "   Successfully removed " + selectedEntry.getJword() + " from the database.";
-        statusLabel.setText(msg);
-        updateTable();
+        displayRemoveEntryConfirmDialogBox("Remove Selected Entry");
       }
 
     });
@@ -376,6 +383,31 @@ public class ClientMain {
   /** @return The frame for the client application. */
   public JFrame getClientMainFrame() {
     return this.frame;
+  }
+
+  /**
+   * Displays the Remove Entry confirm dialog box.
+   * 
+   * @param title The title of the dialog box.
+   */
+  private void displayRemoveEntryConfirmDialogBox(String title) {
+    String msg = "Are you sure you want to delete the following entry from the database?\n\n";
+    msg += selectedEntry.getEntryAsString("   ") + "\n\n";
+    int option = JOptionPane.showConfirmDialog(frame, msg, title, JOptionPane.YES_NO_OPTION);
+    if (option == JOptionPane.NO_OPTION) {
+      return;
+    }
+    try {
+      databaseManager.removeEntry(selectedEntry);
+    }
+    catch (EntryDoesNotExistException e) {
+      // TODO: Add logger.
+      System.err.println("Unable to remove selected entry from database: " + selectedEntry);
+      return;
+    }
+    msg = "   Successfully removed " + selectedEntry.getJword() + " from the database.";
+    statusLabel.setText(msg);
+    updateTable();
   }
 
   /**

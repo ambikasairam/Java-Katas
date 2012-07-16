@@ -9,6 +9,8 @@ import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.KeyStroke;
+import org.jlpt.client.main.AddEntryAction;
+import org.jlpt.client.main.AddKeyListener;
 import org.jlpt.client.main.ClientMain;
 import org.jlpt.client.main.EditEntryAction;
 import org.jlpt.client.main.EditKeyListener;
@@ -79,6 +81,25 @@ public final class UiUtils {
     frame.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
         .put(escapeKeyStroke, "ESCAPE");
     frame.getRootPane().getActionMap().put("ESCAPE", escapeAction);
+  }
+
+  /**
+   * Displays the Add New Entry dialog box.
+   * 
+   * @param databaseManager The database manager.
+   * @param clientMain The client application.
+   */
+  public static void displayAddEntryDialogBox(DbManager databaseManager, ClientMain clientMain) {
+    Validator.checkNull(databaseManager);
+    Validator.checkNull(clientMain);
+
+    JlptEntryDialogBox addEntryDialogBox = new JlptEntryDialogBox(databaseManager, clientMain);
+    addEntryDialogBox.setTitle("Add New Entry");
+    addEntryDialogBox.setOkButtonAction(new AddEntryAction(addEntryDialogBox));
+    addEntryDialogBox.setOkButtonText("Add");
+    addEntryDialogBox.setKeyListener(new AddKeyListener(addEntryDialogBox));
+    UiUtils.centerComponentOnParent(clientMain.getClientMainFrame(), addEntryDialogBox);
+    addEntryDialogBox.setVisible(true);
   }
 
   /**
