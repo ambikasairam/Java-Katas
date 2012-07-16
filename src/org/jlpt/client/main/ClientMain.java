@@ -64,7 +64,7 @@ public class ClientMain {
    * 
    * @param databaseManager The database manager.
    */
-  public ClientMain(DbManager databaseManager) {
+  public ClientMain(final DbManager databaseManager) {
     Validator.checkNull(databaseManager);
 
     this.databaseManager = databaseManager;
@@ -80,6 +80,22 @@ public class ClientMain {
 
     JlptTableModel model = new JlptTableModel(databaseManager.getEntries());
     this.table = new JlptTable(model);
+    JMenuItem editMenuItem = new JMenuItem("Edit Entry");
+    editMenuItem.addActionListener(new ActionListener() {
+
+      @Override
+      public void actionPerformed(ActionEvent event) {
+        int row = table.rowAtPoint(table.getPopupMenu().getPoint());
+        // TODO: Clean up this code.
+        String jword = table.getValueAt(row, 0).toString();
+        String reading = table.getValueAt(row, 1).toString();
+        String engMeaning = table.getValueAt(row, 2).toString();
+        JapaneseEntry entry = new JapaneseEntry(jword, reading, engMeaning);
+        UiUtils.displayEditEntryDialogBox(databaseManager, ClientMain.this, entry);
+      }
+
+    });
+    this.table.getPopupMenu().add(editMenuItem);
     this.table.addMouseListener(new MouseInputAdapter() {
 
       @Override
@@ -206,15 +222,7 @@ public class ClientMain {
 
       @Override
       public void actionPerformed(ActionEvent event) {
-        JlptEntryDialogBox editEntryDialogBox =
-            new JlptEntryDialogBox(databaseManager, ClientMain.this);
-        editEntryDialogBox.setTitle("Edit Entry");
-        editEntryDialogBox.setTextFields(selectedEntry);
-        editEntryDialogBox.setOkButtonAction(new EditEntryAction(editEntryDialogBox));
-        editEntryDialogBox.setOkButtonText("Update");
-        editEntryDialogBox.setKeyListener(new EditKeyListener(editEntryDialogBox, selectedEntry));
-        UiUtils.centerComponentOnParent(frame, editEntryDialogBox);
-        editEntryDialogBox.setVisible(true);
+        UiUtils.displayEditEntryDialogBox(databaseManager, ClientMain.this, selectedEntry);
       }
 
     });
@@ -239,7 +247,7 @@ public class ClientMain {
           System.err.println("Unable to remove selected entry from database: " + selectedEntry);
           return;
         }
-        msg = "   Successfully deleted " + selectedEntry.getJword() + " from the database.";
+        msg = "   Successfully removed " + selectedEntry.getJword() + " from the database.";
         statusLabel.setText(msg);
         updateTable();
       }
@@ -314,7 +322,9 @@ public class ClientMain {
           JOptionPane.showMessageDialog(frame, msg, "Error", JOptionPane.ERROR_MESSAGE);
           return;
         }
-        statusLabel.setText("   Found " + results.size() + " entries.");
+        String msg = "<html>&nbsp;&nbsp;&nbsp;Found " + results.size() + " entries that matched ";
+        msg += "<b>" + searchField.getText() + "</b>.</html>";
+        statusLabel.setText(msg);
         updateTable(results);
         clearResultsButton.setEnabled(true);
       }
@@ -361,6 +371,11 @@ public class ClientMain {
     this.statusLabel = new JLabel("   Current status: Normal");
     statusBar.add(this.statusLabel);
     frame.add(statusBar, BorderLayout.SOUTH);
+  }
+
+  /** @return The frame for the client application. */
+  public JFrame getClientMainFrame() {
+    return this.frame;
   }
 
   /**

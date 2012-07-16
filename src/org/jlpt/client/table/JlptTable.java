@@ -14,6 +14,8 @@ import javax.swing.event.MouseInputAdapter;
 @SuppressWarnings("serial")
 public class JlptTable extends JTable {
 
+  private final JlptMenu menu;
+
   /**
    * Creates a JlptTable instance.
    * @param model The table model that contains Japanese words and their English meanings.
@@ -21,19 +23,26 @@ public class JlptTable extends JTable {
   public JlptTable(JlptTableModel model) {
     super(model);
 
+    this.menu = new JlptMenu(this);
+
     setShowVerticalLines(false);
     addMouseListener(new MouseInputAdapter() {
 
       @Override
       public void mouseClicked(MouseEvent event) {
         if (SwingUtilities.isRightMouseButton(event)) {
-          JlptMenu menu = new JlptMenu(JlptTable.this);
+          menu.setPoint(event.getX(), event.getY());
           menu.show(JlptTable.this, event.getX(), event.getY());
         }
       }
 
     });
     setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+  }
+
+  /** @return The right-click popup menu. */
+  public JlptMenu getPopupMenu() {
+    return this.menu;
   }
 
 }

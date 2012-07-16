@@ -1,5 +1,6 @@
 package org.jlpt.client.table;
 
+import java.awt.Point;
 import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 import org.jlpt.common.utils.Validator;
@@ -11,6 +12,8 @@ import org.jlpt.common.utils.Validator;
  */
 @SuppressWarnings("serial")
 public class JlptMenu extends JPopupMenu {
+
+  private Point point;
 
   /**
    * Creates a new JlptMenu instance.
@@ -25,6 +28,21 @@ public class JlptMenu extends JPopupMenu {
 
     // TODO: Add a Copy Entry to Clipboard menu item later.
 
+  }
+
+  /**
+   * Sets the point at which the mouse right-clicked.
+   * 
+   * @param x The x-coordinate.
+   * @param y The y-coordinate.
+   */
+  public void setPoint(int x, int y) {
+    this.point = new Point(x, y);
+  }
+
+  /** @return The point at which the mouse right-clicked. */
+  public Point getPoint() {
+    return this.point;
   }
 
 }

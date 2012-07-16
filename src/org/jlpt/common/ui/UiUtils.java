@@ -9,6 +9,12 @@ import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.KeyStroke;
+import org.jlpt.client.main.ClientMain;
+import org.jlpt.client.main.EditEntryAction;
+import org.jlpt.client.main.EditKeyListener;
+import org.jlpt.client.main.JlptEntryDialogBox;
+import org.jlpt.common.datamodel.JapaneseEntry;
+import org.jlpt.common.db.DbManager;
 import org.jlpt.common.utils.Validator;
 
 /**
@@ -73,6 +79,29 @@ public final class UiUtils {
     frame.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
         .put(escapeKeyStroke, "ESCAPE");
     frame.getRootPane().getActionMap().put("ESCAPE", escapeAction);
+  }
+
+  /**
+   * Displays the Edit Entry dialog box.
+   * 
+   * @param databaseManager The database manager.
+   * @param clientMain The client application.
+   * @param entry The entry to be updated.
+   */
+  public static void displayEditEntryDialogBox(DbManager databaseManager, ClientMain clientMain,
+      JapaneseEntry entry) {
+    Validator.checkNull(databaseManager);
+    Validator.checkNull(clientMain);
+    Validator.checkNull(entry);
+
+    JlptEntryDialogBox editEntryDialogBox = new JlptEntryDialogBox(databaseManager, clientMain);
+    editEntryDialogBox.setTitle("Edit Entry");
+    editEntryDialogBox.setTextFields(entry);
+    editEntryDialogBox.setOkButtonAction(new EditEntryAction(editEntryDialogBox));
+    editEntryDialogBox.setOkButtonText("Update");
+    editEntryDialogBox.setKeyListener(new EditKeyListener(editEntryDialogBox, entry));
+    UiUtils.centerComponentOnParent(clientMain.getClientMainFrame(), editEntryDialogBox);
+    editEntryDialogBox.setVisible(true);
   }
 
 }
