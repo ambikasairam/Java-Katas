@@ -29,6 +29,7 @@ public class DbManagerImpl implements DbManager {
   private final String fileLocation;
   private final String delimiter;
   private final Object fileLock = new Object();
+  private static final String WHITESPACE_REGEX = "^\\s*$";
 
   /**
    * Creates a new DbManagerImpl instance. All of the lines are read in from the given database
@@ -52,6 +53,17 @@ public class DbManagerImpl implements DbManager {
     for (String[] line : parsedLines) {
       if (line.length != 3) {
         // Ignore entries that do not have exactly three fields.
+        // TODO: Add logger.
+        continue;
+      }
+      if (line[0].isEmpty() || line[1].isEmpty() || line[2].isEmpty()) {
+        // Ignore entries that have empty fields.
+        // TODO: Add logger.
+        continue;
+      }
+      if (line[0].matches(WHITESPACE_REGEX) || line[1].matches(WHITESPACE_REGEX)
+          || line[2].matches(WHITESPACE_REGEX)) {
+        // Ignore entries that only have whitespace characters.
         // TODO: Add logger.
         continue;
       }
