@@ -5,6 +5,8 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.MouseInputAdapter;
+import org.jlpt.common.datamodel.JapaneseEntry;
+import org.jlpt.common.utils.Validator;
 
 /**
  * A custom JTable for the JLPT Study program.
@@ -14,6 +16,7 @@ import javax.swing.event.MouseInputAdapter;
 @SuppressWarnings("serial")
 public class JlptTable extends JTable {
 
+  private final JlptTableModel model;
   private final JlptMenu menu;
 
   /**
@@ -23,7 +26,9 @@ public class JlptTable extends JTable {
    */
   public JlptTable(JlptTableModel model) {
     super(model);
+    Validator.checkNull(model);
 
+    this.model = model;
     this.menu = new JlptMenu(this);
 
     setShowVerticalLines(false);
@@ -52,6 +57,22 @@ public class JlptTable extends JTable {
   /** @return The right-click popup menu. */
   public JlptMenu getPopupMenu() {
     return this.menu;
+  }
+
+  /**
+   * Returns the entry at the given row.
+   * 
+   * @param row The row where the entry is located.
+   * @return The entry at the given row, or <code>null</code> if it is not found.
+   */
+  public JapaneseEntry getEntry(int row) {
+    String jword = getValueAt(row, 0).toString();
+    for (JapaneseEntry entry : this.model.getEntries()) {
+      if (entry.getJword().equals(jword)) {
+        return entry;
+      }
+    }
+    return null;
   }
 
 }

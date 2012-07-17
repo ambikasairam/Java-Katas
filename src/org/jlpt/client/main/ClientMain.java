@@ -58,6 +58,8 @@ public class ClientMain {
   private JButton removeButton;
   private JapaneseEntry selectedEntry;
   private JLabel statusLabel;
+  private JMenuItem editSelectedEntryMenuItem;
+  private JMenuItem removeSelectedEntryMenuItem;
 
   /**
    * Creates a new ClientMain instance. Creates the client UI and displays it to the user's screen.
@@ -89,11 +91,10 @@ public class ClientMain {
       public void mouseClicked(MouseEvent event) {
         editButton.setEnabled(true);
         removeButton.setEnabled(true);
+        editSelectedEntryMenuItem.setEnabled(true);
+        removeSelectedEntryMenuItem.setEnabled(true);
         int row = table.rowAtPoint(new Point(event.getX(), event.getY()));
-        String jword = table.getValueAt(row, 0).toString();
-        String reading = table.getValueAt(row, 1).toString();
-        String engMeaning = table.getValueAt(row, 2).toString();
-        selectedEntry = new JapaneseEntry(jword, reading, engMeaning);
+        selectedEntry = table.getEntry(row);
       }
 
     });
@@ -109,11 +110,13 @@ public class ClientMain {
     JMenuBar menuBar = new JMenuBar();
     addMenuItems(this.frame, menuBar, this.table);
 
-    JPanel panel = new JPanel(new BorderLayout());
     JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-    JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
     addButtons(this.frame, buttonPanel);
+
+    JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
     addSearchFields(searchPanel);
+
+    JPanel panel = new JPanel(new BorderLayout());
     panel.add(buttonPanel, BorderLayout.NORTH);
     panel.add(scrollPane, BorderLayout.CENTER);
     panel.add(searchPanel, BorderLayout.SOUTH);
@@ -121,7 +124,7 @@ public class ClientMain {
     setProperties(this.frame);
 
     this.frame.add(panel, BorderLayout.CENTER);
-    addStatusBar(this.frame);
+    addStatusBar();
 
     this.frame.setJMenuBar(menuBar);
     // frame.pack();
@@ -149,12 +152,7 @@ public class ClientMain {
       @Override
       public void actionPerformed(ActionEvent event) {
         int row = table.rowAtPoint(table.getPopupMenu().getPoint());
-        // TODO: Clean up this code.
-        String jword = table.getValueAt(row, 0).toString();
-        String reading = table.getValueAt(row, 1).toString();
-        String engMeaning = table.getValueAt(row, 2).toString();
-        JapaneseEntry entry = new JapaneseEntry(jword, reading, engMeaning);
-        UiUtils.displayEditEntryDialogBox(databaseManager, ClientMain.this, entry);
+        UiUtils.displayEditEntryDialogBox(databaseManager, ClientMain.this, table.getEntry(row));
       }
 
     });
@@ -176,10 +174,7 @@ public class ClientMain {
    * Updates the table with the most recent entries in the database.
    */
   public void updateTable() {
-    this.table.setModel(new JlptTableModel(this.databaseManager.getEntries()));
-    this.frame.invalidate();
-    this.frame.validate();
-    this.frame.repaint();
+    updateTable(this.databaseManager.getEntries());
   }
 
   /**
@@ -187,7 +182,7 @@ public class ClientMain {
    * 
    * @param entries The list of entries used to populate the table.
    */
-  public void updateTable(List<JapaneseEntry> entries) {
+  private void updateTable(List<JapaneseEntry> entries) {
     Validator.checkNull(entries);
 
     this.table.setModel(new JlptTableModel(entries));
@@ -274,6 +269,8 @@ public class ClientMain {
     Validator.checkNull(searchPanel);
 
     final JButton searchButton = new JButton("Search");
+    searchButton.setEnabled(false);
+
     final JTextField searchField = new JTextField();
     searchField.addFocusListener(new FocusListener() {
 
@@ -299,10 +296,9 @@ public class ClientMain {
       }
 
     });
-    int defaultHeight = searchField.getPreferredSize().height;
-    searchField.setPreferredSize(new Dimension(250, defaultHeight));
+    searchField.setPreferredSize(new Dimension(250, searchField.getPreferredSize().height));
     searchPanel.add(searchField);
-    searchButton.setEnabled(false);
+
     final JButton clearResultsButton = new JButton("Clear Results");
     clearResultsButton.addActionListener(new ActionListener() {
 
@@ -314,6 +310,8 @@ public class ClientMain {
       }
 
     });
+    clearResultsButton.setEnabled(false);
+
     searchButton.addActionListener(new ActionListener() {
 
       @Override
@@ -338,7 +336,6 @@ public class ClientMain {
 
     });
     searchPanel.add(searchButton);
-    clearResultsButton.setEnabled(false);
     searchPanel.add(clearResultsButton);
   }
 
@@ -355,6 +352,42 @@ public class ClientMain {
     Validator.checkNull(table);
 
     JMenu optionsMenu = new JMenu("Options");
+    JMenuItem addEntryMenuItem = new JMenuItem("Add New Entry");
+    addEntryMenuItem.addActionListener(new ActionListener() {
+
+      @Override
+      public void actionPerformed(ActionEvent event) {
+        UiUtils.displayAddEntryDialogBox(databaseManager, ClientMain.this);
+      }
+
+    });
+    optionsMenu.add(addEntryMenuItem);
+
+    this.editSelectedEntryMenuItem = new JMenuItem("Edit Selected Entry");
+    this.editSelectedEntryMenuItem.addActionListener(new ActionListener() {
+
+      @Override
+      public void actionPerformed(ActionEvent event) {
+        UiUtils.displayEditEntryDialogBox(databaseManager, ClientMain.this, selectedEntry);
+      }
+
+    });
+    this.editSelectedEntryMenuItem.setEnabled(false);
+    optionsMenu.add(this.editSelectedEntryMenuItem);
+
+    this.removeSelectedEntryMenuItem = new JMenuItem("Remove Selected Entry");
+    this.removeSelectedEntryMenuItem.addActionListener(new ActionListener() {
+
+      @Override
+      public void actionPerformed(ActionEvent event) {
+        displayRemoveEntryConfirmDialogBox("Remove Selected Entry");
+      }
+
+    });
+    this.removeSelectedEntryMenuItem.setEnabled(false);
+    optionsMenu.add(this.removeSelectedEntryMenuItem);
+
+    optionsMenu.add(new JSeparator());
     optionsMenu.add(new ExportAction(table, optionsMenu));
     optionsMenu.add(new JSeparator());
     optionsMenu.add(new CloseAction(frame));
@@ -368,16 +401,12 @@ public class ClientMain {
 
   /**
    * Adds a status bar to the given frame.
-   * 
-   * @param frame The frame to which to add the status bar.
    */
-  private void addStatusBar(JFrame frame) {
-    Validator.checkNull(frame);
-
+  private void addStatusBar() {
     StatusBar statusBar = new StatusBar();
     this.statusLabel = new JLabel("   Current status: Normal");
     statusBar.add(this.statusLabel);
-    frame.add(statusBar, BorderLayout.SOUTH);
+    this.frame.add(statusBar, BorderLayout.SOUTH);
   }
 
   /** @return The frame for the client application. */
@@ -391,22 +420,24 @@ public class ClientMain {
    * @param title The title of the dialog box.
    */
   private void displayRemoveEntryConfirmDialogBox(String title) {
+    Validator.checkNotEmptyString(title);
+
     String msg = "Are you sure you want to delete the following entry from the database?\n\n";
-    msg += selectedEntry.getEntryAsString("   ") + "\n\n";
-    int option = JOptionPane.showConfirmDialog(frame, msg, title, JOptionPane.YES_NO_OPTION);
+    msg += this.selectedEntry.getEntryAsString("   ") + "\n\n";
+    int option = JOptionPane.showConfirmDialog(this.frame, msg, title, JOptionPane.YES_NO_OPTION);
     if (option == JOptionPane.NO_OPTION) {
       return;
     }
     try {
-      databaseManager.removeEntry(selectedEntry);
+      this.databaseManager.removeEntry(this.selectedEntry);
     }
     catch (EntryDoesNotExistException e) {
       // TODO: Add logger.
-      System.err.println("Unable to remove selected entry from database: " + selectedEntry);
+      System.err.println("Unable to remove selected entry from database: " + this.selectedEntry);
       return;
     }
-    msg = "   Successfully removed " + selectedEntry.getJword() + " from the database.";
-    statusLabel.setText(msg);
+    msg = "   Successfully removed " + this.selectedEntry.getJword() + " from the database.";
+    this.statusLabel.setText(msg);
     updateTable();
   }
 
