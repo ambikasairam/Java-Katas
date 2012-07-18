@@ -75,4 +75,19 @@ public class JlptTable extends JTable {
     return null;
   }
 
+  /**
+   * Returns the entry at the given row.
+   * 
+   * @param jword The Japanese word to use for the search.
+   * @return The entry that contains the given Japanese word.
+   */
+  public JapaneseEntry getEntry(String jword) {
+    for (JapaneseEntry entry : this.model.getEntries()) {
+      if (entry.getJword().equals(jword)) {
+        return entry;
+      }
+    }
+    return null;
+  }
+
 }

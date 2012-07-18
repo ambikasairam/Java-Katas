@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import javax.swing.AbstractAction;
+import org.jlpt.client.table.JlptTable;
 import org.jlpt.common.datamodel.JapaneseEntry;
 import org.jlpt.common.db.EntryDoesNotExistException;
 import org.jlpt.common.utils.Validator;
@@ -18,25 +19,26 @@ import org.jlpt.common.utils.Validator;
 public class EditEntryAction extends AbstractAction {
 
   private final JlptEntryDialogBox dialogBox;
+  private final JlptTable table;
 
   /**
    * Creates a new EditEntryAction.
    * 
    * @param dialogBox The dialog box to which to add this action.
+   * @param table The table that contains all of the entries.
    */
-  public EditEntryAction(JlptEntryDialogBox dialogBox) {
+  public EditEntryAction(JlptEntryDialogBox dialogBox, JlptTable table) {
     Validator.checkNull(dialogBox);
+    Validator.checkNull(table);
 
     this.dialogBox = dialogBox;
+    this.table = table;
   }
 
   /** {@inheritDoc} */
   @Override
   public void actionPerformed(ActionEvent event) {
-    String jword = this.dialogBox.getJwordText();
-    String reading = this.dialogBox.getReadingText();
-    String engMeaning = this.dialogBox.getEngMeaningText();
-    JapaneseEntry entry = new JapaneseEntry(jword, reading, engMeaning);
+    JapaneseEntry entry = this.table.getEntry(this.dialogBox.getJwordText());
     try {
       this.dialogBox.getDbManager().updateEntry(entry);
     }

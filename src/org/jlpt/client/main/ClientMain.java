@@ -140,7 +140,7 @@ public class ClientMain {
 
       @Override
       public void actionPerformed(ActionEvent e) {
-        UiUtils.displayAddEntryDialogBox(databaseManager, ClientMain.this);
+        ClientUtils.displayAddEntryDialogBox(databaseManager, ClientMain.this);
       }
 
     });
@@ -152,7 +152,8 @@ public class ClientMain {
       @Override
       public void actionPerformed(ActionEvent event) {
         int row = table.rowAtPoint(table.getPopupMenu().getPoint());
-        UiUtils.displayEditEntryDialogBox(databaseManager, ClientMain.this, table.getEntry(row));
+        ClientUtils.displayEditEntryDialogBox(databaseManager, ClientMain.this,
+            table.getEntry(row));
       }
 
     });
@@ -231,7 +232,7 @@ public class ClientMain {
 
       @Override
       public void actionPerformed(ActionEvent arg0) {
-        UiUtils.displayAddEntryDialogBox(databaseManager, ClientMain.this);
+        ClientUtils.displayAddEntryDialogBox(databaseManager, ClientMain.this);
       }
 
     });
@@ -241,7 +242,7 @@ public class ClientMain {
 
       @Override
       public void actionPerformed(ActionEvent event) {
-        UiUtils.displayEditEntryDialogBox(databaseManager, ClientMain.this, selectedEntry);
+        ClientUtils.displayEditEntryDialogBox(databaseManager, ClientMain.this, selectedEntry);
       }
 
     });
@@ -357,7 +358,7 @@ public class ClientMain {
 
       @Override
       public void actionPerformed(ActionEvent event) {
-        UiUtils.displayAddEntryDialogBox(databaseManager, ClientMain.this);
+        ClientUtils.displayAddEntryDialogBox(databaseManager, ClientMain.this);
       }
 
     });
@@ -368,7 +369,7 @@ public class ClientMain {
 
       @Override
       public void actionPerformed(ActionEvent event) {
-        UiUtils.displayEditEntryDialogBox(databaseManager, ClientMain.this, selectedEntry);
+        ClientUtils.displayEditEntryDialogBox(databaseManager, ClientMain.this, selectedEntry);
       }
 
     });
@@ -439,6 +440,11 @@ public class ClientMain {
     msg = "   Successfully removed " + this.selectedEntry.getJword() + " from the database.";
     this.statusLabel.setText(msg);
     updateTable();
+  }
+
+  /** @return The table that contains all of the entries. */
+  public JlptTable getTable() {
+    return this.table;
   }
 
   /**

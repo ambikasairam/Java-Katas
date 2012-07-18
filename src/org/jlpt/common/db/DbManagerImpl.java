@@ -56,18 +56,20 @@ public class DbManagerImpl implements DbManager {
         // TODO: Add logger.
         continue;
       }
+      JapaneseEntry entry = new JapaneseEntry(line[0], line[1], line[2]);
       if (line[0].isEmpty() || line[1].isEmpty() || line[2].isEmpty()) {
         // Ignore entries that have empty fields.
         // TODO: Add logger.
+        System.err.println(entry);
         continue;
       }
       if (line[0].matches(WHITESPACE_REGEX) || line[1].matches(WHITESPACE_REGEX)
           || line[2].matches(WHITESPACE_REGEX)) {
         // Ignore entries that only have whitespace characters.
         // TODO: Add logger.
+        System.err.println(entry);
         continue;
       }
-      JapaneseEntry entry = new JapaneseEntry(line[0], line[1], line[2]);
       try {
         addEntry(entry);
       }
@@ -198,27 +200,6 @@ public class DbManagerImpl implements DbManager {
       }
 
     });
-  }
-
-  /** Prints the contents of the map for debugging purposes only. */
-  private void printMap() {
-    for (Entry<String, JapaneseEntry> entry : this.entriesMap.entrySet()) {
-      System.out.println("Key: " + entry.getKey() + "\tValue: " + entry.getValue());
-    }
-  }
-
-  /**
-   * Tests this class.
-   * 
-   * @param args The file name and delimiter.
-   * @throws IOException If there are problems reading from the file.
-   */
-  public static void main(String... args) throws IOException {
-    if (args.length != 2) {
-      System.err.println("Need file name and delimiter.");
-      return;
-    }
-    new DbManagerImpl(args[0], args[1]).printMap();
   }
 
 }
