@@ -30,10 +30,14 @@ public interface DbManager {
   /**
    * Updates an entry in the database. The entry <u>must</u> already exist.
    * 
-   * @param entry The entry to update.
+   * @param newEntry The new entry to put in the database.
+   * @param oldEntry The old entry that is currently in the database.
    * @throws EntryDoesNotExistException If the entry currently does not exist in the database.
+   * @throws StaleEntryException If the entry to be updated has already been updated by another
+   * user.
    */
-  public void updateEntry(JapaneseEntry entry) throws EntryDoesNotExistException;
+  public void updateEntry(JapaneseEntry newEntry, JapaneseEntry oldEntry)
+      throws EntryDoesNotExistException, StaleEntryException;
 
   /**
    * Finds one or more entries in the database using the given regular expression pattern.

@@ -7,6 +7,7 @@ import javax.swing.AbstractAction;
 import org.jlpt.client.table.JlptTable;
 import org.jlpt.common.datamodel.JapaneseEntry;
 import org.jlpt.common.db.EntryDoesNotExistException;
+import org.jlpt.common.db.StaleEntryException;
 import org.jlpt.common.utils.Validator;
 
 /**
@@ -20,19 +21,23 @@ public class EditEntryAction extends AbstractAction {
 
   private final JlptEntryDialogBox dialogBox;
   private final JlptTable table;
+  private final JapaneseEntry oldEntry;
 
   /**
    * Creates a new EditEntryAction.
    * 
    * @param dialogBox The dialog box to which to add this action.
    * @param table The table that contains all of the entries.
+   * @param oldEntry The entry that is to be updated.
    */
-  public EditEntryAction(JlptEntryDialogBox dialogBox, JlptTable table) {
+  public EditEntryAction(JlptEntryDialogBox dialogBox, JlptTable table, JapaneseEntry oldEntry) {
     Validator.checkNull(dialogBox);
     Validator.checkNull(table);
+    Validator.checkNull(oldEntry);
 
     this.dialogBox = dialogBox;
     this.table = table;
+    this.oldEntry = oldEntry;
   }
 
   /** {@inheritDoc} */
@@ -40,9 +45,9 @@ public class EditEntryAction extends AbstractAction {
   public void actionPerformed(ActionEvent event) {
     JapaneseEntry entry = this.table.getEntry(this.dialogBox.getJwordText());
     try {
-      this.dialogBox.getDbManager().updateEntry(entry);
+      this.dialogBox.getDbManager().updateEntry(entry, this.oldEntry);
     }
-    catch (EntryDoesNotExistException e) {
+    catch (EntryDoesNotExistException | StaleEntryException e) {
       // TODO: Add logger. Show popup message. Then return.
 
       return;

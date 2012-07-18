@@ -85,13 +85,15 @@ public class DbManagerImpl implements DbManager {
   public void addEntry(JapaneseEntry entry) throws EntryAlreadyExistsException {
     Validator.checkNull(entry);
 
-    JapaneseEntry oldEntry = this.entriesMap.get(entry.getJword());
-    if (oldEntry != null && oldEntry.equals(entry)) {
-      throw new EntryAlreadyExistsException(entry);
-    }
+    synchronized (this.entriesMap) {
+      JapaneseEntry oldEntry = this.entriesMap.get(entry.getJword());
+      if (oldEntry != null && oldEntry.equals(entry)) {
+        throw new EntryAlreadyExistsException(entry);
+      }
 
-    this.entriesMap.put(entry.getJword(), entry);
-    // TODO: Add logger.
+      this.entriesMap.put(entry.getJword(), entry);
+      // TODO: Add logger.
+    }
   }
 
   /** {@inheritDoc} */
@@ -99,25 +101,34 @@ public class DbManagerImpl implements DbManager {
   public void removeEntry(JapaneseEntry entry) throws EntryDoesNotExistException {
     Validator.checkNull(entry);
 
-    JapaneseEntry oldEntry = this.entriesMap.get(entry.getJword());
-    if (oldEntry == null) {
-      throw new EntryDoesNotExistException(entry);
+    synchronized (this.entriesMap) {
+      JapaneseEntry oldEntry = this.entriesMap.get(entry.getJword());
+      if (oldEntry == null) {
+        throw new EntryDoesNotExistException(entry);
+      }
+      this.entriesMap.remove(entry.getJword());
+      // TODO: Add logger.
     }
-    this.entriesMap.remove(entry.getJword());
-    // TODO: Add logger.
   }
 
   /** {@inheritDoc} */
   @Override
-  public void updateEntry(JapaneseEntry entry) throws EntryDoesNotExistException {
-    Validator.checkNull(entry);
+  public void updateEntry(JapaneseEntry newEntry, JapaneseEntry oldEntry)
+      throws EntryDoesNotExistException, StaleEntryException {
+    Validator.checkNull(newEntry);
+    Validator.checkNull(oldEntry);
 
-    JapaneseEntry oldEntry = this.entriesMap.get(entry.getJword());
-    if (oldEntry == null) {
-      throw new EntryDoesNotExistException(entry);
+    synchronized (this.entriesMap) {
+      JapaneseEntry entry = this.entriesMap.get(oldEntry.getJword());
+      if (entry == null) {
+        throw new EntryDoesNotExistException(oldEntry);
+      }
+      else if (!entry.equals(oldEntry)) {
+        throw new StaleEntryException(oldEntry);
+      }
+      this.entriesMap.put(entry.getJword(), newEntry);
+      // TODO: Add logger.
     }
-    this.entriesMap.put(oldEntry.getJword(), entry);
-    // TODO: Add logger.
   }
 
   /** {@inheritDoc} */
@@ -138,21 +149,23 @@ public class DbManagerImpl implements DbManager {
     }
 
     List<JapaneseEntry> results = new ArrayList<>();
-    for (Entry<String, JapaneseEntry> entries : this.entriesMap.entrySet()) {
-      JapaneseEntry entry = entries.getValue();
-      Matcher matcher = pattern.matcher(entry.getJword());
-      if (matcher.find()) {
-        results.add(entry);
-        continue;
-      }
-      matcher = pattern.matcher(entry.getReading());
-      if (matcher.find()) {
-        results.add(entry);
-        continue;
-      }
-      matcher = pattern.matcher(entry.getEnglishMeaning());
-      if (matcher.find()) {
-        results.add(entry);
+    synchronized (this.entriesMap) {
+      for (Entry<String, JapaneseEntry> entries : this.entriesMap.entrySet()) {
+        JapaneseEntry entry = entries.getValue();
+        Matcher matcher = pattern.matcher(entry.getJword());
+        if (matcher.find()) {
+          results.add(entry);
+          continue;
+        }
+        matcher = pattern.matcher(entry.getReading());
+        if (matcher.find()) {
+          results.add(entry);
+          continue;
+        }
+        matcher = pattern.matcher(entry.getEnglishMeaning());
+        if (matcher.find()) {
+          results.add(entry);
+        }
       }
     }
 

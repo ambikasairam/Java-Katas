@@ -53,7 +53,7 @@ public final class ClientUtils {
     editEntryDialogBox.setTitle("Edit Entry");
     editEntryDialogBox.setTextFields(entry);
     editEntryDialogBox.setOkButtonAction(new EditEntryAction(editEntryDialogBox, clientMain
-        .getTable()));
+        .getTable(), entry));
     editEntryDialogBox.setOkButtonText("Update");
     editEntryDialogBox.setKeyListener(new EditKeyListener(editEntryDialogBox, entry));
     UiUtils.centerComponentOnParent(clientMain.getClientMainFrame(), editEntryDialogBox);
