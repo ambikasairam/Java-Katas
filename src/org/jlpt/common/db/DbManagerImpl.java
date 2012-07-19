@@ -192,7 +192,10 @@ public class DbManagerImpl implements DbManager {
   /** {@inheritDoc} */
   @Override
   public List<JapaneseEntry> getEntries() {
-    List<JapaneseEntry> entries = new ArrayList<>(this.entriesMap.values());
+    List<JapaneseEntry> entries = null;
+    synchronized (this.entriesMap) {
+      entries = new ArrayList<>(this.entriesMap.values());
+    }
     sortEntries(entries);
     return entries;
   }

@@ -21,31 +21,27 @@ public class EditEntryAction extends AbstractAction {
 
   private final JlptEntryDialogBox dialogBox;
   private final JlptTable table;
-  private final JapaneseEntry oldEntry;
 
   /**
    * Creates a new EditEntryAction.
    * 
    * @param dialogBox The dialog box to which to add this action.
    * @param table The table that contains all of the entries.
-   * @param oldEntry The entry that is to be updated.
    */
-  public EditEntryAction(JlptEntryDialogBox dialogBox, JlptTable table, JapaneseEntry oldEntry) {
+  public EditEntryAction(JlptEntryDialogBox dialogBox, JlptTable table) {
     Validator.checkNull(dialogBox);
     Validator.checkNull(table);
-    Validator.checkNull(oldEntry);
 
     this.dialogBox = dialogBox;
     this.table = table;
-    this.oldEntry = oldEntry;
   }
 
   /** {@inheritDoc} */
   @Override
   public void actionPerformed(ActionEvent event) {
-    JapaneseEntry entry = this.table.getEntry(this.dialogBox.getJwordText());
+    JapaneseEntry oldEntry = this.table.getEntry(this.dialogBox.getJwordText());
     try {
-      this.dialogBox.getDbManager().updateEntry(entry, this.oldEntry);
+      this.dialogBox.getDbManager().updateEntry(this.dialogBox.getUpdatedEntry(), oldEntry);
     }
     catch (EntryDoesNotExistException | StaleEntryException e) {
       // TODO: Add logger. Show popup message. Then return.

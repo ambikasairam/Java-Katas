@@ -60,12 +60,31 @@ public class JlptTable extends JTable {
   }
 
   /**
+   * Sets the given entry in the table.
+   * 
+   * @param entry The entry to set.
+   */
+  public void setSelectedEntry(JapaneseEntry entry) {
+    Validator.checkNull(entry);
+
+    int rowCount = getRowCount();
+    for (int index = 0; index < rowCount; index++) {
+      if (getValueAt(index, 0).toString().equals(entry.getJword())) {
+        getSelectionModel().setSelectionInterval(index, index);
+        return;
+      }
+    }
+  }
+
+  /**
    * Returns the entry at the given row.
    * 
    * @param row The row where the entry is located.
    * @return The entry at the given row, or <code>null</code> if it is not found.
    */
   public JapaneseEntry getEntry(int row) {
+    Validator.checkNonNegative(row);
+
     String jword = getValueAt(row, 0).toString();
     for (JapaneseEntry entry : this.model.getEntries()) {
       if (entry.getJword().equals(jword)) {
@@ -82,6 +101,8 @@ public class JlptTable extends JTable {
    * @return The entry that contains the given Japanese word.
    */
   public JapaneseEntry getEntry(String jword) {
+    Validator.checkNotEmptyString(jword);
+
     for (JapaneseEntry entry : this.model.getEntries()) {
       if (entry.getJword().equals(jword)) {
         return entry;

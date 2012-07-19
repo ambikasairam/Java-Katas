@@ -4,7 +4,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import javax.swing.AbstractAction;
-import org.jlpt.common.datamodel.JapaneseEntry;
 import org.jlpt.common.db.EntryAlreadyExistsException;
 import org.jlpt.common.utils.Validator;
 
@@ -32,12 +31,8 @@ public class AddEntryAction extends AbstractAction {
   /** {@inheritDoc} */
   @Override
   public void actionPerformed(ActionEvent event) {
-    String jword = this.dialogBox.getJwordText();
-    String reading = this.dialogBox.getReadingText();
-    String englishMeaning = this.dialogBox.getEngMeaningText();
-    JapaneseEntry entry = new JapaneseEntry(jword, reading, englishMeaning);
     try {
-      this.dialogBox.getDbManager().addEntry(entry);
+      this.dialogBox.getDbManager().addEntry(this.dialogBox.getUpdatedEntry());
     }
     catch (EntryAlreadyExistsException e) {
       // TODO: Add logger. Show popup message. Then return.

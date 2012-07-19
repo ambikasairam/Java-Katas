@@ -14,6 +14,9 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -37,7 +40,6 @@ import org.jlpt.client.table.JlptTableModel;
 import org.jlpt.common.datamodel.JapaneseEntry;
 import org.jlpt.common.db.DbManager;
 import org.jlpt.common.db.DbManagerImpl;
-import org.jlpt.common.db.EntryDoesNotExistException;
 import org.jlpt.common.db.InvalidRegExPatternException;
 import org.jlpt.common.ui.CloseAction;
 import org.jlpt.common.ui.StatusBar;
@@ -60,6 +62,7 @@ public class ClientMain {
   private JLabel statusLabel;
   private JMenuItem editSelectedEntryMenuItem;
   private JMenuItem removeSelectedEntryMenuItem;
+  private final DateFormat dateFormat;
 
   /**
    * Creates a new ClientMain instance. Creates the client UI and displays it to the user's screen.
@@ -70,6 +73,7 @@ public class ClientMain {
     Validator.checkNull(databaseManager);
 
     this.databaseManager = databaseManager;
+    this.dateFormat = new SimpleDateFormat("MM-dd-YYYY 'at' HH:mm:ss z");
 
     try {
       UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -135,39 +139,24 @@ public class ClientMain {
    * Adds menu items to the right-click popup menu.
    */
   private void addPopupMenuItems() {
+    JMenuItem refreshMenuItem = new JMenuItem("Refresh Table");
+    refreshMenuItem
+        .addActionListener(ClientUtils.getRefreshTableAction(this.databaseManager, this));
+    this.table.getPopupMenu().add(refreshMenuItem);
+    this.table.getPopupMenu().add(new JSeparator());
+
     JMenuItem addMenuItem = new JMenuItem("Add New Entry");
-    addMenuItem.addActionListener(new ActionListener() {
-
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        ClientUtils.displayAddEntryDialogBox(databaseManager, ClientMain.this);
-      }
-
-    });
+    addMenuItem.addActionListener(ClientUtils.getAddNewEntryAction(this.databaseManager, this));
     this.table.getPopupMenu().add(addMenuItem);
 
     JMenuItem editMenuItem = new JMenuItem("Edit Selected Entry");
-    editMenuItem.addActionListener(new ActionListener() {
-
-      @Override
-      public void actionPerformed(ActionEvent event) {
-        int row = table.rowAtPoint(table.getPopupMenu().getPoint());
-        ClientUtils.displayEditEntryDialogBox(databaseManager, ClientMain.this,
-            table.getEntry(row));
-      }
-
-    });
+    editMenuItem.addActionListener(ClientUtils.getEditSelectedEntryAction(this.databaseManager,
+        this));
     this.table.getPopupMenu().add(editMenuItem);
 
     JMenuItem removeMenuItem = new JMenuItem("Remove Selected Entry");
-    removeMenuItem.addActionListener(new ActionListener() {
-
-      @Override
-      public void actionPerformed(ActionEvent event) {
-        displayRemoveEntryConfirmDialogBox("Remove Entry");
-      }
-
-    });
+    removeMenuItem.addActionListener(ClientUtils.getRemoveSelectedEntryAction(this.databaseManager,
+        this));
     this.table.getPopupMenu().add(removeMenuItem);
   }
 
@@ -183,10 +172,14 @@ public class ClientMain {
    * 
    * @param entries The list of entries used to populate the table.
    */
-  private void updateTable(List<JapaneseEntry> entries) {
+  public void updateTable(List<JapaneseEntry> entries) {
     Validator.checkNull(entries);
 
     this.table.setModel(new JlptTableModel(entries));
+
+    this.table.setSelectedEntry(this.selectedEntry);
+    this.statusLabel.setText("   Last updated on " + dateFormat.format(new Date()) + ".");
+
     this.frame.invalidate();
     this.frame.validate();
     this.frame.repaint();
@@ -227,36 +220,24 @@ public class ClientMain {
     Validator.checkNull(frame);
     Validator.checkNull(buttonPanel);
 
+    JButton refreshButton = new JButton("Refresh Table");
+    refreshButton.addActionListener(ClientUtils.getRefreshTableAction(this.databaseManager, this));
+    buttonPanel.add(refreshButton);
+
     JButton addButton = new JButton("Add New Entry");
-    addButton.addActionListener(new ActionListener() {
-
-      @Override
-      public void actionPerformed(ActionEvent arg0) {
-        ClientUtils.displayAddEntryDialogBox(databaseManager, ClientMain.this);
-      }
-
-    });
+    addButton.addActionListener(ClientUtils.getAddNewEntryAction(this.databaseManager, this));
     buttonPanel.add(addButton);
+
     this.editButton = new JButton("Edit Selected Entry");
-    this.editButton.addActionListener(new ActionListener() {
-
-      @Override
-      public void actionPerformed(ActionEvent event) {
-        ClientUtils.displayEditEntryDialogBox(databaseManager, ClientMain.this, selectedEntry);
-      }
-
-    });
+    this.editButton.addActionListener(ClientUtils.getEditSelectedEntryAction(this.databaseManager,
+        this));
     buttonPanel.add(this.editButton);
+
     this.removeButton = new JButton("Remove Selected Entry");
-    this.removeButton.addActionListener(new ActionListener() {
-
-      @Override
-      public void actionPerformed(ActionEvent event) {
-        displayRemoveEntryConfirmDialogBox("Remove Selected Entry");
-      }
-
-    });
+    this.removeButton.addActionListener(ClientUtils.getRemoveSelectedEntryAction(
+        this.databaseManager, this));
     buttonPanel.add(this.removeButton);
+
     this.editButton.setEnabled(false);
     this.removeButton.setEnabled(false);
   }
@@ -276,7 +257,7 @@ public class ClientMain {
     searchField.addFocusListener(new FocusListener() {
 
       @Override
-      public void focusGained(FocusEvent arg0) {
+      public void focusGained(FocusEvent event) {
         String msg = "<html>&nbsp;&nbsp;&nbsp;Enter the regular expression ";
         msg += "pattern you want to use. For example, <b>[ab]+out</b> and <b>^&#x3042</b> ";
         msg += "are valid patterns.</html>";
@@ -284,7 +265,7 @@ public class ClientMain {
       }
 
       @Override
-      public void focusLost(FocusEvent arg0) {
+      public void focusLost(FocusEvent event) {
         // Do nothing.
       }
 
@@ -304,7 +285,7 @@ public class ClientMain {
     clearResultsButton.addActionListener(new ActionListener() {
 
       @Override
-      public void actionPerformed(ActionEvent arg0) {
+      public void actionPerformed(ActionEvent event) {
         statusLabel.setText("");
         updateTable();
         clearResultsButton.setEnabled(false);
@@ -353,38 +334,26 @@ public class ClientMain {
     Validator.checkNull(table);
 
     JMenu optionsMenu = new JMenu("Options");
+    JMenuItem refreshMenuItem = new JMenuItem("Refresh Table");
+    refreshMenuItem
+        .addActionListener(ClientUtils.getRefreshTableAction(this.databaseManager, this));
+    optionsMenu.add(refreshMenuItem);
+    optionsMenu.add(new JSeparator());
+
     JMenuItem addEntryMenuItem = new JMenuItem("Add New Entry");
-    addEntryMenuItem.addActionListener(new ActionListener() {
-
-      @Override
-      public void actionPerformed(ActionEvent event) {
-        ClientUtils.displayAddEntryDialogBox(databaseManager, ClientMain.this);
-      }
-
-    });
+    addEntryMenuItem
+        .addActionListener(ClientUtils.getAddNewEntryAction(this.databaseManager, this));
     optionsMenu.add(addEntryMenuItem);
 
     this.editSelectedEntryMenuItem = new JMenuItem("Edit Selected Entry");
-    this.editSelectedEntryMenuItem.addActionListener(new ActionListener() {
-
-      @Override
-      public void actionPerformed(ActionEvent event) {
-        ClientUtils.displayEditEntryDialogBox(databaseManager, ClientMain.this, selectedEntry);
-      }
-
-    });
+    this.editSelectedEntryMenuItem.addActionListener(ClientUtils.getEditSelectedEntryAction(
+        this.databaseManager, this));
     this.editSelectedEntryMenuItem.setEnabled(false);
     optionsMenu.add(this.editSelectedEntryMenuItem);
 
     this.removeSelectedEntryMenuItem = new JMenuItem("Remove Selected Entry");
-    this.removeSelectedEntryMenuItem.addActionListener(new ActionListener() {
-
-      @Override
-      public void actionPerformed(ActionEvent event) {
-        displayRemoveEntryConfirmDialogBox("Remove Selected Entry");
-      }
-
-    });
+    this.removeSelectedEntryMenuItem.addActionListener(ClientUtils.getRemoveSelectedEntryAction(
+        this.databaseManager, this));
     this.removeSelectedEntryMenuItem.setEnabled(false);
     optionsMenu.add(this.removeSelectedEntryMenuItem);
 
@@ -415,36 +384,19 @@ public class ClientMain {
     return this.frame;
   }
 
-  /**
-   * Displays the Remove Entry confirm dialog box.
-   * 
-   * @param title The title of the dialog box.
-   */
-  private void displayRemoveEntryConfirmDialogBox(String title) {
-    Validator.checkNotEmptyString(title);
-
-    String msg = "Are you sure you want to delete the following entry from the database?\n\n";
-    msg += this.selectedEntry.getEntryAsString("   ") + "\n\n";
-    int option = JOptionPane.showConfirmDialog(this.frame, msg, title, JOptionPane.YES_NO_OPTION);
-    if (option == JOptionPane.NO_OPTION) {
-      return;
-    }
-    try {
-      this.databaseManager.removeEntry(this.selectedEntry);
-    }
-    catch (EntryDoesNotExistException e) {
-      // TODO: Add logger.
-      System.err.println("Unable to remove selected entry from database: " + this.selectedEntry);
-      return;
-    }
-    msg = "   Successfully removed " + this.selectedEntry.getJword() + " from the database.";
-    this.statusLabel.setText(msg);
-    updateTable();
-  }
-
   /** @return The table that contains all of the entries. */
   public JlptTable getTable() {
     return this.table;
+  }
+
+  /** @return The status label. */
+  public JLabel getStatusLabel() {
+    return this.statusLabel;
+  }
+
+  /** @return The selected entry in the table. */
+  public JapaneseEntry getSelectedEntry() {
+    return this.selectedEntry;
   }
 
   /**

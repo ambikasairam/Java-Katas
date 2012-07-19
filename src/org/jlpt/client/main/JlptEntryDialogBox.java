@@ -171,6 +171,12 @@ public class JlptEntryDialogBox extends JFrame {
     this.okButton.setText(text);
   }
 
+  /** @return An entry with the updated values from the text fields. */
+  public JapaneseEntry getUpdatedEntry() {
+    return new JapaneseEntry(this.jwordTextField.getText(), this.readingTextField.getText(),
+        this.engTextField.getText());
+  }
+
   /** @return The Japanese word entered in the Kana/Kanji text field. */
   public String getJwordText() {
     return this.jwordTextField.getText();
