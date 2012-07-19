@@ -73,6 +73,14 @@ public class JlptTable extends JTable {
         getSelectionModel().setSelectionInterval(index, index);
         return;
       }
+      else if (getValueAt(index, 1).toString().equals(entry.getReading())) {
+        getSelectionModel().setSelectionInterval(index, index);
+        return;
+      }
+      else if (getValueAt(index, 2).toString().equals(entry.getEnglishMeaning())) {
+        getSelectionModel().setSelectionInterval(index, index);
+        return;
+      }
     }
   }
 
@@ -86,12 +94,7 @@ public class JlptTable extends JTable {
     Validator.checkNonNegative(row);
 
     String jword = getValueAt(row, 0).toString();
-    for (JapaneseEntry entry : this.model.getEntries()) {
-      if (entry.getJword().equals(jword)) {
-        return entry;
-      }
-    }
-    return null;
+    return getEntry(jword);
   }
 
   /**
