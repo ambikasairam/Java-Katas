@@ -46,11 +46,13 @@ public class ApplicationLauncher extends JFrame {
     getContentPane().add(rdbtnStandaloneClient);
 
     final JRadioButton rdbtnNetworkedClient = new JRadioButton("Networked Client");
+    rdbtnNetworkedClient.setEnabled(false);
     rdbtnNetworkedClient.setMnemonic(KeyEvent.VK_N);
     rdbtnNetworkedClient.setBounds(30, 75, 107, 23);
     getContentPane().add(rdbtnNetworkedClient);
 
     final JRadioButton rdbtnServer = new JRadioButton("Server");
+    rdbtnServer.setEnabled(false);
     rdbtnServer.setMnemonic(KeyEvent.VK_S);
     rdbtnServer.setBounds(30, 102, 57, 23);
     getContentPane().add(rdbtnServer);

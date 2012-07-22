@@ -34,10 +34,10 @@ public class StandaloneClientOpenFileDialogBox extends JFrame {
     getContentPane().setLayout(null);
     UiUtils.setFrameProperties(this, "Select Database File");
 
-    final JButton btnLaunchClient = new JButton("Start Client");
-    btnLaunchClient.setMnemonic(KeyEvent.VK_S);
-    btnLaunchClient.setEnabled(false);
-    btnLaunchClient.addActionListener(new ActionListener() {
+    final JButton btnStartClient = new JButton("Start Client");
+    btnStartClient.setMnemonic(KeyEvent.VK_S);
+    btnStartClient.setEnabled(false);
+    btnStartClient.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent event) {
         File file = new File(textField.getText());
@@ -60,7 +60,7 @@ public class StandaloneClientOpenFileDialogBox extends JFrame {
         }
       }
     });
-    getContentPane().add(btnLaunchClient);
+    getContentPane().add(btnStartClient);
 
     JLabel lblDatabaseLocation = new JLabel("Database Location:");
     lblDatabaseLocation.setBounds(10, 11, 97, 14);
@@ -71,7 +71,7 @@ public class StandaloneClientOpenFileDialogBox extends JFrame {
 
       @Override
       public void keyReleased(KeyEvent event) {
-        btnLaunchClient.setEnabled(!textField.getText().isEmpty());
+        btnStartClient.setEnabled(!textField.getText().isEmpty());
       }
 
     });
@@ -91,7 +91,7 @@ public class StandaloneClientOpenFileDialogBox extends JFrame {
         int returnValue = chooser.showOpenDialog(StandaloneClientOpenFileDialogBox.this);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
           textField.setText(chooser.getSelectedFile().getAbsolutePath());
-          btnLaunchClient.setEnabled(true);
+          btnStartClient.setEnabled(true);
         }
       }
 
@@ -99,7 +99,7 @@ public class StandaloneClientOpenFileDialogBox extends JFrame {
     int width = btnOpenFile.getPreferredSize().width;
     int height = btnOpenFile.getPreferredSize().height;
     btnOpenFile.setBounds(427, 7, width, height);
-    btnLaunchClient.setBounds(427, 41, width, height);
+    btnStartClient.setBounds(427, 41, width, height);
     getContentPane().add(btnOpenFile);
 
     setSize(545, 110);

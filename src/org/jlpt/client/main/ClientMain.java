@@ -250,6 +250,7 @@ public class ClientMain {
     Validator.checkNull(searchPanel);
 
     final JButton searchButton = new JButton("Search");
+    searchButton.setMnemonic(KeyEvent.VK_F);
     searchButton.setEnabled(false);
 
     final JTextField searchField = new JTextField();
@@ -281,6 +282,7 @@ public class ClientMain {
     searchPanel.add(searchField);
 
     final JButton clearResultsButton = new JButton("Clear Results");
+    clearResultsButton.setMnemonic(KeyEvent.VK_C);
     clearResultsButton.addActionListener(new ActionListener() {
 
       @Override
