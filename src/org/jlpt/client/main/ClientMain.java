@@ -216,19 +216,23 @@ public class ClientMain {
     Validator.checkNull(buttonPanel);
 
     JButton refreshButton = new JButton("Refresh Table");
+    refreshButton.setMnemonic(KeyEvent.VK_R);
     refreshButton.addActionListener(ClientUtils.getRefreshTableAction(this.databaseManager, this));
     buttonPanel.add(refreshButton);
 
     JButton addButton = new JButton("Add New Entry");
+    addButton.setMnemonic(KeyEvent.VK_A);
     addButton.addActionListener(ClientUtils.getAddNewEntryAction(this.databaseManager, this));
     buttonPanel.add(addButton);
 
     this.editButton = new JButton("Edit Selected Entry");
+    this.editButton.setMnemonic(KeyEvent.VK_E);
     this.editButton.addActionListener(ClientUtils.getEditSelectedEntryAction(this.databaseManager,
         this));
     buttonPanel.add(this.editButton);
 
     this.removeButton = new JButton("Remove Selected Entry");
+    this.removeButton.setMnemonic(KeyEvent.VK_D);
     this.removeButton.addActionListener(ClientUtils.getRemoveSelectedEntryAction(
         this.databaseManager, this));
     buttonPanel.add(this.removeButton);

@@ -35,6 +35,7 @@ public class StandaloneClientOpenFileDialogBox extends JFrame {
     UiUtils.setFrameProperties(this, "Select Database File");
 
     final JButton btnLaunchClient = new JButton("Start Client");
+    btnLaunchClient.setMnemonic(KeyEvent.VK_S);
     btnLaunchClient.setEnabled(false);
     btnLaunchClient.addActionListener(new ActionListener() {
       @Override
@@ -79,6 +80,7 @@ public class StandaloneClientOpenFileDialogBox extends JFrame {
     this.textField.setColumns(10);
 
     JButton btnOpenFile = new JButton("Open File...");
+    btnOpenFile.setMnemonic(KeyEvent.VK_O);
     btnOpenFile.addActionListener(new ActionListener() {
 
       @Override
@@ -102,7 +104,9 @@ public class StandaloneClientOpenFileDialogBox extends JFrame {
 
     setSize(545, 110);
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    UiUtils.setEscKey(this);
     setLocationRelativeTo(null);
+    setVisible(true);
   }
 
 }
