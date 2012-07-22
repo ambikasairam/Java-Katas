@@ -32,7 +32,7 @@ public class StandaloneClientOpenFileDialogBox extends JFrame {
    */
   public StandaloneClientOpenFileDialogBox() {
     getContentPane().setLayout(null);
-    UiUtils.setFrameProperties(this);
+    UiUtils.setFrameProperties(this, "Select Database File");
 
     final JButton btnLaunchClient = new JButton("Start Client");
     btnLaunchClient.setEnabled(false);

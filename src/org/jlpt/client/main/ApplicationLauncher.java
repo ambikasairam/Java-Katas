@@ -32,7 +32,7 @@ public class ApplicationLauncher extends JFrame {
       e.printStackTrace();
       return;
     }
-    UiUtils.setFrameProperties(this);
+    UiUtils.setFrameProperties(this, "Select Mode");
 
     // Use absolute positioning.
     getContentPane().setLayout(null);

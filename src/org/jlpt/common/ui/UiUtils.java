@@ -103,4 +103,19 @@ public final class UiUtils {
     frame.setResizable(false);
   }
 
+  /**
+   * Sets the properties of a frame such as its title and icon image.
+   * 
+   * @param frame The frame whose properties are to be set.
+   * @param title The title of the frame.
+   */
+  public static void setFrameProperties(JFrame frame, String title) {
+    Validator.checkNull(frame);
+    Validator.checkNotEmptyString(title);
+
+    frame.setTitle(title);
+    frame.setIconImage(new ImageIcon(ClientMain.class.getResource("jpn-flag.png")).getImage());
+    frame.setResizable(false);
+  }
+
 }
