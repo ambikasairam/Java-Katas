@@ -1,10 +1,10 @@
 package org.jlpt.client.main;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.WindowEvent;
 import java.io.IOException;
 import javax.swing.AbstractAction;
 import org.jlpt.common.db.EntryAlreadyExistsException;
+import org.jlpt.common.ui.UiUtils;
 import org.jlpt.common.utils.Validator;
 
 /**
@@ -47,9 +47,7 @@ public class AddEntryAction extends AbstractAction {
       System.err.println(e);
     }
     this.dialogBox.getClientMainFrame().updateTable();
-    WindowEvent windowClosing =
-        new WindowEvent(this.dialogBox, WindowEvent.WINDOW_CLOSING);
-    this.dialogBox.dispatchEvent(windowClosing);
+    UiUtils.closeFrame(this.dialogBox);
   }
 
 }

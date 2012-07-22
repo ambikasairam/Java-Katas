@@ -13,12 +13,10 @@ import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -39,7 +37,6 @@ import org.jlpt.client.table.JlptTable;
 import org.jlpt.client.table.JlptTableModel;
 import org.jlpt.common.datamodel.JapaneseEntry;
 import org.jlpt.common.db.DbManager;
-import org.jlpt.common.db.DbManagerImpl;
 import org.jlpt.common.db.InvalidRegExPatternException;
 import org.jlpt.common.ui.CloseAction;
 import org.jlpt.common.ui.StatusBar;
@@ -193,9 +190,7 @@ public class ClientMain {
   private void setProperties(JFrame frame) {
     Validator.checkNull(frame);
 
-    frame.setTitle("JLPT Study (ALPHA version)");
-    frame.setIconImage(new ImageIcon(ClientMain.class.getResource("jpn-flag.png")).getImage());
-    frame.setLayout(new BorderLayout());
+    UiUtils.setFrameProperties(frame);
 
     // Make the frame half the height and width of the monitor.
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -397,20 +392,6 @@ public class ClientMain {
   /** @return The selected entry in the table. */
   public JapaneseEntry getSelectedEntry() {
     return this.selectedEntry;
-  }
-
-  /**
-   * Tests this class.
-   * 
-   * @param args The file name and delimiter.
-   * @throws IOException If there are problems reading in from the database file.
-   */
-  public static void main(String... args) throws IOException {
-    if (args.length != 2) {
-      System.err.println("Need file name and delimiter.");
-      return;
-    }
-    new ClientMain(new DbManagerImpl(args[0], args[1]));
   }
 
 }

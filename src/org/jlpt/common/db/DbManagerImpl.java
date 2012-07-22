@@ -35,6 +35,19 @@ public class DbManagerImpl implements DbManager {
    * Creates a new DbManagerImpl instance. All of the lines are read in from the given database
    * file. Then the map of JLPT entries is populated using those lines.
    * 
+   * This constructor uses a semicolon as the default delimiter.
+   * 
+   * @param fileLocation The location of the database file.
+   * @throws IOException If there are problems reading in from the database file.
+   */
+  public DbManagerImpl(String fileLocation) throws IOException {
+    this(fileLocation, ";");
+  }
+
+  /**
+   * Creates a new DbManagerImpl instance. All of the lines are read in from the given database
+   * file. Then the map of JLPT entries is populated using those lines.
+   * 
    * @param fileLocation The location of the database file.
    * @param delimiter The delimiter used in the database file to separate parts of an entry.
    * @throws IOException If there are problems reading in from the database file.
