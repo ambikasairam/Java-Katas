@@ -1,4 +1,4 @@
-package org.jlpt.client.main;
+package org.jlpt.main;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -11,7 +11,9 @@ import javax.swing.JLabel;
 import javax.swing.JRadioButton;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import org.jlpt.client.main.StandaloneClientOpenFileDialogBox;
 import org.jlpt.common.ui.UiUtils;
+import org.jlpt.server.main.ServerMain;
 
 /**
  * A dialog box that allows a user to select either client mode or server mode for this application.
@@ -52,7 +54,6 @@ public class ApplicationLauncher extends JFrame {
     getContentPane().add(rdbtnNetworkedClient);
 
     final JRadioButton rdbtnServer = new JRadioButton("Server");
-    rdbtnServer.setEnabled(false);
     rdbtnServer.setMnemonic(KeyEvent.VK_S);
     rdbtnServer.setBounds(30, 102, 57, 23);
     getContentPane().add(rdbtnServer);
@@ -71,6 +72,11 @@ public class ApplicationLauncher extends JFrame {
           setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
           UiUtils.closeFrame(ApplicationLauncher.this);
           new StandaloneClientOpenFileDialogBox();
+        }
+        else if (rdbtnServer.isSelected()) {
+          setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+          UiUtils.closeFrame(ApplicationLauncher.this);
+          new ServerMain();
         }
       }
     });

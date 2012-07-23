@@ -25,7 +25,7 @@ import org.jlpt.common.ui.UiUtils;
 @SuppressWarnings("serial")
 public class StandaloneClientOpenFileDialogBox extends JFrame {
 
-  private JTextField textField;
+  private JTextField databaseLocationTextField;
 
   /**
    * Creates a new StandaloneClientOpenFileDialogBox.
@@ -40,7 +40,7 @@ public class StandaloneClientOpenFileDialogBox extends JFrame {
     btnStartClient.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent event) {
-        File file = new File(textField.getText());
+        File file = new File(databaseLocationTextField.getText());
         if (!file.exists()) {
           String msg = "The selected file does not exist. Please try again.";
           JOptionPane.showMessageDialog(StandaloneClientOpenFileDialogBox.this, msg, "Error",
@@ -51,7 +51,7 @@ public class StandaloneClientOpenFileDialogBox extends JFrame {
         try {
           setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
           // TODO: Handle different types of delimiters.
-          new ClientMain(new DbManagerImpl(textField.getText()));
+          new ClientMain(new DbManagerImpl(databaseLocationTextField.getText()));
           UiUtils.closeFrame(StandaloneClientOpenFileDialogBox.this);
         }
         catch (IOException e) {
@@ -66,18 +66,18 @@ public class StandaloneClientOpenFileDialogBox extends JFrame {
     lblDatabaseLocation.setBounds(10, 11, 97, 14);
     getContentPane().add(lblDatabaseLocation);
 
-    this.textField = new JTextField();
-    this.textField.addKeyListener(new KeyAdapter() {
+    this.databaseLocationTextField = new JTextField();
+    this.databaseLocationTextField.addKeyListener(new KeyAdapter() {
 
       @Override
       public void keyReleased(KeyEvent event) {
-        btnStartClient.setEnabled(!textField.getText().isEmpty());
+        btnStartClient.setEnabled(!databaseLocationTextField.getText().isEmpty());
       }
 
     });
-    this.textField.setBounds(117, 8, 300, 20);
-    getContentPane().add(this.textField);
-    this.textField.setColumns(10);
+    this.databaseLocationTextField.setBounds(117, 8, 300, 20);
+    getContentPane().add(this.databaseLocationTextField);
+    this.databaseLocationTextField.setColumns(10);
 
     JButton btnOpenFile = new JButton("Open File...");
     btnOpenFile.setMnemonic(KeyEvent.VK_O);
@@ -90,7 +90,7 @@ public class StandaloneClientOpenFileDialogBox extends JFrame {
         chooser.setFileFilter(filter);
         int returnValue = chooser.showOpenDialog(StandaloneClientOpenFileDialogBox.this);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
-          textField.setText(chooser.getSelectedFile().getAbsolutePath());
+          databaseLocationTextField.setText(chooser.getSelectedFile().getAbsolutePath());
           btnStartClient.setEnabled(true);
         }
       }

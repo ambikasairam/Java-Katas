@@ -62,7 +62,8 @@ public class ClientMain {
   private final DateFormat dateFormat;
 
   /**
-   * Creates a new ClientMain instance. Creates the client UI and displays it to the user's screen.
+   * Creates a new ClientMain instance. Creates the main client window and displays it on the user's
+   * screen.
    * 
    * @param databaseManager The database manager.
    */
