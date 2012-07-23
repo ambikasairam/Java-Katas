@@ -40,16 +40,16 @@ public class ServerMain extends JFrame {
 
     JButton btnStopServer = new JButton("Stop Server");
     btnStopServer.setEnabled(false);
-    btnStopServer.setBounds(427, 45, width, 23);
+    btnStopServer.setBounds(434, 45, width, 23);
     centerPanel.add(btnStopServer);
 
     final JButton btnStartServer = new JButton("Start Server");
     btnStartServer.setEnabled(false);
-    btnStartServer.setBounds(317, 45, width, 23);
+    btnStartServer.setBounds(324, 45, width, 23);
     centerPanel.add(btnStartServer);
 
     JButton btnOpenFile = new JButton("Open File...");
-    btnOpenFile.setBounds(427, 13, width, 23);
+    btnOpenFile.setBounds(434, 13, width, 23);
     btnOpenFile.addActionListener(new ActionListener() {
 
       @Override
@@ -71,7 +71,7 @@ public class ServerMain extends JFrame {
 
     this.databaseLocationTextField = new JTextField();
     this.databaseLocationTextField.setColumns(10);
-    this.databaseLocationTextField.setBounds(117, 14, 300, 20);
+    this.databaseLocationTextField.setBounds(117, 14, 307, 20);
     centerPanel.add(this.databaseLocationTextField);
 
     JLabel databaseLocationLabel = new JLabel("Database Location:");

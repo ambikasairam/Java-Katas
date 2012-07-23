@@ -94,19 +94,6 @@ public final class UiUtils {
    * Sets the properties of a frame such as its title and icon image.
    * 
    * @param frame The frame whose properties are to be set.
-   */
-  public static void setFrameProperties(JFrame frame) {
-    Validator.checkNull(frame);
-
-    frame.setTitle("JLPT Study (ALPHA version)");
-    frame.setIconImage(new ImageIcon(ClientMain.class.getResource("jpn-flag.png")).getImage());
-    frame.setResizable(false);
-  }
-
-  /**
-   * Sets the properties of a frame such as its title and icon image.
-   * 
-   * @param frame The frame whose properties are to be set.
    * @param title The title of the frame.
    */
   public static void setFrameProperties(JFrame frame, String title) {

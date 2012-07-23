@@ -191,7 +191,7 @@ public class ClientMain {
   private void setProperties(JFrame frame) {
     Validator.checkNull(frame);
 
-    UiUtils.setFrameProperties(frame);
+    UiUtils.setFrameProperties(frame, "JLPT Study Client (ALPHA version)");
 
     // Make the frame half the height and width of the monitor.
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
