@@ -59,6 +59,8 @@ public class ClientMain {
   private JLabel statusLabel;
   private JMenuItem editSelectedEntryMenuItem;
   private JMenuItem removeSelectedEntryMenuItem;
+  private JTextField searchField;
+  private JButton clearResultsButton;
   private final DateFormat dateFormat;
 
   /**
@@ -254,8 +256,8 @@ public class ClientMain {
     searchButton.setMnemonic(KeyEvent.VK_F);
     searchButton.setEnabled(false);
 
-    final JTextField searchField = new JTextField();
-    searchField.addFocusListener(new FocusListener() {
+    this.searchField = new JTextField();
+    this.searchField.addFocusListener(new FocusListener() {
 
       @Override
       public void focusGained(FocusEvent event) {
@@ -271,20 +273,24 @@ public class ClientMain {
       }
 
     });
-    searchField.addKeyListener(new KeyAdapter() {
+    this.searchField.addKeyListener(new KeyAdapter() {
 
       @Override
       public void keyReleased(KeyEvent event) {
         searchButton.setEnabled(!searchField.getText().isEmpty());
+        if (searchButton.isEnabled() && event.getKeyChar() == KeyEvent.VK_ENTER) {
+          executeSearch();
+        }
       }
 
     });
-    searchField.setPreferredSize(new Dimension(250, searchField.getPreferredSize().height));
-    searchPanel.add(searchField);
+    Dimension dimension = new Dimension(250, this.searchField.getPreferredSize().height);
+    this.searchField.setPreferredSize(dimension);
+    searchPanel.add(this.searchField);
 
-    final JButton clearResultsButton = new JButton("Clear Results");
-    clearResultsButton.setMnemonic(KeyEvent.VK_C);
-    clearResultsButton.addActionListener(new ActionListener() {
+    this.clearResultsButton = new JButton("Clear Results");
+    this.clearResultsButton.setMnemonic(KeyEvent.VK_C);
+    this.clearResultsButton.addActionListener(new ActionListener() {
 
       @Override
       public void actionPerformed(ActionEvent event) {
@@ -294,33 +300,40 @@ public class ClientMain {
       }
 
     });
-    clearResultsButton.setEnabled(false);
+    this.clearResultsButton.setEnabled(false);
 
     searchButton.addActionListener(new ActionListener() {
 
       @Override
       public void actionPerformed(ActionEvent event) {
-        List<JapaneseEntry> results;
-        try {
-          results = databaseManager.find(searchField.getText());
-        }
-        catch (InvalidRegExPatternException e) {
-          // TODO: Add logger.
-          String msg = "A problem was encountered while trying to find entries in the database: ";
-          msg += "\n\n" + e.getMessage() + "\n\n";
-          JOptionPane.showMessageDialog(frame, msg, "Error", JOptionPane.ERROR_MESSAGE);
-          return;
-        }
-        String msg = "<html>&nbsp;&nbsp;&nbsp;Found " + results.size() + " entries that matched ";
-        msg += "<b>" + searchField.getText() + "</b>.</html>";
-        statusLabel.setText(msg);
-        updateTable(results);
-        clearResultsButton.setEnabled(true);
+        executeSearch();
       }
 
     });
     searchPanel.add(searchButton);
-    searchPanel.add(clearResultsButton);
+    searchPanel.add(this.clearResultsButton);
+  }
+
+  /**
+   * Executes a search against the database.
+   */
+  private void executeSearch() {
+    List<JapaneseEntry> results;
+    try {
+      results = databaseManager.find(this.searchField.getText());
+    }
+    catch (InvalidRegExPatternException e) {
+      // TODO: Add logger.
+      String msg = "A problem was encountered while trying to find entries in the database: ";
+      msg += "\n\n" + e.getMessage() + "\n\n";
+      JOptionPane.showMessageDialog(frame, msg, "Error", JOptionPane.ERROR_MESSAGE);
+      return;
+    }
+    String msg = "<html>&nbsp;&nbsp;&nbsp;Found " + results.size() + " entries that matched ";
+    msg += "<b>" + this.searchField.getText() + "</b>.</html>";
+    statusLabel.setText(msg);
+    updateTable(results);
+    this.clearResultsButton.setEnabled(true);
   }
 
   /**

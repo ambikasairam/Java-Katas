@@ -3,6 +3,7 @@ package org.jlpt.server.main;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -82,7 +83,15 @@ public class ServerMain extends JFrame {
     portLabel.setBounds(79, 49, 28, 14);
     centerPanel.add(portLabel);
 
-    this.portTextField = new JTextField();
+    this.portTextField = new JTextField() {
+      @Override
+      public void processKeyEvent(KeyEvent ev) {
+        char c = ev.getKeyChar();
+        if ((c >= 48 && c <= 57) || c < 32 || c > 126) {
+          super.processKeyEvent(ev);
+        }
+      }
+    };
     this.portTextField.setColumns(10);
     this.portTextField.setBounds(117, 46, 55, 20);
     centerPanel.add(this.portTextField);

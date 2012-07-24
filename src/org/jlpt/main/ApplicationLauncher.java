@@ -3,6 +3,9 @@ package org.jlpt.main;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -42,18 +45,78 @@ public class ApplicationLauncher extends JFrame {
 
     final JRadioButton rdbtnStandaloneClient =
         new JRadioButton("Standalone Client (no networking)");
+    rdbtnStandaloneClient.addKeyListener(new KeyAdapter() {
+
+      @Override
+      public void keyReleased(KeyEvent event) {
+        if (rdbtnStandaloneClient.hasFocus()) {
+          setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+          UiUtils.closeFrame(ApplicationLauncher.this);
+          new StandaloneClientOpenFileDialogBox();
+        }
+      }
+
+    });
+    rdbtnStandaloneClient.addFocusListener(new FocusAdapter() {
+
+      @Override
+      public void focusGained(FocusEvent event) {
+        rdbtnStandaloneClient.setSelected(true);
+      }
+
+    });
     rdbtnStandaloneClient.setSelected(true);
     rdbtnStandaloneClient.setMnemonic(KeyEvent.VK_C);
     rdbtnStandaloneClient.setBounds(30, 49, 215, 23);
     getContentPane().add(rdbtnStandaloneClient);
 
     final JRadioButton rdbtnNetworkedClient = new JRadioButton("Networked Client");
+    rdbtnNetworkedClient.addKeyListener(new KeyAdapter() {
+
+      @Override
+      public void keyReleased(KeyEvent event) {
+        if (rdbtnNetworkedClient.hasFocus()) {
+          setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+          UiUtils.closeFrame(ApplicationLauncher.this);
+          // TODO:
+        }
+      }
+
+    });
+    rdbtnNetworkedClient.addFocusListener(new FocusAdapter() {
+
+      @Override
+      public void focusGained(FocusEvent event) {
+        rdbtnNetworkedClient.setSelected(true);
+      }
+
+    });
     rdbtnNetworkedClient.setEnabled(false);
     rdbtnNetworkedClient.setMnemonic(KeyEvent.VK_N);
     rdbtnNetworkedClient.setBounds(30, 75, 107, 23);
     getContentPane().add(rdbtnNetworkedClient);
 
     final JRadioButton rdbtnServer = new JRadioButton("Server");
+    rdbtnServer.addKeyListener(new KeyAdapter() {
+
+      @Override
+      public void keyReleased(KeyEvent event) {
+        if (rdbtnServer.hasFocus()) {
+          setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+          UiUtils.closeFrame(ApplicationLauncher.this);
+          new ServerMain();
+        }
+      }
+
+    });
+    rdbtnServer.addFocusListener(new FocusAdapter() {
+
+      @Override
+      public void focusGained(FocusEvent event) {
+        rdbtnServer.setSelected(true);
+      }
+
+    });
     rdbtnServer.setMnemonic(KeyEvent.VK_S);
     rdbtnServer.setBounds(30, 102, 57, 23);
     getContentPane().add(rdbtnServer);

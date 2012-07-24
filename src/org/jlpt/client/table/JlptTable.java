@@ -65,7 +65,9 @@ public class JlptTable extends JTable {
    * @param entry The entry to set.
    */
   public void setSelectedEntry(JapaneseEntry entry) {
-    Validator.checkNull(entry);
+    if (entry == null) {
+      return;
+    }
 
     int rowCount = getRowCount();
     for (int index = 0; index < rowCount; index++) {
