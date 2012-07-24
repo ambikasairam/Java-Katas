@@ -62,7 +62,7 @@ public final class Validator {
    * 
    * @param number The number that cannot be negative.
    */
-  public static void checkNonNegative(long number) {
+  public static void checkNotNegative(long number) {
     if (number < 0) {
       throw new IllegalArgumentException("number is negative.");
     }

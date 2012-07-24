@@ -93,7 +93,7 @@ public class JlptTable extends JTable {
    * @return The entry at the given row, or <code>null</code> if it is not found.
    */
   public JapaneseEntry getEntry(int row) {
-    Validator.checkNonNegative(row);
+    Validator.checkNotNegative(row);
 
     String jword = getValueAt(row, 0).toString();
     return getEntry(jword);
