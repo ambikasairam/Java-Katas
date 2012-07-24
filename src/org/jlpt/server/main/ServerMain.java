@@ -3,6 +3,7 @@ package org.jlpt.server.main;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -23,6 +24,7 @@ import org.jlpt.common.ui.UiUtils;
 @SuppressWarnings("serial")
 public class ServerMain extends JFrame {
 
+  private JButton btnStartServer;
   private JTextField databaseLocationTextField;
   private JTextField portTextField;
 
@@ -44,10 +46,10 @@ public class ServerMain extends JFrame {
     btnStopServer.setBounds(434, 45, width, 23);
     centerPanel.add(btnStopServer);
 
-    final JButton btnStartServer = new JButton("Start Server");
-    btnStartServer.setEnabled(false);
-    btnStartServer.setBounds(324, 45, width, 23);
-    centerPanel.add(btnStartServer);
+    this.btnStartServer = new JButton("Start Server");
+    this.btnStartServer.setEnabled(false);
+    this.btnStartServer.setBounds(324, 45, width, 23);
+    centerPanel.add(this.btnStartServer);
 
     JButton btnOpenFile = new JButton("Open File...");
     btnOpenFile.setBounds(434, 13, width, 23);
@@ -55,22 +57,14 @@ public class ServerMain extends JFrame {
 
       @Override
       public void actionPerformed(ActionEvent event) {
-        JFileChooser chooser = new JFileChooser();
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("Database file (*.db)", "db");
-        chooser.setFileFilter(filter);
-        int returnValue = chooser.showOpenDialog(ServerMain.this);
-        if (returnValue == JFileChooser.APPROVE_OPTION) {
-          databaseLocationTextField.setText(chooser.getSelectedFile().getAbsolutePath());
-          if (!portTextField.getText().isEmpty()) {
-            btnStartServer.setEnabled(true);
-          }
-        }
+        openFileDialogBox();
       }
 
     });
     centerPanel.add(btnOpenFile);
 
     this.databaseLocationTextField = new JTextField();
+    this.databaseLocationTextField.addKeyListener(new CustomKeyAdapter());
     this.databaseLocationTextField.setColumns(10);
     this.databaseLocationTextField.setBounds(117, 14, 307, 20);
     centerPanel.add(this.databaseLocationTextField);
@@ -92,6 +86,7 @@ public class ServerMain extends JFrame {
         }
       }
     };
+    this.portTextField.addKeyListener(new CustomKeyAdapter());
     this.portTextField.setColumns(10);
     this.portTextField.setBounds(117, 46, 55, 20);
     centerPanel.add(this.portTextField);
@@ -103,6 +98,48 @@ public class ServerMain extends JFrame {
     UiUtils.setEscKey(this);
     setLocationRelativeTo(null);
     setVisible(true);
+  }
+
+  /**
+   * Displays the Open File dialog box.
+   */
+  private void openFileDialogBox() {
+    JFileChooser chooser = new JFileChooser();
+    FileNameExtensionFilter filter = new FileNameExtensionFilter("Database file (*.db)", "db");
+    chooser.setFileFilter(filter);
+    int returnValue = chooser.showOpenDialog(ServerMain.this);
+    if (returnValue == JFileChooser.APPROVE_OPTION) {
+      this.databaseLocationTextField.setText(chooser.getSelectedFile().getAbsolutePath());
+      if (!portTextField.getText().isEmpty()) {
+        this.btnStartServer.setEnabled(true);
+      }
+    }
+  }
+
+  /**
+   * A key adapter that will enable/disable the Start Server button and, depending on the state of
+   * the Start Server button, either display the Open File dialog box or start the server.
+   * 
+   * @author BJ Peter DeLaCruz
+   */
+  private class CustomKeyAdapter extends KeyAdapter {
+
+    @Override
+    public void keyReleased(KeyEvent event) {
+      boolean flag = !databaseLocationTextField.getText().isEmpty();
+      flag = flag && !portTextField.getText().isEmpty();
+      btnStartServer.setEnabled(flag);
+
+      if (event.getKeyChar() == KeyEvent.VK_ENTER) {
+        // if (btnStartServer.isEnabled()) {
+          // TODO: Add code here.
+        // }
+        // else {
+          openFileDialogBox();
+        // }
+      }
+    }
+
   }
 
 }
