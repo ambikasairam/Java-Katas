@@ -278,8 +278,13 @@ public class ClientMain {
       @Override
       public void keyReleased(KeyEvent event) {
         searchButton.setEnabled(!searchField.getText().isEmpty());
-        if (searchButton.isEnabled() && event.getKeyChar() == KeyEvent.VK_ENTER) {
-          executeSearch();
+        if (event.getKeyChar() == KeyEvent.VK_ENTER) {
+          if (searchButton.isEnabled()) {
+            executeSearch();
+          }
+          else if (clearResultsButton.isEnabled()) {
+            clearResults();
+          }
         }
       }
 
@@ -294,9 +299,7 @@ public class ClientMain {
 
       @Override
       public void actionPerformed(ActionEvent event) {
-        statusLabel.setText("");
-        updateTable();
-        clearResultsButton.setEnabled(false);
+        clearResults();
       }
 
     });
@@ -312,6 +315,15 @@ public class ClientMain {
     });
     searchPanel.add(searchButton);
     searchPanel.add(this.clearResultsButton);
+  }
+
+  /**
+   * Clears the results in the table.
+   */
+  private void clearResults() {
+    statusLabel.setText("");
+    updateTable();
+    clearResultsButton.setEnabled(false);
   }
 
   /**

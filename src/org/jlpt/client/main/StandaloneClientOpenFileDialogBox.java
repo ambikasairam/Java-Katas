@@ -26,6 +26,7 @@ import org.jlpt.common.ui.UiUtils;
 public class StandaloneClientOpenFileDialogBox extends JFrame {
 
   private JTextField databaseLocationTextField;
+  private JButton btnStartClient;
 
   /**
    * Creates a new StandaloneClientOpenFileDialogBox.
@@ -34,33 +35,16 @@ public class StandaloneClientOpenFileDialogBox extends JFrame {
     getContentPane().setLayout(null);
     UiUtils.setFrameProperties(this, "Select Database File");
 
-    final JButton btnStartClient = new JButton("Start Client");
-    btnStartClient.setMnemonic(KeyEvent.VK_S);
-    btnStartClient.setEnabled(false);
-    btnStartClient.addActionListener(new ActionListener() {
+    this.btnStartClient = new JButton("Start Client");
+    this.btnStartClient.setMnemonic(KeyEvent.VK_S);
+    this.btnStartClient.setEnabled(false);
+    this.btnStartClient.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent event) {
-        File file = new File(databaseLocationTextField.getText());
-        if (!file.exists()) {
-          String msg = "The selected file does not exist. Please try again.";
-          JOptionPane.showMessageDialog(StandaloneClientOpenFileDialogBox.this, msg, "Error",
-              JOptionPane.ERROR_MESSAGE);
-          return;
-        }
-
-        try {
-          setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-          // TODO: Handle different types of delimiters.
-          new ClientMain(new DbManagerImpl(databaseLocationTextField.getText()));
-          UiUtils.closeFrame(StandaloneClientOpenFileDialogBox.this);
-        }
-        catch (IOException e) {
-          // TODO: Add logger.
-          System.err.println("Unable to create database manager: " + e.getMessage());
-        }
+        startClient();
       }
     });
-    getContentPane().add(btnStartClient);
+    getContentPane().add(this.btnStartClient);
 
     JLabel lblDatabaseLocation = new JLabel("Database Location:");
     lblDatabaseLocation.setBounds(10, 11, 97, 14);
@@ -72,6 +56,14 @@ public class StandaloneClientOpenFileDialogBox extends JFrame {
       @Override
       public void keyReleased(KeyEvent event) {
         btnStartClient.setEnabled(!databaseLocationTextField.getText().isEmpty());
+        if (event.getKeyChar() == KeyEvent.VK_ENTER) {
+          if (btnStartClient.isEnabled()) {
+            startClient();
+          }
+          else {
+            openFileDialogBox();
+          }
+        }
       }
 
     });
@@ -85,21 +77,14 @@ public class StandaloneClientOpenFileDialogBox extends JFrame {
 
       @Override
       public void actionPerformed(ActionEvent event) {
-        JFileChooser chooser = new JFileChooser();
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("Database file (*.db)", "db");
-        chooser.setFileFilter(filter);
-        int returnValue = chooser.showOpenDialog(StandaloneClientOpenFileDialogBox.this);
-        if (returnValue == JFileChooser.APPROVE_OPTION) {
-          databaseLocationTextField.setText(chooser.getSelectedFile().getAbsolutePath());
-          btnStartClient.setEnabled(true);
-        }
+        openFileDialogBox();
       }
 
     });
     int width = btnOpenFile.getPreferredSize().width;
     int height = btnOpenFile.getPreferredSize().height;
     btnOpenFile.setBounds(427, 7, width, height);
-    btnStartClient.setBounds(427, 41, width, height);
+    this.btnStartClient.setBounds(427, 41, width, height);
     getContentPane().add(btnOpenFile);
 
     setSize(545, 110);
@@ -107,6 +92,44 @@ public class StandaloneClientOpenFileDialogBox extends JFrame {
     UiUtils.setEscKey(this);
     setLocationRelativeTo(null);
     setVisible(true);
+  }
+
+  /**
+   * Launches the Open File dialog box.
+   */
+  private void openFileDialogBox() {
+    JFileChooser chooser = new JFileChooser();
+    FileNameExtensionFilter filter = new FileNameExtensionFilter("Database file (*.db)", "db");
+    chooser.setFileFilter(filter);
+    int returnValue = chooser.showOpenDialog(StandaloneClientOpenFileDialogBox.this);
+    if (returnValue == JFileChooser.APPROVE_OPTION) {
+      this.databaseLocationTextField.setText(chooser.getSelectedFile().getAbsolutePath());
+      this.btnStartClient.setEnabled(true);
+    }
+  }
+
+  /**
+   * Starts the client application.
+   */
+  private void startClient() {
+    File file = new File(this.databaseLocationTextField.getText());
+    if (!file.exists()) {
+      String msg = "The selected file does not exist. Please try again.";
+      JOptionPane.showMessageDialog(StandaloneClientOpenFileDialogBox.this, msg, "Error",
+          JOptionPane.ERROR_MESSAGE);
+      return;
+    }
+
+    try {
+      setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+      // TODO: Handle different types of delimiters.
+      new ClientMain(new DbManagerImpl(this.databaseLocationTextField.getText()));
+      UiUtils.closeFrame(StandaloneClientOpenFileDialogBox.this);
+    }
+    catch (IOException e) {
+      // TODO: Add logger.
+      System.err.println("Unable to create database manager: " + e.getMessage());
+    }
   }
 
 }
