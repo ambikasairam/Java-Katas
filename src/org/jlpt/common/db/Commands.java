@@ -18,6 +18,8 @@ public enum Commands {
   /** Retrieves a list of entries from the database. */
   GET,
   /** Saves the entries to the database. */
-  SAVE;
+  SAVE,
+  /** Tells the server that a client is going to quit. */
+  QUIT;
 
 }

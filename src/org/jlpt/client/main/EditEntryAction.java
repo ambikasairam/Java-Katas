@@ -43,7 +43,7 @@ public class EditEntryAction extends AbstractAction {
     try {
       this.dialogBox.getDbManager().updateEntry(this.dialogBox.getUpdatedEntry(), oldEntry);
     }
-    catch (EntryDoesNotExistException | StaleEntryException e) {
+    catch (EntryDoesNotExistException | StaleEntryException | IOException e) {
       // TODO: Add logger. Show popup message. Then return.
 
       return;

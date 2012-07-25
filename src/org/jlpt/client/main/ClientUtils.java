@@ -2,6 +2,9 @@ package org.jlpt.client.main;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import org.jlpt.common.datamodel.JapaneseEntry;
 import org.jlpt.common.db.DbManager;
@@ -15,6 +18,8 @@ import org.jlpt.common.utils.Validator;
  * @author BJ Peter DeLaCruz
  */
 public final class ClientUtils {
+
+  private static final Logger LOGGER = Logger.getGlobal();
 
   /** Do not instantiate this class. */
   private ClientUtils() {
@@ -80,7 +85,12 @@ public final class ClientUtils {
 
       @Override
       public void actionPerformed(ActionEvent event) {
-        clientMain.updateTable(databaseManager.getEntries());
+        try {
+          clientMain.updateTable(databaseManager.getEntries());
+        }
+        catch (Exception e) {
+          LOGGER.log(Level.SEVERE, e.getMessage());
+        }
       }
 
     };
@@ -177,9 +187,9 @@ public final class ClientUtils {
     try {
       databaseManager.removeEntry(selectedEntry);
     }
-    catch (EntryDoesNotExistException e) {
-      // TODO: Add logger.
-      System.err.println("Unable to remove selected entry from database: " + selectedEntry);
+    catch (EntryDoesNotExistException | IOException e) {
+      msg = "Unable to remove selected entry from database: " + selectedEntry + "\n";
+      LOGGER.log(Level.SEVERE, msg + e.getMessage());
       return;
     }
     msg = "   Successfully removed " + selectedEntry.getJword() + " from the database.";

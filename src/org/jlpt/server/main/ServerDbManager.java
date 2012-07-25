@@ -2,8 +2,12 @@ package org.jlpt.server.main;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.SocketException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.jlpt.common.db.DbManager;
 import org.jlpt.common.db.DbManagerImpl;
 import org.jlpt.common.utils.Validator;
@@ -15,7 +19,8 @@ import org.jlpt.common.utils.Validator;
  */
 public class ServerDbManager {
 
-  private static final int NUM_THREADS = 10;
+  private static final Logger LOGGER = Logger.getGlobal();
+  private static final int NUM_THREADS = 25;
 
   private final ExecutorService threadPool = Executors.newFixedThreadPool(NUM_THREADS);
   private final DbManager databaseManager;
@@ -83,13 +88,22 @@ public class ServerDbManager {
 
       @Override
       public void run() {
-        while (true) {
+        while (!threadPool.isShutdown()) {
           try {
-            serverSocket.accept();
+            Socket socket = serverSocket.accept();
+            threadPool.execute(new Task(databaseManager, socket));
           }
-          catch (IOException e) {
-            // TODO: Add logger here.
-            System.err.println("*** " + e.getMessage() + " ***");
+          catch (SocketException e) {
+            if (e.getMessage().contains("socket closed")) {
+              LOGGER.log(Level.INFO, e.getMessage());
+            }
+            else {
+              LOGGER.log(Level.SEVERE, e.getMessage());
+            }
+            break;
+          }
+          catch (Exception e) {
+            LOGGER.log(Level.SEVERE, e.getMessage());
             break;
           }
         }
@@ -100,8 +114,11 @@ public class ServerDbManager {
 
   /**
    * Shuts down the thread pool.
+   * 
+   * @throws IOException If there are problems shutting down the server socket.
    */
-  public void shutdownThreadPool() {
+  public void shutdown() throws IOException {
+    this.serverSocket.close();
     this.threadPool.shutdown();
   }
 
@@ -111,13 +128,12 @@ public class ServerDbManager {
    * @throws Exception If problems are encountered.
    */
   public static void main(String... args) throws Exception {
+    LOGGER.setLevel(Level.INFO);
     String location = "C:\\Users\\BJ Peter DeLaCruz\\Desktop\\JLPT Study\\japanese_words.db";
-    ServerDbManager manager = new ServerDbManager(new DbManagerImpl(location), 8001);
-    manager.createSocket();
+    ServerDbManager manager = new ServerDbManager(new DbManagerImpl(location), 7777);
     manager.start();
-    Thread.sleep(3000);
-    manager.closeSocket();
-    manager.shutdownThreadPool();
+    Thread.sleep(15000); // Run server for 15 seconds.
+    manager.shutdown();
   }
 
 }

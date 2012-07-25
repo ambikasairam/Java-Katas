@@ -2,6 +2,8 @@ package org.jlpt.client.main;
 
 import java.awt.event.ActionEvent;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import org.jlpt.common.db.EntryAlreadyExistsException;
 import org.jlpt.common.ui.UiUtils;
@@ -14,6 +16,8 @@ import org.jlpt.common.utils.Validator;
  */
 @SuppressWarnings("serial")
 public class AddEntryAction extends AbstractAction {
+
+  private static final Logger LOGGER = Logger.getGlobal();
 
   private final JlptEntryDialogBox dialogBox;
 
@@ -34,17 +38,18 @@ public class AddEntryAction extends AbstractAction {
     try {
       this.dialogBox.getDbManager().addEntry(this.dialogBox.getUpdatedEntry());
     }
-    catch (EntryAlreadyExistsException e) {
-      // TODO: Add logger. Show popup message. Then return.
-
+    catch (EntryAlreadyExistsException | IOException e) {
+      LOGGER.log(Level.SEVERE, e.getMessage());
+      // TODO: Show popup message. Then return.
       return;
     }
     try {
       this.dialogBox.getDbManager().save();
     }
     catch (IOException e) {
-      // TODO: Add logger.
-      System.err.println(e);
+      LOGGER.log(Level.SEVERE, e.getMessage());
+      // TODO: Show popup message. Then return.
+      return;
     }
     this.dialogBox.getClientMainFrame().updateTable();
     UiUtils.closeFrame(this.dialogBox);

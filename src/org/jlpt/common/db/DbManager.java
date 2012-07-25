@@ -16,16 +16,18 @@ public interface DbManager {
    * 
    * @param entry The entry to add.
    * @throws EntryAlreadyExistsException If the entry already exists in the database.
+   * @throws IOException If there are problems sending the request from the client to the server.
    */
-  public void addEntry(JapaneseEntry entry) throws EntryAlreadyExistsException;
+  public void addEntry(JapaneseEntry entry) throws EntryAlreadyExistsException, IOException;
 
   /**
    * Removes an entry from the database. The entry <u>must</u> already exist.
    * 
    * @param entry The entry to remove.
    * @throws EntryDoesNotExistException If the entry currently does not exist in the database.
+   * @throws IOException If there are problems sending the request from the client to the server.
    */
-  public void removeEntry(JapaneseEntry entry) throws EntryDoesNotExistException;
+  public void removeEntry(JapaneseEntry entry) throws EntryDoesNotExistException, IOException;
 
   /**
    * Updates an entry in the database. The entry <u>must</u> already exist.
@@ -35,21 +37,27 @@ public interface DbManager {
    * @throws EntryDoesNotExistException If the entry currently does not exist in the database.
    * @throws StaleEntryException If the entry to be updated has already been updated by another
    * user.
+   * @throws IOException If there are problems sending the request from the client to the server.
    */
   public void updateEntry(JapaneseEntry newEntry, JapaneseEntry oldEntry)
-      throws EntryDoesNotExistException, StaleEntryException;
+      throws EntryDoesNotExistException, StaleEntryException, IOException;
 
   /**
    * Finds one or more entries in the database using the given regular expression pattern.
    * 
    * @param regexPattern The regular expression pattern to use for the search.
    * @return A list of entries, may be empty if none are found.
-   * @throws InvalidRegExPatternException If the regular expression pattern is invalid.
+   * @throws Exception If there are problems sending the request from the client to the server, or
+   * reading the results from the server; or if the regular expression pattern is invalid.
    */
-  public List<JapaneseEntry> find(String regexPattern) throws InvalidRegExPatternException;
+  public List<JapaneseEntry> find(String regexPattern) throws Exception;
 
-  /** @return A list of all entries in the database. */
-  public List<JapaneseEntry> getEntries();
+  /**
+   * @return A list of all entries in the database.
+   * @throws Exception If there are problems sending the request from the client to the server, or
+   * reading the results from the server.
+   */
+  public List<JapaneseEntry> getEntries() throws Exception;
 
   /**
    * A thread-safe method that will save the entries in the map to the database file.

@@ -3,12 +3,15 @@ package org.jlpt.common.db;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -23,6 +26,8 @@ import org.jlpt.common.utils.Validator;
  * @author BJ Peter DeLaCruz
  */
 public class DbManagerImpl implements DbManager {
+
+  private static final Logger LOGGER = Logger.getGlobal();
 
   private final Map<String, JapaneseEntry> entriesMap = Collections
       .synchronizedMap(new HashMap<String, JapaneseEntry>());
@@ -65,21 +70,19 @@ public class DbManagerImpl implements DbManager {
 
     for (String[] line : parsedLines) {
       if (line.length != 3) {
-        // Ignore entries that do not have exactly three fields.
-        // TODO: Add logger.
+        String msg = "Ignoring entries that do not have exactly three fields: ";
+        msg += Arrays.toString(line);
+        LOGGER.log(Level.INFO, msg);
         continue;
       }
       JapaneseEntry entry = new JapaneseEntry(line[0], line[1], line[2]);
       if (line[0].isEmpty() || line[1].isEmpty() || line[2].isEmpty()) {
-        // Ignore entries that have empty fields.
-        // TODO: Add logger.
-        System.err.println(entry);
+        LOGGER.log(Level.INFO, "Ignoring entries that have empty fields: " + entry);
         continue;
       }
       if (line[0].matches(WHITESPACE_REGEX) || line[1].matches(WHITESPACE_REGEX)
           || line[2].matches(WHITESPACE_REGEX)) {
-        // Ignore entries that only have whitespace characters.
-        // TODO: Add logger.
+        LOGGER.log(Level.INFO, "Ignoring entries that only have whitespace characters: " + entry);
         System.err.println(entry);
         continue;
       }
@@ -105,7 +108,7 @@ public class DbManagerImpl implements DbManager {
       }
 
       this.entriesMap.put(entry.getJword(), entry);
-      // TODO: Add logger.
+      LOGGER.log(Level.INFO, "Added the following entry to the database: " + entry);
     }
   }
 
@@ -120,7 +123,7 @@ public class DbManagerImpl implements DbManager {
         throw new EntryDoesNotExistException(entry);
       }
       this.entriesMap.remove(entry.getJword());
-      // TODO: Add logger.
+      LOGGER.log(Level.INFO, "Removed the following entry from the database: " + entry);
     }
   }
 
@@ -140,7 +143,7 @@ public class DbManagerImpl implements DbManager {
         throw new StaleEntryException(oldEntry);
       }
       this.entriesMap.put(entry.getJword(), newEntry);
-      // TODO: Add logger.
+      LOGGER.log(Level.INFO, "Updated the following entry in the database: " + entry);
     }
   }
 

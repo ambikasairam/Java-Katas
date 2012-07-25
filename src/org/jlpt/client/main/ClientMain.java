@@ -17,6 +17,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -37,7 +39,6 @@ import org.jlpt.client.table.JlptTable;
 import org.jlpt.client.table.JlptTableModel;
 import org.jlpt.common.datamodel.JapaneseEntry;
 import org.jlpt.common.db.DbManager;
-import org.jlpt.common.db.InvalidRegExPatternException;
 import org.jlpt.common.ui.CloseAction;
 import org.jlpt.common.ui.StatusBar;
 import org.jlpt.common.ui.UiUtils;
@@ -49,6 +50,8 @@ import org.jlpt.common.utils.Validator;
  * @author BJ Peter DeLaCruz
  */
 public class ClientMain {
+
+  private static final Logger LOGGER = Logger.getGlobal();
 
   private final DbManager databaseManager;
   private JlptTable table;
@@ -80,11 +83,18 @@ public class ClientMain {
     }
     catch (ClassNotFoundException | InstantiationException | IllegalAccessException
         | UnsupportedLookAndFeelException e) {
-      e.printStackTrace();
+      LOGGER.log(Level.SEVERE, e.getMessage());
       return;
     }
 
-    JlptTableModel model = new JlptTableModel(databaseManager.getEntries());
+    JlptTableModel model = null;
+    try {
+      model = new JlptTableModel(databaseManager.getEntries());
+    }
+    catch (Exception e) {
+      LOGGER.log(Level.SEVERE, e.getMessage());
+      return;
+    }
     this.table = new JlptTable(model);
 
     addPopupMenuItems();
@@ -164,7 +174,12 @@ public class ClientMain {
    * Updates the table with the most recent entries in the database.
    */
   public void updateTable() {
-    updateTable(this.databaseManager.getEntries());
+    try {
+      updateTable(this.databaseManager.getEntries());
+    }
+    catch (Exception e) {
+      LOGGER.log(Level.SEVERE, e.getMessage());
+    }
   }
 
   /**
@@ -334,8 +349,9 @@ public class ClientMain {
     try {
       results = databaseManager.find(this.searchField.getText());
     }
-    catch (InvalidRegExPatternException e) {
-      // TODO: Add logger.
+    catch (Exception e) {
+      LOGGER.log(Level.SEVERE, e.getMessage());
+
       String msg = "A problem was encountered while trying to find entries in the database: ";
       msg += "\n\n" + e.getMessage() + "\n\n";
       JOptionPane.showMessageDialog(frame, msg, "Error", JOptionPane.ERROR_MESSAGE);

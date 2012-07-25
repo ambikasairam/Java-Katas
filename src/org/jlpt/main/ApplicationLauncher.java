@@ -78,7 +78,7 @@ public class ApplicationLauncher extends JFrame {
         if (rdbtnNetworkedClient.hasFocus()) {
           setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
           UiUtils.closeFrame(ApplicationLauncher.this);
-          // TODO:
+          // TODO: Add code here.
         }
       }
 
