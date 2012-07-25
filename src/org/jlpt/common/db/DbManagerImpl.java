@@ -83,7 +83,6 @@ public class DbManagerImpl implements DbManager {
       if (line[0].matches(WHITESPACE_REGEX) || line[1].matches(WHITESPACE_REGEX)
           || line[2].matches(WHITESPACE_REGEX)) {
         LOGGER.log(Level.INFO, "Ignoring entries that only have whitespace characters: " + entry);
-        System.err.println(entry);
         continue;
       }
       try {

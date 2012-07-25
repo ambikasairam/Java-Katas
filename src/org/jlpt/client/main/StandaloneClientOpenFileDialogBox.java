@@ -6,6 +6,8 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -24,6 +26,8 @@ import org.jlpt.common.ui.UiUtils;
  */
 @SuppressWarnings("serial")
 public class StandaloneClientOpenFileDialogBox extends JFrame {
+
+  private static final Logger LOGGER = Logger.getGlobal();
 
   private JTextField databaseLocationTextField;
   private JButton btnStartClient;
@@ -127,8 +131,7 @@ public class StandaloneClientOpenFileDialogBox extends JFrame {
       UiUtils.closeFrame(StandaloneClientOpenFileDialogBox.this);
     }
     catch (IOException e) {
-      // TODO: Add logger.
-      System.err.println("Unable to create database manager: " + e.getMessage());
+      LOGGER.log(Level.SEVERE, "Unable to create database manager: " + e.getMessage());
     }
   }
 

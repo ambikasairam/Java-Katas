@@ -4,6 +4,8 @@ import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
@@ -20,6 +22,8 @@ import org.jlpt.common.utils.Validator;
  */
 @SuppressWarnings("serial")
 public class ExportAction extends AbstractAction {
+
+  private static final Logger LOGGER = Logger.getGlobal();
 
   private final JTable table;
   private final JComponent component;
@@ -56,8 +60,7 @@ public class ExportAction extends AbstractAction {
         FileUtils.writeToFile(lines, chooser.getSelectedFile());
       }
       catch (IOException e) {
-        // TODO: Add logger.
-        System.err.println("There was a problem writing to the file.");
+        LOGGER.log(Level.SEVERE, "There was a problem writing to the file: " + e.getMessage());
       }
     }
   }

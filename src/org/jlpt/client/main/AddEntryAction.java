@@ -40,7 +40,7 @@ public class AddEntryAction extends AbstractAction {
     }
     catch (EntryAlreadyExistsException | IOException e) {
       LOGGER.log(Level.SEVERE, e.getMessage());
-      // TODO: Show popup message. Then return.
+      // TODO: Show popup message.
       return;
     }
     try {
@@ -48,7 +48,7 @@ public class AddEntryAction extends AbstractAction {
     }
     catch (IOException e) {
       LOGGER.log(Level.SEVERE, e.getMessage());
-      // TODO: Show popup message. Then return.
+      // TODO: Show popup message.
       return;
     }
     this.dialogBox.getClientMainFrame().updateTable();

@@ -133,7 +133,6 @@ public class ClientDbManager implements DbManager {
     manager.quit();
     manager.close();
     Thread.sleep(1000);
-    System.out.println("Done.");
   }
 
 }

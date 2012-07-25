@@ -12,12 +12,6 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JFrame;
-import javax.swing.JScrollPane;
-import javax.swing.UIManager;
-import org.jlpt.client.table.JlptTable;
-import org.jlpt.client.table.JlptTableModel;
-import org.jlpt.common.datamodel.JapaneseEntry;
 
 /**
  * Utility class that contains methods for reading from and writing to a file. Contains a
@@ -106,44 +100,4 @@ public final class FileUtils {
     writer.close();
   }
 
-  /**
-   * Tests the <code>readFile</code> methods.
-   * 
-   * @param args The name of the file.
-   */
-  public static void main(String... args) {
-    if (args.length != 1) {
-      System.err.println("Need file name.");
-      return;
-    }
-
-    try {
-      List<String> lines = readFile(args[0]);
-      List<JapaneseEntry> entries = new ArrayList<>();
-      for (String line : lines) {
-        String[] words = line.split(";");
-        if (words.length != 3) {
-          // Ignore entries that do not have exactly three fields.
-          continue;
-        }
-        JapaneseEntry entry = new JapaneseEntry(words[0], words[1], words[2]);
-        entries.add(entry);
-      }
-      UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-      JFrame frame = new JFrame();
-      frame.setTitle("JLPT Study v0.1");
-      JlptTableModel model = new JlptTableModel(entries);
-      JlptTable table = new JlptTable(model);
-      JScrollPane pane =
-          new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-              JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-      frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-      frame.add(pane);
-      frame.pack();
-      frame.setVisible(true);
-    }
-    catch (Exception e) {
-      e.printStackTrace();
-    }
-  }
 }

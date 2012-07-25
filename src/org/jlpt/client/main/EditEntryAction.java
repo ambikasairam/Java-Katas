@@ -3,6 +3,8 @@ package org.jlpt.client.main;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import org.jlpt.client.table.JlptTable;
 import org.jlpt.common.datamodel.JapaneseEntry;
@@ -18,6 +20,8 @@ import org.jlpt.common.utils.Validator;
  */
 @SuppressWarnings("serial")
 public class EditEntryAction extends AbstractAction {
+
+  private static final Logger LOGGER = Logger.getGlobal();
 
   private final JlptEntryDialogBox dialogBox;
   private final JlptTable table;
@@ -44,16 +48,15 @@ public class EditEntryAction extends AbstractAction {
       this.dialogBox.getDbManager().updateEntry(this.dialogBox.getUpdatedEntry(), oldEntry);
     }
     catch (EntryDoesNotExistException | StaleEntryException | IOException e) {
-      // TODO: Add logger. Show popup message. Then return.
-
+      LOGGER.log(Level.SEVERE, e.getMessage());
+      // TODO: Show popup message.
       return;
     }
     try {
       this.dialogBox.getDbManager().save();
     }
     catch (IOException e) {
-      // TODO: Add logger.
-      System.err.println(e);
+      LOGGER.log(Level.SEVERE, e.getMessage());
     }
     this.dialogBox.getClientMainFrame().updateTable();
     WindowEvent windowClosing = new WindowEvent(this.dialogBox, WindowEvent.WINDOW_CLOSING);
