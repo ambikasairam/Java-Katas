@@ -5,13 +5,20 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import org.jlpt.common.db.DbManager;
+import org.jlpt.common.db.DbManagerImpl;
 import org.jlpt.common.ui.StatusBar;
 import org.jlpt.common.ui.UiUtils;
 
@@ -24,9 +31,15 @@ import org.jlpt.common.ui.UiUtils;
 @SuppressWarnings("serial")
 public class ServerMain extends JFrame {
 
-  private JButton btnStartServer;
+  private static final Logger LOGGER = Logger.getGlobal();
+
   private JTextField databaseLocationTextField;
+  private JButton btnOpenFile;
   private JTextField portTextField;
+  private JButton btnStartServer;
+  private JButton btnStopServer;
+  private DbManager dbManager;
+  private ServerDbManager serverDbManager;
 
   /**
    * Creates and displays the main server window for JLPT Study on the user's screen.
@@ -41,19 +54,41 @@ public class ServerMain extends JFrame {
 
     int width = 100;
 
-    JButton btnStopServer = new JButton("Stop Server");
-    btnStopServer.setEnabled(false);
-    btnStopServer.setBounds(434, 45, width, 23);
-    centerPanel.add(btnStopServer);
+    this.btnStopServer = new JButton("Stop Server");
+    this.btnStopServer.addActionListener(new ActionListener() {
+
+      @Override
+      public void actionPerformed(ActionEvent event) {
+        try {
+          serverDbManager.shutdown();
+          toggleComponents(true);
+        }
+        catch (IOException e) {
+          LOGGER.log(Level.SEVERE, e.getMessage());
+        }
+      }
+
+    });
+    this.btnStopServer.setEnabled(false);
+    this.btnStopServer.setBounds(434, 45, width, 23);
+    centerPanel.add(this.btnStopServer);
 
     this.btnStartServer = new JButton("Start Server");
+    this.btnStartServer.addActionListener(new ActionListener() {
+
+      @Override
+      public void actionPerformed(ActionEvent event) {
+        startServer();
+      }
+
+    });
     this.btnStartServer.setEnabled(false);
     this.btnStartServer.setBounds(324, 45, width, 23);
     centerPanel.add(this.btnStartServer);
 
-    JButton btnOpenFile = new JButton("Open File...");
-    btnOpenFile.setBounds(434, 13, width, 23);
-    btnOpenFile.addActionListener(new ActionListener() {
+    this.btnOpenFile = new JButton("Open File...");
+    this.btnOpenFile.setBounds(434, 13, width, 23);
+    this.btnOpenFile.addActionListener(new ActionListener() {
 
       @Override
       public void actionPerformed(ActionEvent event) {
@@ -61,7 +96,7 @@ public class ServerMain extends JFrame {
       }
 
     });
-    centerPanel.add(btnOpenFile);
+    centerPanel.add(this.btnOpenFile);
 
     this.databaseLocationTextField = new JTextField();
     this.databaseLocationTextField.addKeyListener(new CustomKeyAdapter());
@@ -101,6 +136,20 @@ public class ServerMain extends JFrame {
   }
 
   /**
+   * Toggles the state of the components in the window.
+   * 
+   * @param isEnabled True to enable the components (except the Stop Server button), false otherwise
+   * (false to disable the Start Server button).
+   */
+  private void toggleComponents(boolean isEnabled) {
+    this.databaseLocationTextField.setEnabled(isEnabled);
+    this.btnOpenFile.setEnabled(isEnabled);
+    this.portTextField.setEnabled(isEnabled);
+    this.btnStartServer.setEnabled(isEnabled);
+    this.btnStopServer.setEnabled(!isEnabled);
+  }
+
+  /**
    * Displays the Open File dialog box.
    */
   private void openFileDialogBox() {
@@ -113,6 +162,29 @@ public class ServerMain extends JFrame {
       if (!portTextField.getText().isEmpty()) {
         this.btnStartServer.setEnabled(true);
       }
+    }
+  }
+
+  /**
+   * Starts the server.
+   */
+  private void startServer() {
+    File file = new File(this.databaseLocationTextField.getText());
+    if (!file.exists()) {
+      String msg = "The selected file does not exist. Please try again.";
+      JOptionPane.showMessageDialog(this, msg, "Error", JOptionPane.ERROR_MESSAGE);
+      return;
+    }
+
+    try {
+      this.dbManager = new DbManagerImpl(this.databaseLocationTextField.getText());
+      int port = Integer.parseInt(this.portTextField.getText());
+      this.serverDbManager = new ServerDbManager(this.dbManager, port);
+      this.serverDbManager.start();
+      toggleComponents(false);
+    }
+    catch (IOException e) {
+      LOGGER.log(Level.SEVERE, e.getMessage());
     }
   }
 
@@ -131,12 +203,12 @@ public class ServerMain extends JFrame {
       btnStartServer.setEnabled(flag);
 
       if (event.getKeyChar() == KeyEvent.VK_ENTER) {
-        // if (btnStartServer.isEnabled()) {
-          // TODO: Add code here.
-        // }
-        // else {
+        if (btnStartServer.isEnabled()) {
+          startServer();
+        }
+        else {
           openFileDialogBox();
-        // }
+        }
       }
     }
 

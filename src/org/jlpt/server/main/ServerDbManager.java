@@ -27,6 +27,7 @@ public class ServerDbManager {
 
   private ServerSocket serverSocket;
   private final int port;
+  private boolean isServerRunning;
 
   /**
    * Creates a new ServerDbManager.
@@ -83,7 +84,7 @@ public class ServerDbManager {
    * Starts a thread that will listen for connections from the client. When a request comes in, the
    * thread will hand it over to another thread that will process the request.
    */
-  private void start() {
+  public void start() {
     this.threadPool.execute(new Runnable() {
 
       @Override
@@ -107,9 +108,16 @@ public class ServerDbManager {
             break;
           }
         }
+        isServerRunning = false;
       }
 
     });
+    this.isServerRunning = true;
+  }
+
+  /** @return True if server is running and listening for client connections, false otherwise. */
+  public boolean isServerRunning() {
+    return this.isServerRunning;
   }
 
   /**
@@ -124,6 +132,7 @@ public class ServerDbManager {
 
   /**
    * Test program.
+   * 
    * @param args None.
    * @throws Exception If problems are encountered.
    */

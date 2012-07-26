@@ -107,7 +107,7 @@ public class DbManagerImpl implements DbManager {
       }
 
       this.entriesMap.put(entry.getJword(), entry);
-      LOGGER.log(Level.INFO, "Added the following entry to the database: " + entry);
+      // LOGGER.log(Level.INFO, "Added the following entry to the database: " + entry);
     }
   }
 

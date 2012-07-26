@@ -7,6 +7,8 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -167,6 +169,7 @@ public class ApplicationLauncher extends JFrame {
    * @param args None.
    */
   public static void main(String... args) {
+    Logger.getGlobal().setLevel(Level.INFO);
     new ApplicationLauncher();
   }
 }
