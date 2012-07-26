@@ -1,5 +1,6 @@
-# Ignore these files.
+# Ignore these files:
 
+.settings/*
 bin/*
 build/*
 lib/*
@@ -19,4 +20,4 @@ Thumbs.db
 
 # Except these files:
 
-!japanese_words.csv
+!japanese_words.db
