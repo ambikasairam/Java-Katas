@@ -7,8 +7,10 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -40,6 +42,7 @@ public class ServerMain extends JFrame {
   private JButton btnStopServer;
   private DbManager dbManager;
   private ServerDbManager serverDbManager;
+  private JLabel statusLabel;
 
   /**
    * Creates and displays the main server window for JLPT Study on the user's screen.
@@ -62,6 +65,7 @@ public class ServerMain extends JFrame {
         try {
           serverDbManager.shutdown();
           toggleComponents(true);
+          setOfflineStatus();
         }
         catch (IOException e) {
           LOGGER.log(Level.SEVERE, e.getMessage());
@@ -126,6 +130,9 @@ public class ServerMain extends JFrame {
     this.portTextField.setBounds(117, 46, 55, 20);
     centerPanel.add(this.portTextField);
     StatusBar statusBar = new StatusBar();
+    this.statusLabel = new JLabel();
+    setOfflineStatus();
+    statusBar.addComponent(this.statusLabel);
     getContentPane().add(statusBar, BorderLayout.SOUTH);
 
     setSize(560, 140);
@@ -133,6 +140,24 @@ public class ServerMain extends JFrame {
     UiUtils.setEscKey(this);
     setLocationRelativeTo(null);
     setVisible(true);
+  }
+
+  /**
+   * Sets the label to offline status.
+   */
+  private void setOfflineStatus() {
+    this.statusLabel.setText("Server is offline.");
+    URL imageUrl = getClass().getResource("images/offline.png");
+    this.statusLabel.setIcon(new ImageIcon(imageUrl));
+  }
+
+  /**
+   * Sets the label to online status.
+   */
+  private void setOnlineStatus() {
+    this.statusLabel.setText("Server is online.");
+    URL imageUrl = getClass().getResource("images/online.png");
+    this.statusLabel.setIcon(new ImageIcon(imageUrl));
   }
 
   /**
@@ -182,6 +207,7 @@ public class ServerMain extends JFrame {
       this.serverDbManager = new ServerDbManager(this.dbManager, port);
       this.serverDbManager.start();
       toggleComponents(false);
+      setOnlineStatus();
     }
     catch (IOException e) {
       LOGGER.log(Level.SEVERE, e.getMessage());

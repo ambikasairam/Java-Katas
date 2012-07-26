@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.SystemColor;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 /**
@@ -15,6 +16,8 @@ import javax.swing.JPanel;
 @SuppressWarnings("serial")
 public class StatusBar extends JPanel {
 
+  private final JPanel innerPanel = new JPanel();
+
   /**
    * Creates a new StatusBar.
    */
@@ -22,6 +25,17 @@ public class StatusBar extends JPanel {
     setLayout(new BorderLayout());
     setPreferredSize(new Dimension(10, 23));
     setBackground(SystemColor.control);
+    this.innerPanel.setOpaque(false);
+    add(this.innerPanel, BorderLayout.WEST);
+  }
+
+  /**
+   * Adds a component to the status bar.
+   *
+   * @param component The component to add to the status bar.
+   */
+  public void addComponent(JComponent component) {
+    this.innerPanel.add(component);
   }
 
   /** {@inheritDoc} */

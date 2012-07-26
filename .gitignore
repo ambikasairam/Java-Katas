@@ -1,5 +1,6 @@
 # Ignore these files:
 
+.metadata/*
 .settings/*
 bin/*
 build/*

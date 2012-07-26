@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 import org.jlpt.common.db.AddRemoveRequest;
 import org.jlpt.common.db.Commands;
 import org.jlpt.common.db.DbManager;
-import org.utils.Validator;
+import org.jlpt.common.utils.Validator;
 
 /**
  * A Runnable that listens for requests from a client and processes them. One Runnable per client.
