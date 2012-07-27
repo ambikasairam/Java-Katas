@@ -7,10 +7,8 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -135,7 +133,7 @@ public class ServerMain extends JFrame {
     statusBar.addComponent(this.statusLabel);
     getContentPane().add(statusBar, BorderLayout.SOUTH);
 
-    setSize(560, 140);
+    setSize(560, 130);
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     UiUtils.setEscKey(this);
     setLocationRelativeTo(null);
@@ -147,8 +145,7 @@ public class ServerMain extends JFrame {
    */
   private void setOfflineStatus() {
     this.statusLabel.setText("Server is offline.");
-    URL imageUrl = getClass().getResource("images/offline.png");
-    this.statusLabel.setIcon(new ImageIcon(imageUrl));
+    this.statusLabel.setIcon(UiUtils.getOfflineIcon());
   }
 
   /**
@@ -156,8 +153,7 @@ public class ServerMain extends JFrame {
    */
   private void setOnlineStatus() {
     this.statusLabel.setText("Server is online.");
-    URL imageUrl = getClass().getResource("images/online.png");
-    this.statusLabel.setIcon(new ImageIcon(imageUrl));
+    this.statusLabel.setIcon(UiUtils.getOnlineIcon());
   }
 
   /**

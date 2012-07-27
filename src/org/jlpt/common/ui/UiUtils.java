@@ -1,6 +1,7 @@
 package org.jlpt.common.ui;
 
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -11,7 +12,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.KeyStroke;
-import org.jlpt.client.main.ClientMain;
 import org.jlpt.common.utils.Validator;
 
 /**
@@ -20,6 +20,10 @@ import org.jlpt.common.utils.Validator;
  * @author BJ Peter DeLaCruz
  */
 public final class UiUtils {
+
+  private static final String JPN_FLAG_ICON_URL = "images/jpn-flag.png";
+  private static final String OFFLINE_ICON_URL = "images/offline.png";
+  private static final String ONLINE_ICON_URL = "images/online.png";
 
   /** Do not instantiate this class. */
   private UiUtils() {
@@ -101,8 +105,23 @@ public final class UiUtils {
     Validator.checkNotEmptyString(title);
 
     frame.setTitle(title);
-    frame.setIconImage(new ImageIcon(ClientMain.class.getResource("jpn-flag.png")).getImage());
+    frame.setIconImage(getJapaneseFlagIcon());
     frame.setResizable(false);
+  }
+
+  /** @return The Japanese flag icon. */
+  public static Image getJapaneseFlagIcon() {
+    return new ImageIcon(UiUtils.class.getResource(JPN_FLAG_ICON_URL)).getImage();
+  }
+
+  /** @return The offline icon. */
+  public static ImageIcon getOfflineIcon() {
+    return new ImageIcon(UiUtils.class.getResource(OFFLINE_ICON_URL));
+  }
+
+  /** @return The online icon. */
+  public static ImageIcon getOnlineIcon() {
+    return new ImageIcon(UiUtils.class.getResource(ONLINE_ICON_URL));
   }
 
 }

@@ -8,7 +8,6 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyListener;
 import javax.swing.AbstractAction;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -49,7 +48,7 @@ public class JlptEntryDialogBox extends JFrame {
     this.databaseManager = databaseManager;
     this.client = client;
 
-    setIconImage(new ImageIcon(JlptEntryDialogBox.class.getResource("jpn-flag.png")).getImage());
+    setIconImage(UiUtils.getJapaneseFlagIcon());
     setLayout(new BorderLayout());
 
     GridBagLayout grid = new GridBagLayout();

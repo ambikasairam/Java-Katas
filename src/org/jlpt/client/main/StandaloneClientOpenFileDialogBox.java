@@ -51,7 +51,7 @@ public class StandaloneClientOpenFileDialogBox extends JFrame {
     getContentPane().add(this.btnStartClient);
 
     JLabel lblDatabaseLocation = new JLabel("Database Location:");
-    lblDatabaseLocation.setBounds(10, 11, 97, 14);
+    lblDatabaseLocation.setBounds(10, 16, 97, 14);
     getContentPane().add(lblDatabaseLocation);
 
     this.databaseLocationTextField = new JTextField();
@@ -71,7 +71,7 @@ public class StandaloneClientOpenFileDialogBox extends JFrame {
       }
 
     });
-    this.databaseLocationTextField.setBounds(117, 8, 300, 20);
+    this.databaseLocationTextField.setBounds(117, 13, 300, 20);
     getContentPane().add(this.databaseLocationTextField);
     this.databaseLocationTextField.setColumns(10);
 
@@ -87,8 +87,8 @@ public class StandaloneClientOpenFileDialogBox extends JFrame {
     });
     int width = btnOpenFile.getPreferredSize().width;
     int height = btnOpenFile.getPreferredSize().height;
-    btnOpenFile.setBounds(427, 7, width, height);
-    this.btnStartClient.setBounds(427, 41, width, height);
+    btnOpenFile.setBounds(427, 12, width, height);
+    this.btnStartClient.setBounds(427, 46, width, height);
     getContentPane().add(btnOpenFile);
 
     setSize(545, 110);

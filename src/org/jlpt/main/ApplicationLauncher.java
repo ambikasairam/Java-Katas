@@ -16,6 +16,7 @@ import javax.swing.JLabel;
 import javax.swing.JRadioButton;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import org.jlpt.client.main.NetworkedClientConfigDialogBox;
 import org.jlpt.client.main.StandaloneClientOpenFileDialogBox;
 import org.jlpt.common.ui.UiUtils;
 import org.jlpt.server.main.ServerMain;
@@ -80,7 +81,7 @@ public class ApplicationLauncher extends JFrame {
         if (rdbtnNetworkedClient.hasFocus()) {
           setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
           UiUtils.closeFrame(ApplicationLauncher.this);
-          // TODO: Add code here.
+          new NetworkedClientConfigDialogBox();
         }
       }
 
@@ -93,7 +94,6 @@ public class ApplicationLauncher extends JFrame {
       }
 
     });
-    rdbtnNetworkedClient.setEnabled(false);
     rdbtnNetworkedClient.setMnemonic(KeyEvent.VK_N);
     rdbtnNetworkedClient.setBounds(30, 75, 107, 23);
     getContentPane().add(rdbtnNetworkedClient);
@@ -137,6 +137,11 @@ public class ApplicationLauncher extends JFrame {
           setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
           UiUtils.closeFrame(ApplicationLauncher.this);
           new StandaloneClientOpenFileDialogBox();
+        }
+        else if (rdbtnNetworkedClient.isSelected()) {
+          setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+          UiUtils.closeFrame(ApplicationLauncher.this);
+          new NetworkedClientConfigDialogBox();
         }
         else if (rdbtnServer.isSelected()) {
           setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
