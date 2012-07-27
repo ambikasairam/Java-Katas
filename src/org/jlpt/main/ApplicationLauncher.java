@@ -1,5 +1,6 @@
 package org.jlpt.main;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,6 +14,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -29,6 +31,8 @@ import org.jlpt.server.main.ServerMain;
 @SuppressWarnings("serial")
 public class ApplicationLauncher extends JFrame {
 
+  private static final Logger LOGGER = Logger.getGlobal();
+
   /**
    * Creates a new ApplicationLauncher.
    */
@@ -38,13 +42,15 @@ public class ApplicationLauncher extends JFrame {
     }
     catch (ClassNotFoundException | InstantiationException | IllegalAccessException
         | UnsupportedLookAndFeelException e) {
-      e.printStackTrace();
+      LOGGER.log(Level.SEVERE, e.getMessage());
       return;
     }
     UiUtils.setFrameProperties(this, "Select Mode");
-
+    JPanel innerPanel = new JPanel();
     // Use absolute positioning.
-    getContentPane().setLayout(null);
+    innerPanel.setLayout(null);
+
+    getContentPane().setLayout(new BorderLayout());
 
     final JRadioButton rdbtnStandaloneClient =
         new JRadioButton("Standalone Client (no networking)");
@@ -71,7 +77,7 @@ public class ApplicationLauncher extends JFrame {
     rdbtnStandaloneClient.setSelected(true);
     rdbtnStandaloneClient.setMnemonic(KeyEvent.VK_C);
     rdbtnStandaloneClient.setBounds(30, 49, 215, 23);
-    getContentPane().add(rdbtnStandaloneClient);
+    innerPanel.add(rdbtnStandaloneClient);
 
     final JRadioButton rdbtnNetworkedClient = new JRadioButton("Networked Client");
     rdbtnNetworkedClient.addKeyListener(new KeyAdapter() {
@@ -96,7 +102,7 @@ public class ApplicationLauncher extends JFrame {
     });
     rdbtnNetworkedClient.setMnemonic(KeyEvent.VK_N);
     rdbtnNetworkedClient.setBounds(30, 75, 107, 23);
-    getContentPane().add(rdbtnNetworkedClient);
+    innerPanel.add(rdbtnNetworkedClient);
 
     final JRadioButton rdbtnServer = new JRadioButton("Server");
     rdbtnServer.addKeyListener(new KeyAdapter() {
@@ -121,7 +127,7 @@ public class ApplicationLauncher extends JFrame {
     });
     rdbtnServer.setMnemonic(KeyEvent.VK_S);
     rdbtnServer.setBounds(30, 102, 57, 23);
-    getContentPane().add(rdbtnServer);
+    innerPanel.add(rdbtnServer);
 
     ButtonGroup group = new ButtonGroup();
     group.add(rdbtnStandaloneClient);
@@ -153,13 +159,14 @@ public class ApplicationLauncher extends JFrame {
     int width = btnLaunch.getPreferredSize().width;
     int height = btnLaunch.getPreferredSize().height;
     btnLaunch.setBounds(267, 118, width, height);
-    getContentPane().add(btnLaunch);
+    innerPanel.add(btnLaunch);
 
     String msg = "<html>JLPT Study can run in client mode with or without networking<br>";
     msg += " or server mode. Please select one.</html>";
     JLabel lblNewLabel = new JLabel(msg);
     lblNewLabel.setBounds(30, 11, 344, 31);
-    getContentPane().add(lblNewLabel);
+    innerPanel.add(lblNewLabel);
+    getContentPane().add(innerPanel, BorderLayout.CENTER);
 
     setSize(new Dimension(360, 190));
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
