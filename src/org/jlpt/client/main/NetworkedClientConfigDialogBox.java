@@ -251,8 +251,10 @@ public class NetworkedClientConfigDialogBox extends JFrame {
    */
   private void startClient() {
     setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-    ClientMain clientMain = new ClientMain(this.clientDbManager);
-    ((ClientDbManager) this.clientDbManager).setServerStatusListener(clientMain);
+    ClientDbManager dbManager = (ClientDbManager) this.clientDbManager;
+    ClientMain clientMain = new ClientMain(dbManager);
+    dbManager.setServerStatusListener(clientMain);
+    dbManager.startCheckServerStatusTask();
     UiUtils.closeFrame(NetworkedClientConfigDialogBox.this);
   }
 

@@ -30,7 +30,7 @@ public class ClientDbManager implements DbManager {
 
   private static final Logger LOGGER = Logger.getGlobal();
 
-  private final ScheduledExecutorService threadPool = Executors.newScheduledThreadPool(1);
+  private final ScheduledExecutorService threadPool;
 
   private final String hostname;
   private final int port;
@@ -56,7 +56,7 @@ public class ClientDbManager implements DbManager {
     this.ostream = new ObjectOutputStream(this.socket.getOutputStream());
     this.ostream.flush();
     this.istream = new ObjectInputStream(this.socket.getInputStream());
-    this.threadPool.scheduleAtFixedRate(new CheckServerStatusTask(), 0L, 10L, TimeUnit.SECONDS);
+    this.threadPool = Executors.newScheduledThreadPool(1);
   }
 
   /** {@inheritDoc} */
@@ -141,6 +141,11 @@ public class ClientDbManager implements DbManager {
   public void setServerStatusListener(ServerStatusListener listener) {
     Validator.checkNull(listener);
     this.listener = listener;
+  }
+
+  /** Starts the task that will check the status of the server periodically. */
+  public void startCheckServerStatusTask() {
+    this.threadPool.scheduleAtFixedRate(new CheckServerStatusTask(), 0L, 10L, TimeUnit.SECONDS);
   }
 
   /**
