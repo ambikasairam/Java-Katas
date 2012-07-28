@@ -111,7 +111,7 @@ public class ClientDbManager implements DbManager {
   @Override
   public boolean save() throws Exception {
     this.ostream.writeObject(Commands.SAVE);
-    return this.istream.readBoolean();
+    return (Boolean) this.istream.readObject();
   }
 
   /**

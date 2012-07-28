@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jlpt.common.datamodel.JapaneseEntry;
 import org.jlpt.common.db.AddRemoveRequest;
 import org.jlpt.common.db.Commands;
 import org.jlpt.common.db.DbManager;
@@ -54,38 +56,69 @@ public class Task implements Runnable {
           }
           if (request instanceof AddRemoveRequest) {
             AddRemoveRequest addRemoveRequest = (AddRemoveRequest) request;
+            String msg = "";
             switch (addRemoveRequest.getCommand()) {
             case ADD:
               this.databaseManager.addEntry(addRemoveRequest.getEntry());
-              LOGGER.log(Level.INFO, "Successfully added entry to database.");
+
+              msg = "Successfully added entry to database. New entry: ";
+              msg += addRemoveRequest.getEntry() + ".";
+              LOGGER.log(Level.INFO, msg);
               break;
             case REMOVE:
               this.databaseManager.removeEntry(addRemoveRequest.getEntry());
-              LOGGER.log(Level.INFO, "Successfully removed entry from database.");
+
+              msg = "Successfully removed entry from database. Old entry: ";
+              msg += addRemoveRequest.getEntry() + ".";
+              LOGGER.log(Level.INFO, msg);
               break;
             default:
-              throw new IllegalArgumentException("Invalid command: "
-                  + addRemoveRequest.getCommand());
+              msg = "Invalid command: " + addRemoveRequest.getCommand();
+              throw new IllegalArgumentException(msg);
             }
           }
           else if (request instanceof UpdateRequest) {
             UpdateRequest updateRequest = (UpdateRequest) request;
             this.databaseManager.updateEntry(updateRequest.getNewEntry(),
                 updateRequest.getOldEntry());
-            String msg = "Successfully updated entry in database. [Old entry: ";
-            msg += updateRequest.getOldEntry() + "]";
-            msg += "[New entry: " + updateRequest.getNewEntry() + "]";
+
+            String msg = "Successfully updated entry in database. Old entry: ";
+            msg += updateRequest.getOldEntry() + ". ";
+            msg += "New entry: " + updateRequest.getNewEntry() + ".";
             LOGGER.log(Level.INFO, msg);
           }
           else if (request instanceof FindRequest) {
             FindRequest findRequest = (FindRequest) request;
-            ostream.writeObject(this.databaseManager.find(findRequest.getRegex()));
+            List<JapaneseEntry> results = this.databaseManager.find(findRequest.getRegex());
+            ostream.writeObject(results);
+
+            String msg = "Processed search using regular expression: " + findRequest.getRegex();
+            msg += ". Found ";
+            if (results.size() == 1) {
+              msg += "1 entry.";
+            }
+            else {
+              msg += results.size() + " entries.";
+            }
+            LOGGER.log(Level.INFO, msg);
           }
           else if (request == Commands.GET) {
-            ostream.writeObject(this.databaseManager.getEntries());
+            List<JapaneseEntry> entries = this.databaseManager.getEntries();
+            ostream.writeObject(entries);
+
+            String msg = "Retrieved list of entries. Total: ";
+            if (entries.size() == 1) {
+              msg += "1.";
+            }
+            else {
+              msg += entries.size() + ".";
+            }
+            LOGGER.log(Level.INFO, msg);
           }
           else if (request == Commands.SAVE) {
-            ostream.writeBoolean(this.databaseManager.save());
+            ostream.writeObject(this.databaseManager.save());
+
+            LOGGER.log(Level.INFO, "Successfully saved entries to database.");
           }
         }
       }
