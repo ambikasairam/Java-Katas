@@ -1,6 +1,7 @@
 package org.jlpt.client.main;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -61,6 +62,7 @@ public class NetworkedClientConfigDialogBox extends JFrame {
     this.serverNameTextField = new JTextField();
     this.serverNameTextField.addKeyListener(new CustomKeyAdapter());
     this.serverNameTextField.setBounds(88, 14, 200, 20);
+    this.serverNameTextField.setDisabledTextColor(Color.BLACK);
     this.serverNameTextField.setColumns(50);
     centerPanel.add(this.serverNameTextField);
 
@@ -80,6 +82,7 @@ public class NetworkedClientConfigDialogBox extends JFrame {
     this.portTextField.addKeyListener(new CustomKeyAdapter());
     this.portTextField.setColumns(10);
     this.portTextField.setBounds(88, 45, 55, 20);
+    this.portTextField.setDisabledTextColor(Color.BLACK);
     centerPanel.add(this.portTextField);
 
     this.btnStartClient = new JButton("Start Client");
@@ -193,6 +196,10 @@ public class NetworkedClientConfigDialogBox extends JFrame {
         String serverName = serverNameTextField.getText();
         int port = Integer.parseInt(portTextField.getText());
 
+        serverNameTextField.setEnabled(false);
+        portTextField.setEditable(false);
+        btnConnect.setEnabled(false);
+
         clientDbManager = new ClientDbManager(serverName, port);
 
         LOGGER.log(Level.INFO, "Successfully connected to server.");
@@ -213,6 +220,7 @@ public class NetworkedClientConfigDialogBox extends JFrame {
           /** {@inheritDoc} */
           @Override
           public void run() {
+            btnConnect.setEnabled(true);
             setOfflineStatus();
             String msg = "Unable to connect to server. Reason:\n\n" + e;
             JOptionPane.showMessageDialog(NetworkedClientConfigDialogBox.this, msg, "Error",
@@ -243,7 +251,8 @@ public class NetworkedClientConfigDialogBox extends JFrame {
    */
   private void startClient() {
     setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-    new ClientMain(this.clientDbManager);
+    ClientMain clientMain = new ClientMain(this.clientDbManager);
+    ((ClientDbManager) this.clientDbManager).setServerStatusListener(clientMain);
     UiUtils.closeFrame(NetworkedClientConfigDialogBox.this);
   }
 
@@ -255,6 +264,8 @@ public class NetworkedClientConfigDialogBox extends JFrame {
     this.statusLabel.setIcon(UiUtils.getOfflineIcon());
     this.btnConnect.setText(CONNECT);
     this.btnStartClient.setEnabled(false);
+    this.serverNameTextField.setEnabled(true);
+    this.portTextField.setEditable(true);
   }
 
   /**
@@ -264,7 +275,10 @@ public class NetworkedClientConfigDialogBox extends JFrame {
     this.statusLabel.setText("Connected to server.");
     this.statusLabel.setIcon(UiUtils.getOnlineIcon());
     this.btnConnect.setText(DISCONNECT);
+    this.btnConnect.setEnabled(true);
     this.btnStartClient.setEnabled(true);
+    this.serverNameTextField.setEnabled(false);
+    this.portTextField.setEditable(false);
   }
 
   /**

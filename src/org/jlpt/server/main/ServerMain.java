@@ -1,6 +1,7 @@
 package org.jlpt.server.main;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -47,7 +48,7 @@ public class ServerMain extends JFrame {
    */
   public ServerMain() {
     getContentPane().setLayout(new BorderLayout());
-    UiUtils.setFrameProperties(this, "JLPT Study Server (ALPHA version)");
+    UiUtils.setFrameProperties(this, "JLPT Study Server (Beta 1)");
 
     JPanel centerPanel = new JPanel();
     centerPanel.setLayout(null);
@@ -101,6 +102,7 @@ public class ServerMain extends JFrame {
     centerPanel.add(this.btnOpenFile);
 
     this.databaseLocationTextField = new JTextField();
+    this.databaseLocationTextField.setDisabledTextColor(Color.BLACK);
     this.databaseLocationTextField.addKeyListener(new CustomKeyAdapter());
     this.databaseLocationTextField.setColumns(10);
     this.databaseLocationTextField.setBounds(117, 14, 307, 20);
@@ -124,6 +126,7 @@ public class ServerMain extends JFrame {
       }
     };
     this.portTextField.addKeyListener(new CustomKeyAdapter());
+    this.portTextField.setDisabledTextColor(Color.BLACK);
     this.portTextField.setColumns(10);
     this.portTextField.setBounds(117, 46, 55, 20);
     centerPanel.add(this.portTextField);

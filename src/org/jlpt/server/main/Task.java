@@ -11,6 +11,8 @@ import org.jlpt.common.db.Commands;
 import org.jlpt.common.db.DbManager;
 import org.jlpt.common.db.EntryAlreadyExistsException;
 import org.jlpt.common.db.EntryDoesNotExistException;
+import org.jlpt.common.db.FindRequest;
+import org.jlpt.common.db.UpdateRequest;
 import org.jlpt.common.utils.Validator;
 
 /**
@@ -65,6 +67,19 @@ public class Task implements Runnable {
               throw new IllegalArgumentException("Invalid command: "
                   + addRemoveRequest.getCommand());
             }
+          }
+          else if (request instanceof UpdateRequest) {
+            UpdateRequest updateRequest = (UpdateRequest) request;
+            this.databaseManager.updateEntry(updateRequest.getNewEntry(),
+                updateRequest.getOldEntry());
+            String msg = "Successfully updated entry in database. [Old entry: ";
+            msg += updateRequest.getOldEntry() + "]";
+            msg += "[New entry: " + updateRequest.getNewEntry() + "]";
+            LOGGER.log(Level.INFO, msg);
+          }
+          else if (request instanceof FindRequest) {
+            FindRequest findRequest = (FindRequest) request;
+            ostream.writeObject(this.databaseManager.find(findRequest.getRegex()));
           }
           else if (request == Commands.GET) {
             ostream.writeObject(this.databaseManager.getEntries());

@@ -48,7 +48,7 @@ import org.jlpt.common.utils.Validator;
  * 
  * @author BJ Peter DeLaCruz
  */
-public class ClientMain {
+public class ClientMain implements ServerStatusListener {
 
   private static final Logger LOGGER = Logger.getGlobal();
 
@@ -198,7 +198,7 @@ public class ClientMain {
   private void setProperties(JFrame frame) {
     Validator.checkNull(frame);
 
-    UiUtils.setFrameProperties(frame, "JLPT Study Client (ALPHA version)");
+    UiUtils.setFrameProperties(frame, "JLPT Study Client (Beta 1)");
 
     // Make the frame half the height and width of the monitor.
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -442,7 +442,7 @@ public class ClientMain {
    */
   private void addStatusBar() {
     StatusBar statusBar = new StatusBar();
-    this.statusLabel = new JLabel("   Current status: Normal");
+    this.statusLabel = new JLabel("");
     statusBar.add(this.statusLabel);
     this.frame.add(statusBar, BorderLayout.SOUTH);
   }
@@ -465,6 +465,26 @@ public class ClientMain {
   /** @return The selected entry in the table. */
   public JapaneseEntry getSelectedEntry() {
     return this.selectedEntry;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void serverStatusChanged(ServerStatus status) {
+    Validator.checkNull(status);
+    switch (status) {
+    case ONLINE:
+      this.statusLabel.setText("Connected to server.");
+      this.statusLabel.setIcon(UiUtils.getOnlineIcon());
+      break;
+    case OFFLINE:
+      this.statusLabel.setText("Not connected to server.");
+      this.statusLabel.setIcon(UiUtils.getOfflineIcon());
+      JOptionPane.showMessageDialog(frame, "The connection to the server has been lost.", "Error",
+          JOptionPane.ERROR_MESSAGE);
+      break;
+    default:
+      throw new IllegalArgumentException("Unsupported server status: " + status);
+    }
   }
 
 }
