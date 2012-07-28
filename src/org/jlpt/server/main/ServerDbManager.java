@@ -9,7 +9,6 @@ import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jlpt.common.db.DbManager;
-import org.jlpt.common.db.DbManagerImpl;
 import org.jlpt.common.utils.Validator;
 
 /**
@@ -128,21 +127,6 @@ public class ServerDbManager {
   public void shutdown() throws IOException {
     this.serverSocket.close();
     this.threadPool.shutdown();
-  }
-
-  /**
-   * Test program.
-   * 
-   * @param args None.
-   * @throws Exception If problems are encountered.
-   */
-  public static void main(String... args) throws Exception {
-    LOGGER.setLevel(Level.INFO);
-    String location = "C:\\Users\\BJ Peter DeLaCruz\\Desktop\\JLPT Study\\japanese_words.db";
-    ServerDbManager manager = new ServerDbManager(new DbManagerImpl(location), 7777);
-    manager.start();
-    Thread.sleep(15000); // Run server for 15 seconds.
-    manager.shutdown();
   }
 
 }

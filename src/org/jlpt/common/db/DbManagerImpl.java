@@ -40,7 +40,7 @@ public class DbManagerImpl implements DbManager {
    * Creates a new DbManagerImpl instance. All of the lines are read in from the given database
    * file. Then the map of JLPT entries is populated using those lines.
    * 
-   * This constructor uses a semicolon as the default delimiter.
+   * It is assumed that the database file at the given location uses a semicolon as the delimiter.
    * 
    * @param fileLocation The location of the database file.
    * @throws IOException If there are problems reading in from the database file.
@@ -191,7 +191,7 @@ public class DbManagerImpl implements DbManager {
 
   /** {@inheritDoc} */
   @Override
-  public void save() throws IOException {
+  public boolean save() {
     List<String> entries = new ArrayList<>();
     synchronized (this.entriesMap) {
       for (Entry<String, JapaneseEntry> entry : this.entriesMap.entrySet()) {
@@ -200,7 +200,14 @@ public class DbManagerImpl implements DbManager {
     }
     Collections.sort(entries);
     synchronized (this.fileLock) {
-      FileUtils.writeToFile(entries, Paths.get(this.fileLocation));
+      try {
+        FileUtils.writeToFile(entries, Paths.get(this.fileLocation));
+        return true;
+      }
+      catch (IOException e) {
+        LOGGER.log(Level.SEVERE, e.getMessage());
+        return false;
+      }
     }
   }
 

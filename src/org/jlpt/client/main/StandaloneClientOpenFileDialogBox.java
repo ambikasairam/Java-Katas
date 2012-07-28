@@ -126,7 +126,6 @@ public class StandaloneClientOpenFileDialogBox extends JFrame {
 
     try {
       setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-      // TODO: Handle different types of delimiters.
       new ClientMain(new DbManagerImpl(this.databaseLocationTextField.getText()));
       UiUtils.closeFrame(StandaloneClientOpenFileDialogBox.this);
     }

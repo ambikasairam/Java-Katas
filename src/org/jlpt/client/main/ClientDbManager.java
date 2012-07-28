@@ -94,8 +94,9 @@ public class ClientDbManager implements DbManager {
 
   /** {@inheritDoc} */
   @Override
-  public void save() throws IOException {
+  public boolean save() throws Exception {
     this.ostream.writeObject(Commands.SAVE);
+    return this.istream.readBoolean();
   }
 
   /**
@@ -110,32 +111,12 @@ public class ClientDbManager implements DbManager {
   /**
    * Closes the connection.
    * 
-   * @throws IOException If there are problems trying to close the socket.
    * @return True if the socket has been closed, false otherwise.
+   * @throws IOException If there are problems trying to close the socket.
    */
   public boolean close() throws IOException {
     this.socket.close();
     return this.socket.isClosed();
-  }
-
-  /**
-   * Test program.
-   * @param args None.
-   * @throws Exception If problems are encountered.
-   */
-  public static void main(String... args) throws Exception {
-    ClientDbManager manager = new ClientDbManager("localhost", 7777);
-    JapaneseEntry entry = new JapaneseEntry("Hello", "World", "Foobar");
-    manager.addEntry(entry);
-    Thread.sleep(1000);
-
-    entry = new JapaneseEntry("Hi", "Bye", "Hello World");
-    manager.addEntry(entry);
-    Thread.sleep(1000);
-
-    manager.quit();
-    manager.close();
-    Thread.sleep(1000);
   }
 
 }

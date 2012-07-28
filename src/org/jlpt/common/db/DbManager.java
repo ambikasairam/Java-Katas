@@ -62,8 +62,9 @@ public interface DbManager {
   /**
    * A thread-safe method that will save the entries in the map to the database file.
    * 
-   * @throws IOException If there are problems saving the entries to the database file.
+   * @return True if the database file has been saved, false otherwise.
+   * @throws Exception If there are problems saving the entries to the database file.
    */
-  public void save() throws IOException;
+  public boolean save() throws Exception;
 
 }

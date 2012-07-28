@@ -69,6 +69,9 @@ public class Task implements Runnable {
           else if (request == Commands.GET) {
             ostream.writeObject(this.databaseManager.getEntries());
           }
+          else if (request == Commands.SAVE) {
+            ostream.writeBoolean(this.databaseManager.save());
+          }
         }
       }
     }

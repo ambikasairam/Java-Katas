@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.AbstractAction;
+import javax.swing.JOptionPane;
 import org.jlpt.client.table.JlptTable;
 import org.jlpt.common.datamodel.JapaneseEntry;
 import org.jlpt.common.db.EntryDoesNotExistException;
@@ -49,19 +50,22 @@ public class EditEntryAction extends AbstractAction {
     }
     catch (EntryDoesNotExistException | StaleEntryException | IOException e) {
       LOGGER.log(Level.SEVERE, e.getMessage());
-      // TODO: Show popup message.
+      String msg = "Unable to update entry in the database. Reason:\n\n" + e;
+      JOptionPane.showMessageDialog(dialogBox, msg, "Error", JOptionPane.ERROR_MESSAGE);
       return;
     }
     try {
       this.dialogBox.getDbManager().save();
     }
-    catch (IOException e) {
+    catch (Exception e) {
       LOGGER.log(Level.SEVERE, e.getMessage());
+      String msg = "Unable to save entries to the database. Reason:\n\n" + e;
+      JOptionPane.showMessageDialog(dialogBox, msg, "Error", JOptionPane.ERROR_MESSAGE);
+      return;
     }
     this.dialogBox.getClientMainFrame().updateTable();
     WindowEvent windowClosing = new WindowEvent(this.dialogBox, WindowEvent.WINDOW_CLOSING);
     this.dialogBox.dispatchEvent(windowClosing);
-    // TODO: Programmically select the entry that was just updated.
   }
 
 }

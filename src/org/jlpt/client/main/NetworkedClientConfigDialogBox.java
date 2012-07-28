@@ -243,7 +243,6 @@ public class NetworkedClientConfigDialogBox extends JFrame {
    */
   private void startClient() {
     setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-    // TODO: Handle different types of delimiters.
     new ClientMain(this.clientDbManager);
     UiUtils.closeFrame(NetworkedClientConfigDialogBox.this);
   }
