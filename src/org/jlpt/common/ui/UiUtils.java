@@ -25,6 +25,7 @@ public final class UiUtils {
   private static final String OFFLINE_ICON_URL = "images/offline.png";
   private static final String ONLINE_ICON_URL = "images/online.png";
   private static final String CONNECTING_ICON_URL = "images/connecting.png";
+  private static final String STANDALONE_ICON_URL = "images/standalone.png";
 
   /** Do not instantiate this class. */
   private UiUtils() {
@@ -128,6 +129,11 @@ public final class UiUtils {
   /** @return The connecting icon. */
   public static ImageIcon getConnectingIcon() {
     return new ImageIcon(UiUtils.class.getResource(CONNECTING_ICON_URL));
+  }
+
+  /** @return The standalone mode icon. */
+  public static ImageIcon getStandaloneModeIcon() {
+    return new ImageIcon(UiUtils.class.getResource(STANDALONE_ICON_URL));
   }
 
 }

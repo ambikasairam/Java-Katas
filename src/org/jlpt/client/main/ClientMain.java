@@ -482,6 +482,12 @@ public class ClientMain implements ServerStatusListener {
     return this.selectedEntry;
   }
 
+  /** Sets the icon and text for the server status label to standalone mode. */
+  public void setStandaloneStatus() {
+    this.serverStatusLabel.setText("Running in standalone mode.");
+    this.serverStatusLabel.setIcon(UiUtils.getStandaloneModeIcon());
+  }
+
   /** {@inheritDoc} */
   @Override
   public void serverStatusChanged(ServerStatus status) {

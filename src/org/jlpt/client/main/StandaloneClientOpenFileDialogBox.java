@@ -126,7 +126,9 @@ public class StandaloneClientOpenFileDialogBox extends JFrame {
 
     try {
       setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-      new ClientMain(new DbManagerImpl(this.databaseLocationTextField.getText()));
+      String location = this.databaseLocationTextField.getText();
+      ClientMain clientMain = new ClientMain(new DbManagerImpl(location));
+      clientMain.setStandaloneStatus();
       UiUtils.closeFrame(StandaloneClientOpenFileDialogBox.this);
     }
     catch (IOException e) {
