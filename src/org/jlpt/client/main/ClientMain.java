@@ -182,7 +182,7 @@ public class ClientMain {
 
     this.table.setModel(new JlptTableModel(entries));
 
-    this.table.setSelectedEntry(this.selectedEntry);
+    this.selectedEntry = this.table.selectEntry(this.selectedEntry);
     this.statusLabel.setText("   Last updated on " + dateFormat.format(new Date()) + ".");
 
     this.frame.invalidate();

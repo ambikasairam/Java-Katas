@@ -134,7 +134,7 @@ public class DbManagerImpl implements DbManager {
     Validator.checkNull(oldEntry);
 
     synchronized (this.entriesMap) {
-      JapaneseEntry entry = this.entriesMap.get(oldEntry.getJword());
+      JapaneseEntry entry = this.entriesMap.remove(oldEntry.getJword());
       if (entry == null) {
         throw new EntryDoesNotExistException(oldEntry);
       }

@@ -16,19 +16,18 @@ import org.jlpt.common.utils.Validator;
 @SuppressWarnings("serial")
 public class JlptTable extends JTable {
 
-  private final JlptTableModel model;
   private final JlptMenu menu;
 
   /**
    * Creates a JlptTable instance.
    * 
-   * @param model The table model that contains Japanese words and their English meanings.
+   * @param model The table model that contains Japanese words and their English
+   * meanings.
    */
   public JlptTable(JlptTableModel model) {
     super(model);
     Validator.checkNull(model);
 
-    this.model = model;
     this.menu = new JlptMenu(this);
 
     setShowVerticalLines(false);
@@ -60,37 +59,41 @@ public class JlptTable extends JTable {
   }
 
   /**
-   * Sets the given entry in the table.
+   * Selects the given entry in the table and then returns it.
    * 
-   * @param entry The entry to set.
+   * @param entry The entry to select.
+   * @return The entry if it is found in the table, or <code>null</code> if it is not found.
    */
-  public void setSelectedEntry(JapaneseEntry entry) {
+  public JapaneseEntry selectEntry(JapaneseEntry entry) {
     if (entry == null) {
-      return;
+      return null;
     }
 
     int rowCount = getRowCount();
     for (int index = 0; index < rowCount; index++) {
       if (getValueAt(index, 0).toString().equals(entry.getJword())) {
         getSelectionModel().setSelectionInterval(index, index);
-        return;
+        return getEntry(index);
       }
       else if (getValueAt(index, 1).toString().equals(entry.getReading())) {
         getSelectionModel().setSelectionInterval(index, index);
-        return;
+        return getEntry(index);
       }
       else if (getValueAt(index, 2).toString().equals(entry.getEnglishMeaning())) {
         getSelectionModel().setSelectionInterval(index, index);
-        return;
+        return getEntry(index);
       }
     }
+
+    return null;
   }
 
   /**
    * Returns the entry at the given row.
    * 
    * @param row The row where the entry is located.
-   * @return The entry at the given row, or <code>null</code> if it is not found.
+   * @return The entry at the given row, or <code>null</code> if it is not
+   * found.
    */
   public JapaneseEntry getEntry(int row) {
     Validator.checkNotNegative(row);
@@ -108,7 +111,7 @@ public class JlptTable extends JTable {
   public JapaneseEntry getEntry(String jword) {
     Validator.checkNotEmptyString(jword);
 
-    for (JapaneseEntry entry : this.model.getEntries()) {
+    for (JapaneseEntry entry : ((JlptTableModel) getModel()).getEntries()) {
       if (entry.getJword().equals(jword)) {
         return entry;
       }
