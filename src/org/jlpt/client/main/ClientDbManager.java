@@ -111,9 +111,11 @@ public class ClientDbManager implements DbManager {
    * Closes the connection.
    * 
    * @throws IOException If there are problems trying to close the socket.
+   * @return True if the socket has been closed, false otherwise.
    */
-  public void close() throws IOException {
+  public boolean close() throws IOException {
     this.socket.close();
+    return this.socket.isClosed();
   }
 
   /**

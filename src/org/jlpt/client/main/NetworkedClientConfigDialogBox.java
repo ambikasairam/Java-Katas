@@ -7,6 +7,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
@@ -29,6 +31,10 @@ import org.jlpt.common.ui.UiUtils;
 public class NetworkedClientConfigDialogBox extends JFrame {
 
   private static final Logger LOGGER = Logger.getGlobal();
+  private static final String CONNECT = "Connect";
+  private static final String DISCONNECT = "Disconnect";
+
+  private final ExecutorService threadPool = Executors.newFixedThreadPool(1);
 
   private final JTextField serverNameTextField;
   private final JTextField portTextField;
@@ -85,7 +91,8 @@ public class NetworkedClientConfigDialogBox extends JFrame {
     Dimension dimension = this.btnStartClient.getPreferredSize();
     this.btnStartClient.setBounds(302, 45, dimension.width, dimension.height);
 
-    this.btnConnect = new JButton("Connect");
+    this.btnConnect = new JButton(CONNECT);
+    this.btnConnect.addActionListener(new ConnectDisconnectAction());
     this.btnConnect.setMnemonic(KeyEvent.VK_S);
     this.btnConnect.setEnabled(false);
     this.btnConnect.setBounds(302, 13, dimension.width, dimension.height);
@@ -116,6 +123,7 @@ public class NetworkedClientConfigDialogBox extends JFrame {
     public void keyReleased(KeyEvent event) {
       if (event.getKeyChar() == KeyEvent.VK_ENTER && btnStartClient.isEnabled()) {
         startClient();
+        return;
       }
 
       boolean flag = !serverNameTextField.getText().isEmpty();
@@ -135,17 +143,48 @@ public class NetworkedClientConfigDialogBox extends JFrame {
    */
   private void connectToServer() {
     setConnectingStatus();
-    this.btnConnect.setEnabled(false);
-    new Worker().start();
+    this.threadPool.execute(new ConnectTask());
   }
 
   /**
-   * A worker thread that will attempt to connect to the server when the user clicks on the Connect
-   * button.
+   * An action that will either connect to or disconnect from the server.
    * 
    * @author BJ Peter DeLaCruz
    */
-  private class Worker extends Thread {
+  private class ConnectDisconnectAction implements ActionListener {
+
+    /** {@inheritDoc} */
+    @Override
+    public void actionPerformed(ActionEvent arg0) {
+      switch (btnConnect.getText()) {
+      case CONNECT:
+        connectToServer();
+        break;
+      case DISCONNECT:
+        try {
+          if (((ClientDbManager) clientDbManager).close()) {
+            setOfflineStatus();
+            return;
+          }
+          throw new IllegalStateException("The socket should have been closed.");
+        }
+        catch (IOException e) {
+          LOGGER.log(Level.SEVERE, e.getMessage());
+        }
+        break;
+      default:
+        throw new IllegalArgumentException("Unsupported action: " + btnConnect.getText());
+      }
+    }
+
+  }
+
+  /**
+   * Attempts to connect to the server when the user clicks on the Connect button.
+   * 
+   * @author BJ Peter DeLaCruz
+   */
+  private class ConnectTask implements Runnable {
 
     /** {@inheritDoc} */
     @Override
@@ -163,8 +202,6 @@ public class NetworkedClientConfigDialogBox extends JFrame {
           @Override
           public void run() {
             setOnlineStatus();
-            btnConnect.setEnabled(false);
-            btnStartClient.setEnabled(true);
           }
 
         });
@@ -176,7 +213,6 @@ public class NetworkedClientConfigDialogBox extends JFrame {
           /** {@inheritDoc} */
           @Override
           public void run() {
-            btnConnect.setEnabled(true);
             setOfflineStatus();
             String msg = "Unable to connect to server. Reason:\n\n" + e;
             JOptionPane.showMessageDialog(NetworkedClientConfigDialogBox.this, msg, "Error",
@@ -218,6 +254,8 @@ public class NetworkedClientConfigDialogBox extends JFrame {
   private void setOfflineStatus() {
     this.statusLabel.setText("Not connected to server.");
     this.statusLabel.setIcon(UiUtils.getOfflineIcon());
+    this.btnConnect.setText(CONNECT);
+    this.btnStartClient.setEnabled(false);
   }
 
   /**
@@ -226,6 +264,8 @@ public class NetworkedClientConfigDialogBox extends JFrame {
   private void setOnlineStatus() {
     this.statusLabel.setText("Connected to server.");
     this.statusLabel.setIcon(UiUtils.getOnlineIcon());
+    this.btnConnect.setText(DISCONNECT);
+    this.btnStartClient.setEnabled(true);
   }
 
   /**
