@@ -107,7 +107,8 @@ public class DbManagerImpl implements DbManager {
       }
 
       this.entriesMap.put(entry.getJword(), entry);
-      // LOGGER.log(Level.INFO, "Added the following entry to the database: " + entry);
+
+      LOGGER.log(Level.INFO, "Added entry to database: " + entry + "."); 
     }
   }
 
@@ -122,7 +123,8 @@ public class DbManagerImpl implements DbManager {
         throw new EntryDoesNotExistException(entry);
       }
       this.entriesMap.remove(entry.getJword());
-      LOGGER.log(Level.INFO, "Removed the following entry from the database: " + entry);
+
+      LOGGER.log(Level.INFO, "Removed entry from database: " + entry + ".");
     }
   }
 
@@ -142,7 +144,10 @@ public class DbManagerImpl implements DbManager {
         throw new StaleEntryException(oldEntry);
       }
       this.entriesMap.put(entry.getJword(), newEntry);
-      LOGGER.log(Level.INFO, "Updated the following entry in the database: " + entry);
+
+      String msg = "Updated entry in database. Old entry: ";
+      msg += entry + ". New entry: " + newEntry + ".";
+      LOGGER.log(Level.INFO, msg);
     }
   }
 
@@ -186,6 +191,16 @@ public class DbManagerImpl implements DbManager {
 
     sortEntries(results);
 
+    String msg = "Processed search using regular expression: " + regexPattern;
+    msg += ". Found ";
+    if (results.size() == 1) {
+      msg += "1 entry.";
+    }
+    else {
+      msg += results.size() + " entries.";
+    }
+    LOGGER.log(Level.INFO, msg);
+
     return results;
   }
 
@@ -202,10 +217,11 @@ public class DbManagerImpl implements DbManager {
     synchronized (this.fileLock) {
       try {
         FileUtils.writeToFile(entries, Paths.get(this.fileLocation));
+        LOGGER.log(Level.INFO, "Successfully saved entries to database.");
         return true;
       }
       catch (IOException e) {
-        LOGGER.log(Level.SEVERE, e.getMessage());
+        LOGGER.log(Level.SEVERE, "Failed to save entries to database. Reason: " + e.getMessage());
         return false;
       }
     }

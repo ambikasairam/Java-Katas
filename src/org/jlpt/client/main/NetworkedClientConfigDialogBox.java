@@ -174,6 +174,7 @@ public class NetworkedClientConfigDialogBox extends JFrame {
         try {
           if (((ClientDbManager) clientDbManager).close()) {
             setOfflineStatus();
+            LOGGER.log(Level.INFO, "Disconnected from server.");
             return;
           }
           throw new IllegalStateException("The socket should have been closed.");
@@ -199,17 +200,19 @@ public class NetworkedClientConfigDialogBox extends JFrame {
     /** {@inheritDoc} */
     @Override
     public void run() {
-      try {
-        String serverName = serverNameTextField.getText();
-        int port = Integer.parseInt(portTextField.getText());
+      String serverName = serverNameTextField.getText();
+      int port = Integer.parseInt(portTextField.getText());
 
+      try {
         serverNameTextField.setEnabled(false);
         portTextField.setEditable(false);
         btnConnect.setEnabled(false);
 
         clientDbManager = new ClientDbManager(serverName, port);
 
-        LOGGER.log(Level.INFO, "Successfully connected to server.");
+        String msg = "Successfully connected to server.\n   Server URL: " + serverName;
+        msg += "\n   Port: " + port;
+        LOGGER.log(Level.INFO,  msg);
         SwingUtilities.invokeLater(new Runnable() {
 
           /** {@inheritDoc} */
@@ -221,7 +224,9 @@ public class NetworkedClientConfigDialogBox extends JFrame {
         });
       }
       catch (final IOException e) {
-        LOGGER.log(Level.SEVERE, "Unable to connect to server: " + e);
+        String errorMsg = "Unable to connect to server.\n   Server URL: " + serverName;
+        errorMsg += "\n   Port: " + port + "\n   Reason: " + e;
+        LOGGER.log(Level.SEVERE, errorMsg);
         SwingUtilities.invokeLater(new Runnable() {
 
           /** {@inheritDoc} */

@@ -209,12 +209,16 @@ public class ServerMain extends JFrame {
     }
 
     try {
-      this.dbManager = new DbManagerImpl(this.databaseLocationTextField.getText());
+      String location = this.databaseLocationTextField.getText();
+      this.dbManager = new DbManagerImpl(location);
       int port = Integer.parseInt(this.portTextField.getText());
       this.serverDbManager = new ServerDbManager(this.dbManager, port);
       this.serverDbManager.start();
       toggleComponents(false);
       setOnlineStatus();
+      String msg = "Successfully started server.\n   Database Location: " + location;
+      msg += "\n   Port: " + port;
+      LOGGER.log(Level.INFO, msg);
     }
     catch (IOException e) {
       LOGGER.log(Level.SEVERE, e.getMessage());
