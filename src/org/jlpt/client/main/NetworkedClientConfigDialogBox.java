@@ -102,9 +102,16 @@ public class NetworkedClientConfigDialogBox extends JFrame {
     centerPanel.add(this.btnConnect);
 
     StatusBar statusBar = new StatusBar();
+
+    JPanel westPanel = new JPanel();
+    westPanel.setOpaque(false);
+    JLabel padding = new JLabel();
     this.statusLabel = new JLabel();
+    westPanel.add(padding);
+    westPanel.add(this.statusLabel);
+
     setOfflineStatus();
-    statusBar.addComponent(this.statusLabel);
+    statusBar.addComponent(westPanel, BorderLayout.WEST);
     getContentPane().add(statusBar, BorderLayout.SOUTH);
 
     setSize(415, 130);

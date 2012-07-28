@@ -16,7 +16,7 @@ import javax.swing.JPanel;
 @SuppressWarnings("serial")
 public class StatusBar extends JPanel {
 
-  private final JPanel innerPanel = new JPanel();
+  private final JPanel innerPanel = new JPanel(new BorderLayout());
 
   /**
    * Creates a new StatusBar.
@@ -26,7 +26,7 @@ public class StatusBar extends JPanel {
     setPreferredSize(new Dimension(10, 23));
     setBackground(SystemColor.control);
     this.innerPanel.setOpaque(false);
-    add(this.innerPanel, BorderLayout.WEST);
+    add(this.innerPanel, BorderLayout.CENTER);
   }
 
   /**
@@ -34,8 +34,8 @@ public class StatusBar extends JPanel {
    *
    * @param component The component to add to the status bar.
    */
-  public void addComponent(JComponent component) {
-    this.innerPanel.add(component);
+  public void addComponent(JComponent component, String position) {
+    this.innerPanel.add(component, position);
   }
 
   /** {@inheritDoc} */

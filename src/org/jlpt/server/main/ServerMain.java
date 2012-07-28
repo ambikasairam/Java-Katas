@@ -130,10 +130,18 @@ public class ServerMain extends JFrame {
     this.portTextField.setColumns(10);
     this.portTextField.setBounds(117, 46, 55, 20);
     centerPanel.add(this.portTextField);
+
     StatusBar statusBar = new StatusBar();
+
+    JPanel westPanel = new JPanel();
+    westPanel.setOpaque(false);
+    JLabel padding = new JLabel();
     this.statusLabel = new JLabel();
+    westPanel.add(padding);
+    westPanel.add(this.statusLabel);
+
     setOfflineStatus();
-    statusBar.addComponent(this.statusLabel);
+    statusBar.addComponent(westPanel, BorderLayout.WEST);
     getContentPane().add(statusBar, BorderLayout.SOUTH);
 
     setSize(560, 130);

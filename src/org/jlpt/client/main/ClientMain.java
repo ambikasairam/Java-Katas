@@ -59,6 +59,7 @@ public class ClientMain implements ServerStatusListener {
   private JButton removeButton;
   private JapaneseEntry selectedEntry;
   private JLabel statusLabel;
+  private JLabel serverStatusLabel;
   private JMenuItem editSelectedEntryMenuItem;
   private JMenuItem removeSelectedEntryMenuItem;
   private JTextField searchField;
@@ -442,8 +443,22 @@ public class ClientMain implements ServerStatusListener {
    */
   private void addStatusBar() {
     StatusBar statusBar = new StatusBar();
+
+    JPanel eastPanel = new JPanel();
+    eastPanel.setOpaque(false);
     this.statusLabel = new JLabel("");
-    statusBar.add(this.statusLabel);
+    eastPanel.add(this.statusLabel);
+
+    JPanel westPanel = new JPanel();
+    westPanel.setOpaque(false);
+    JLabel padding = new JLabel();
+    this.serverStatusLabel = new JLabel("");
+    westPanel.add(padding);
+    westPanel.add(this.serverStatusLabel);
+
+    statusBar.addComponent(eastPanel, BorderLayout.EAST);
+    statusBar.addComponent(westPanel, BorderLayout.WEST);
+
     this.frame.add(statusBar, BorderLayout.SOUTH);
   }
 
@@ -473,12 +488,12 @@ public class ClientMain implements ServerStatusListener {
     Validator.checkNull(status);
     switch (status) {
     case ONLINE:
-      this.statusLabel.setText("Connected to server.");
-      this.statusLabel.setIcon(UiUtils.getOnlineIcon());
+      this.serverStatusLabel.setText("Connected to server.");
+      this.serverStatusLabel.setIcon(UiUtils.getOnlineIcon());
       break;
     case OFFLINE:
-      this.statusLabel.setText("Not connected to server.");
-      this.statusLabel.setIcon(UiUtils.getOfflineIcon());
+      this.serverStatusLabel.setText("Not connected to server.");
+      this.serverStatusLabel.setIcon(UiUtils.getOfflineIcon());
       JOptionPane.showMessageDialog(frame, "The connection to the server has been lost.", "Error",
           JOptionPane.ERROR_MESSAGE);
       break;
