@@ -116,11 +116,15 @@ public class NetworkedClientConfigDialogBox extends JFrame {
     try {
       setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
       // TODO: Handle different types of delimiters.
+      String serverName = serverNameTextField.getText();
+      int port = Integer.parseInt(portTextField.getText());
+      new ClientMain(new ClientDbManager(serverName, port));
       // TODO: Add code to open ClientMain here.
       UiUtils.closeFrame(NetworkedClientConfigDialogBox.this);
+      LOGGER.log(Level.INFO, "Successfully connected to server.");
     }
     catch (Exception e) {
-      LOGGER.log(Level.SEVERE, "Unable to create database manager: " + e.getMessage());
+      LOGGER.log(Level.SEVERE, "Unable to create database manager: " + e);
     }
   }
 

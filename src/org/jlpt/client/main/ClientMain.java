@@ -17,6 +17,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
@@ -31,8 +32,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.MouseInputAdapter;
 import org.jlpt.client.table.ExportAction;
 import org.jlpt.client.table.JlptTable;
@@ -76,16 +75,7 @@ public class ClientMain {
     Validator.checkNull(databaseManager);
 
     this.databaseManager = databaseManager;
-    this.dateFormat = new SimpleDateFormat("MM-dd-YYYY 'at' HH:mm:ss z");
-
-    try {
-      UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-    }
-    catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-        | UnsupportedLookAndFeelException e) {
-      LOGGER.log(Level.SEVERE, e.getMessage());
-      return;
-    }
+    this.dateFormat = new SimpleDateFormat("MM-dd-YYYY 'at' HH:mm:ss z", Locale.US);
 
     JlptTableModel model = null;
     try {
@@ -288,48 +278,83 @@ public class ClientMain {
       }
 
     });
-    this.searchField.addKeyListener(new KeyAdapter() {
-
-      @Override
-      public void keyReleased(KeyEvent event) {
-        searchButton.setEnabled(!searchField.getText().isEmpty());
-        if (event.getKeyChar() == KeyEvent.VK_ENTER) {
-          if (searchButton.isEnabled()) {
-            executeSearch();
-          }
-          else if (clearResultsButton.isEnabled()) {
-            clearResults();
-          }
-        }
-      }
-
-    });
+    this.searchField.addKeyListener(new SearchFieldKeyListener(searchButton));
     Dimension dimension = new Dimension(250, this.searchField.getPreferredSize().height);
     this.searchField.setPreferredSize(dimension);
     searchPanel.add(this.searchField);
 
     this.clearResultsButton = new JButton("Clear Results");
     this.clearResultsButton.setMnemonic(KeyEvent.VK_C);
-    this.clearResultsButton.addActionListener(new ActionListener() {
-
-      @Override
-      public void actionPerformed(ActionEvent event) {
-        clearResults();
-      }
-
-    });
+    this.clearResultsButton.addActionListener(new ClearResultsButtonAction());
     this.clearResultsButton.setEnabled(false);
 
-    searchButton.addActionListener(new ActionListener() {
-
-      @Override
-      public void actionPerformed(ActionEvent event) {
-        executeSearch();
-      }
-
-    });
+    searchButton.addActionListener(new SearchButtonAction());
     searchPanel.add(searchButton);
     searchPanel.add(this.clearResultsButton);
+  }
+
+  /**
+   * A key listener for the search field that will either execute a search using the given regular
+   * expression pattern or clear the results from the screen when the Enter key is pressed and
+   * depending on the status of the Search and Clear Results buttons.
+   * 
+   * @author BJ Peter DeLaCruz
+   */
+  private class SearchFieldKeyListener extends KeyAdapter {
+
+    private final JButton searchButton;
+
+    /**
+     * Creates a new SearchFieldKeyListener.
+     * 
+     * @param searchButton The Search button.
+     */
+    public SearchFieldKeyListener(JButton searchButton) {
+      Validator.checkNull(searchButton);
+      this.searchButton = searchButton;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void keyReleased(KeyEvent event) {
+      searchButton.setEnabled(!searchField.getText().isEmpty());
+      if (event.getKeyChar() == KeyEvent.VK_ENTER) {
+        if (searchButton.isEnabled()) {
+          executeSearch();
+        }
+        else if (clearResultsButton.isEnabled()) {
+          clearResults();
+        }
+      }
+    }
+  }
+
+  /**
+   * An action that will execute a search using the given regular expression pattern when the user
+   * clicks on the Search button.
+   * 
+   * @author BJ Peter DeLaCruz
+   */
+  private class SearchButtonAction implements ActionListener {
+    /** {@inheritDoc} */
+    @Override
+    public void actionPerformed(ActionEvent event) {
+      executeSearch();
+    }
+  }
+
+  /**
+   * An action that will clear the results from the screen when the user clicks on the Clear Results
+   * button.
+   * 
+   * @author BJ Peter DeLaCruz
+   */
+  private class ClearResultsButtonAction implements ActionListener {
+    /** {@inheritDoc} */
+    @Override
+    public void actionPerformed(ActionEvent event) {
+      clearResults();
+    }
   }
 
   /**

@@ -39,8 +39,9 @@ public class ClientDbManager implements DbManager {
     Validator.checkNotNegative(port);
 
     this.socket = new Socket(hostname, port);
-    this.istream = new ObjectInputStream(this.socket.getInputStream());
     this.ostream = new ObjectOutputStream(this.socket.getOutputStream());
+    this.ostream.flush();
+    this.istream = new ObjectInputStream(this.socket.getInputStream());
   }
 
   /** {@inheritDoc} */

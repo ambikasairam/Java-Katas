@@ -1,6 +1,9 @@
 package org.jlpt.server.main;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,8 +41,14 @@ public class Task implements Runnable {
   /** {@inheritDoc} */
   @Override
   public void run() {
-    try (// ObjectOutputStream ostream = new ObjectOutputStream(this.socket.getOutputStream());
-        ObjectInputStream istream = new ObjectInputStream(this.socket.getInputStream())) {
+    ObjectOutputStream ostream = null;
+    ObjectInputStream istream = null;
+    try {
+      // I can't use the new try-with-resources statement because the output stream
+      // needs to be flushed before the input stream is created.
+      ostream = new ObjectOutputStream(this.socket.getOutputStream());
+      ostream.flush();
+      istream = new ObjectInputStream(this.socket.getInputStream());
       while (true) {
         Object request = istream.readObject();
         if (request == Commands.QUIT) {
@@ -60,10 +69,33 @@ public class Task implements Runnable {
             throw new IllegalArgumentException("Invalid command: " + addRemoveRequest.getCommand());
           }
         }
+        else if (request == Commands.GET) {
+          ostream.writeObject(this.databaseManager.getEntries());
+        }
       }
     }
     catch (Exception e) {
       LOGGER.log(Level.SEVERE, e.getMessage());
+    }
+    finally {
+      closeStream(istream);
+      closeStream(ostream);
+    }
+  }
+
+  /**
+   * Closes an input or output stream.
+   * @param stream The stream to close.
+   */
+  private void closeStream(Closeable stream) {
+    if (stream == null) {
+      return;
+    }
+    try {
+      stream.close();
+    }
+    catch (IOException e) {
+      LOGGER.log(Level.SEVERE, "Unable to close input stream: " + e);
     }
   }
 
