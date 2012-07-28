@@ -2,15 +2,21 @@ package org.jlpt.client.main;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+import org.jlpt.common.db.DbManager;
 import org.jlpt.common.ui.StatusBar;
 import org.jlpt.common.ui.UiUtils;
 
@@ -24,10 +30,12 @@ public class NetworkedClientConfigDialogBox extends JFrame {
 
   private static final Logger LOGGER = Logger.getGlobal();
 
-  private final JTextField portTextField;
-  private final JButton btnStartClient;
   private final JTextField serverNameTextField;
+  private final JTextField portTextField;
+  private final JButton btnConnect;
+  private final JButton btnStartClient;
   private final JLabel statusLabel;
+  private DbManager clientDbManager;
 
   /**
    * Creates a new NetworkedClientConfigDialogBox.
@@ -45,6 +53,7 @@ public class NetworkedClientConfigDialogBox extends JFrame {
     centerPanel.add(serverUrlLabel);
 
     this.serverNameTextField = new JTextField();
+    this.serverNameTextField.addKeyListener(new CustomKeyAdapter());
     this.serverNameTextField.setBounds(88, 14, 200, 20);
     this.serverNameTextField.setColumns(50);
     centerPanel.add(this.serverNameTextField);
@@ -70,10 +79,17 @@ public class NetworkedClientConfigDialogBox extends JFrame {
     this.btnStartClient = new JButton("Start Client");
     this.btnStartClient.setMnemonic(KeyEvent.VK_S);
     this.btnStartClient.setEnabled(false);
+    this.btnStartClient.addActionListener(new StartClientButtonAction());
     centerPanel.add(this.btnStartClient);
 
     Dimension dimension = this.btnStartClient.getPreferredSize();
     this.btnStartClient.setBounds(302, 45, dimension.width, dimension.height);
+
+    this.btnConnect = new JButton("Connect");
+    this.btnConnect.setMnemonic(KeyEvent.VK_S);
+    this.btnConnect.setEnabled(false);
+    this.btnConnect.setBounds(302, 13, dimension.width, dimension.height);
+    centerPanel.add(this.btnConnect);
 
     StatusBar statusBar = new StatusBar();
     this.statusLabel = new JLabel();
@@ -98,41 +114,109 @@ public class NetworkedClientConfigDialogBox extends JFrame {
 
     @Override
     public void keyReleased(KeyEvent event) {
-      boolean flag = !serverNameTextField.getText().isEmpty();
-      flag = flag && !portTextField.getText().isEmpty();
-      btnStartClient.setEnabled(flag);
-
       if (event.getKeyChar() == KeyEvent.VK_ENTER && btnStartClient.isEnabled()) {
         startClient();
+      }
+
+      boolean flag = !serverNameTextField.getText().isEmpty();
+      flag = flag && !portTextField.getText().isEmpty();
+      btnConnect.setEnabled(flag);
+
+      if (event.getKeyChar() == KeyEvent.VK_ENTER && btnConnect.isEnabled()) {
+        connectToServer();
       }
     }
 
   }
 
   /**
+   * Connects to the server and enables the Start Client button when a connection to the server has
+   * been established.
+   */
+  private void connectToServer() {
+    setConnectingStatus();
+    this.btnConnect.setEnabled(false);
+    new Worker().start();
+  }
+
+  /**
+   * A worker thread that will attempt to connect to the server when the user clicks on the Connect
+   * button.
+   * 
+   * @author BJ Peter DeLaCruz
+   */
+  private class Worker extends Thread {
+
+    /** {@inheritDoc} */
+    @Override
+    public void run() {
+      try {
+        String serverName = serverNameTextField.getText();
+        int port = Integer.parseInt(portTextField.getText());
+
+        clientDbManager = new ClientDbManager(serverName, port);
+
+        LOGGER.log(Level.INFO, "Successfully connected to server.");
+        SwingUtilities.invokeLater(new Runnable() {
+
+          /** {@inheritDoc} */
+          @Override
+          public void run() {
+            setOnlineStatus();
+            btnConnect.setEnabled(false);
+            btnStartClient.setEnabled(true);
+          }
+
+        });
+      }
+      catch (final IOException e) {
+        LOGGER.log(Level.SEVERE, "Unable to connect to server: " + e);
+        SwingUtilities.invokeLater(new Runnable() {
+
+          /** {@inheritDoc} */
+          @Override
+          public void run() {
+            btnConnect.setEnabled(true);
+            setOfflineStatus();
+            String msg = "Unable to connect to server. Reason:\n\n" + e;
+            JOptionPane.showMessageDialog(NetworkedClientConfigDialogBox.this, msg, "Error",
+                JOptionPane.ERROR_MESSAGE);
+          }
+
+        });
+      }
+    }
+
+  }
+
+  /**
+   * An action that will launch the main client window when the Start Client button is clicked.
+   * 
+   * @author BJ Peter DeLaCruz
+   */
+  private class StartClientButtonAction implements ActionListener {
+    /** {@inheritDoc} */
+    @Override
+    public void actionPerformed(ActionEvent event) {
+      startClient();
+    }
+  }
+
+  /**
    * Starts the client application.
    */
   private void startClient() {
-    try {
-      setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-      // TODO: Handle different types of delimiters.
-      String serverName = serverNameTextField.getText();
-      int port = Integer.parseInt(portTextField.getText());
-      new ClientMain(new ClientDbManager(serverName, port));
-      // TODO: Add code to open ClientMain here.
-      UiUtils.closeFrame(NetworkedClientConfigDialogBox.this);
-      LOGGER.log(Level.INFO, "Successfully connected to server.");
-    }
-    catch (Exception e) {
-      LOGGER.log(Level.SEVERE, "Unable to create database manager: " + e);
-    }
+    setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+    // TODO: Handle different types of delimiters.
+    new ClientMain(this.clientDbManager);
+    UiUtils.closeFrame(NetworkedClientConfigDialogBox.this);
   }
 
   /**
    * Sets the label to offline status.
    */
   private void setOfflineStatus() {
-    this.statusLabel.setText("Server is offline.");
+    this.statusLabel.setText("Not connected to server.");
     this.statusLabel.setIcon(UiUtils.getOfflineIcon());
   }
 
@@ -140,8 +224,16 @@ public class NetworkedClientConfigDialogBox extends JFrame {
    * Sets the label to online status.
    */
   private void setOnlineStatus() {
-    this.statusLabel.setText("Server is online.");
+    this.statusLabel.setText("Connected to server.");
     this.statusLabel.setIcon(UiUtils.getOnlineIcon());
+  }
+
+  /**
+   * Sets the label to online status.
+   */
+  private void setConnectingStatus() {
+    this.statusLabel.setText("Connecting to server...");
+    this.statusLabel.setIcon(UiUtils.getConnectingIcon());
   }
 
 }

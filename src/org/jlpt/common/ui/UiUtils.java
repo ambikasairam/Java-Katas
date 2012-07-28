@@ -24,6 +24,7 @@ public final class UiUtils {
   private static final String JPN_FLAG_ICON_URL = "images/jpn-flag.png";
   private static final String OFFLINE_ICON_URL = "images/offline.png";
   private static final String ONLINE_ICON_URL = "images/online.png";
+  private static final String CONNECTING_ICON_URL = "images/connecting.png";
 
   /** Do not instantiate this class. */
   private UiUtils() {
@@ -122,6 +123,11 @@ public final class UiUtils {
   /** @return The online icon. */
   public static ImageIcon getOnlineIcon() {
     return new ImageIcon(UiUtils.class.getResource(ONLINE_ICON_URL));
+  }
+
+  /** @return The connecting icon. */
+  public static ImageIcon getConnectingIcon() {
+    return new ImageIcon(UiUtils.class.getResource(CONNECTING_ICON_URL));
   }
 
 }
