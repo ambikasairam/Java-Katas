@@ -33,6 +33,7 @@ public class StatusBar extends JPanel {
    * Adds a component to the status bar.
    *
    * @param component The component to add to the status bar.
+   * @param position The position to place the component.
    */
   public void addComponent(JComponent component, String position) {
     this.innerPanel.add(component, position);
