@@ -60,6 +60,9 @@ public class EditKeyListener implements KeyListener {
       return;
     }
     this.dialogBox.setOkButtonEnabled(true);
+    if (event.getKeyChar() == KeyEvent.VK_ENTER) {
+      this.dialogBox.clickOkButton();
+    }
   }
 
   /** {@inheritDoc} */

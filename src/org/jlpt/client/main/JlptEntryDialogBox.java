@@ -206,4 +206,11 @@ public class JlptEntryDialogBox extends JFrame {
     this.okButton.setEnabled(enabled);
   }
 
+  /** Performs a click on the OK button. */
+  public void clickOkButton() {
+    if (this.okButton.isEnabled()) {
+      this.okButton.doClick();
+    }
+  }
+
 }
