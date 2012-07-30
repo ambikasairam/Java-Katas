@@ -1,11 +1,15 @@
 package org.jlpt.client.main;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
@@ -13,9 +17,13 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import org.jlpt.common.db.DbManager;
 import org.jlpt.common.db.DbManagerImpl;
+import org.jlpt.common.ui.StatusBar;
 import org.jlpt.common.ui.UiUtils;
 
 /**
@@ -29,14 +37,19 @@ public class StandaloneClientOpenFileDialogBox extends JFrame {
 
   private static final Logger LOGGER = Logger.getGlobal();
 
+  private final ExecutorService threadPool = Executors.newFixedThreadPool(1);
   private JTextField databaseLocationTextField;
+  private JButton btnOpenFile;
   private JButton btnStartClient;
+  private JLabel statusLabel;
 
   /**
    * Creates a new StandaloneClientOpenFileDialogBox.
    */
   public StandaloneClientOpenFileDialogBox() {
-    getContentPane().setLayout(null);
+    getContentPane().setLayout(new BorderLayout());
+    JPanel innerPanel = new JPanel();
+    innerPanel.setLayout(null);
     UiUtils.setFrameProperties(this, "Select Database File");
 
     this.btnStartClient = new JButton("Start Client");
@@ -48,7 +61,7 @@ public class StandaloneClientOpenFileDialogBox extends JFrame {
         startClient();
       }
     });
-    getContentPane().add(this.btnStartClient);
+    innerPanel.add(this.btnStartClient);
 
     JLabel lblDatabaseLocation = new JLabel("Database Location:");
     lblDatabaseLocation.setBounds(10, 16, 97, 14);
@@ -72,12 +85,13 @@ public class StandaloneClientOpenFileDialogBox extends JFrame {
 
     });
     this.databaseLocationTextField.setBounds(117, 13, 300, 20);
-    getContentPane().add(this.databaseLocationTextField);
     this.databaseLocationTextField.setColumns(10);
+    this.databaseLocationTextField.setDisabledTextColor(Color.BLACK);
+    innerPanel.add(this.databaseLocationTextField);
 
-    JButton btnOpenFile = new JButton("Open File...");
-    btnOpenFile.setMnemonic(KeyEvent.VK_O);
-    btnOpenFile.addActionListener(new ActionListener() {
+    this.btnOpenFile = new JButton("Open File...");
+    this.btnOpenFile.setMnemonic(KeyEvent.VK_O);
+    this.btnOpenFile.addActionListener(new ActionListener() {
 
       @Override
       public void actionPerformed(ActionEvent event) {
@@ -85,13 +99,27 @@ public class StandaloneClientOpenFileDialogBox extends JFrame {
       }
 
     });
-    int width = btnOpenFile.getPreferredSize().width;
-    int height = btnOpenFile.getPreferredSize().height;
-    btnOpenFile.setBounds(427, 12, width, height);
-    this.btnStartClient.setBounds(427, 46, width, height);
-    getContentPane().add(btnOpenFile);
 
-    setSize(545, 110);
+    int width = this.btnOpenFile.getPreferredSize().width;
+    int height = this.btnOpenFile.getPreferredSize().height;
+    this.btnOpenFile.setBounds(427, 12, width, height);
+    this.btnStartClient.setBounds(427, 46, width, height);
+    innerPanel.add(this.btnOpenFile);
+
+    getContentPane().add(innerPanel, BorderLayout.CENTER);
+
+    JPanel westPanel = new JPanel();
+    westPanel.setOpaque(false);
+    JLabel padding = new JLabel();
+    this.statusLabel = new JLabel();
+    westPanel.add(padding);
+    westPanel.add(this.statusLabel);
+
+    StatusBar statusBar = new StatusBar();
+    statusBar.addComponent(westPanel, BorderLayout.WEST);
+    getContentPane().add(statusBar, BorderLayout.SOUTH);
+
+    setSize(545, 130);
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     UiUtils.setEscKey(this);
     setLocationRelativeTo(null);
@@ -124,16 +152,61 @@ public class StandaloneClientOpenFileDialogBox extends JFrame {
       return;
     }
 
-    try {
-      setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-      String location = this.databaseLocationTextField.getText();
-      ClientMain clientMain = new ClientMain(new DbManagerImpl(location));
-      clientMain.setStandaloneStatus();
-      UiUtils.closeFrame(StandaloneClientOpenFileDialogBox.this);
+    setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+    this.statusLabel.setText("Initializing database...");
+    this.statusLabel.setIcon(UiUtils.getConnectingIcon());
+    this.databaseLocationTextField.setEnabled(false);
+    this.btnOpenFile.setEnabled(false);
+    this.btnStartClient.setEnabled(false);
+    this.btnStartClient.setSelected(false);
+    this.threadPool.execute(new InitializeDatabaseTask());
+  }
+
+  /**
+   * A task that will initialize the database and then display the main client window once the
+   * database is initialized.
+   * 
+   * @author BJ Peter DeLaCruz
+   */
+  private class InitializeDatabaseTask implements Runnable {
+
+    /** {@inheritDoc} */
+    @Override
+    public void run() {
+      String location = databaseLocationTextField.getText();
+      try {
+        final DbManager databaseManager = new DbManagerImpl(location);
+        SwingUtilities.invokeLater(new Runnable() {
+
+          /** {@inheritDoc} */
+          @Override
+          public void run() {
+            ClientMain clientMain = new ClientMain(databaseManager);
+            clientMain.setStandaloneStatus();
+            UiUtils.closeFrame(StandaloneClientOpenFileDialogBox.this);
+          }
+
+        });
+      }
+      catch (final IOException e) {
+        LOGGER.log(Level.SEVERE, "Failed to initialize database: " + e.getMessage());
+        SwingUtilities.invokeLater(new Runnable() {
+
+          /** {@inheritDoc} */
+          @Override
+          public void run() {
+            databaseLocationTextField.setEnabled(true);
+            btnOpenFile.setEnabled(true);
+            btnStartClient.setEnabled(true);
+            String msg = "There was a problem trying to initialize the database: " + e;
+            JOptionPane.showMessageDialog(StandaloneClientOpenFileDialogBox.this, msg, "Error",
+                JOptionPane.ERROR_MESSAGE);
+          }
+
+        });
+      }
     }
-    catch (IOException e) {
-      LOGGER.log(Level.SEVERE, "Unable to create database manager: " + e.getMessage());
-    }
+
   }
 
 }

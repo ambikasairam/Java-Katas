@@ -89,8 +89,7 @@ public class DbManagerImpl implements DbManager {
         addEntry(entry);
       }
       catch (EntryAlreadyExistsException e) {
-        // An exception shouldn't be thrown here because the database manager is being created for
-        // the first time, so don't do anything here.
+        LOGGER.log(Level.INFO, e.getMessage());
       }
     }
   }

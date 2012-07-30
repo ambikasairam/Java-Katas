@@ -30,7 +30,7 @@ public class ClientDbManager implements DbManager {
 
   private static final Logger LOGGER = Logger.getGlobal();
 
-  private final ScheduledExecutorService threadPool;
+  private final ScheduledExecutorService threadPool = Executors.newScheduledThreadPool(1);
 
   private final String hostname;
   private final int port;
@@ -56,7 +56,6 @@ public class ClientDbManager implements DbManager {
     this.ostream = new ObjectOutputStream(this.socket.getOutputStream());
     this.ostream.flush();
     this.istream = new ObjectInputStream(this.socket.getInputStream());
-    this.threadPool = Executors.newScheduledThreadPool(1);
   }
 
   /** {@inheritDoc} */
