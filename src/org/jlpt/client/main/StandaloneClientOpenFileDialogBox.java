@@ -154,11 +154,10 @@ public class StandaloneClientOpenFileDialogBox extends JFrame {
 
     setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
     this.statusLabel.setText("Initializing database...");
-    this.statusLabel.setIcon(UiUtils.getConnectingIcon());
+    this.statusLabel.setIcon(UiUtils.getInitIcon());
     this.databaseLocationTextField.setEnabled(false);
     this.btnOpenFile.setEnabled(false);
     this.btnStartClient.setEnabled(false);
-    this.btnStartClient.setSelected(false);
     this.threadPool.execute(new InitializeDatabaseTask());
   }
 

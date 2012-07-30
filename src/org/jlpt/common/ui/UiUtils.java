@@ -26,6 +26,7 @@ public final class UiUtils {
   private static final String ONLINE_ICON_URL = "images/online.png";
   private static final String CONNECTING_ICON_URL = "images/connecting.png";
   private static final String STANDALONE_ICON_URL = "images/standalone.png";
+  private static final String INIT_ICON_URL = "images/init.png";
 
   /** Do not instantiate this class. */
   private UiUtils() {
@@ -134,6 +135,11 @@ public final class UiUtils {
   /** @return The standalone mode icon. */
   public static ImageIcon getStandaloneModeIcon() {
     return new ImageIcon(UiUtils.class.getResource(STANDALONE_ICON_URL));
+  }
+
+  /** @return The icon that is displayed when the database is initializing. */
+  public static ImageIcon getInitIcon() {
+    return new ImageIcon(UiUtils.class.getResource(INIT_ICON_URL));
   }
 
 }
