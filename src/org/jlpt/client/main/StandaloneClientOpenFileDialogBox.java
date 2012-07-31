@@ -175,6 +175,7 @@ public class StandaloneClientOpenFileDialogBox extends JFrame {
       String location = databaseLocationTextField.getText();
       try {
         final DbManager databaseManager = new DbManagerImpl(location);
+        databaseManager.addEntries();
         SwingUtilities.invokeLater(new Runnable() {
 
           /** {@inheritDoc} */

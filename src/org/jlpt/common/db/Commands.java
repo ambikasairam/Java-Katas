@@ -9,17 +9,19 @@ public enum Commands {
 
   /** Adds an entry to the database. */
   ADD,
-  /** Removes an entry from the database. */
-  REMOVE,
-  /** Updates an entry in the database. */
-  UPDATE,
   /** Finds an entry in the database using the given regular expression pattern. */
   FIND,
   /** Retrieves a list of entries from the database. */
   GET,
+  /** Initializes the database on the server. */
+  INIT,
+  /** Tells the server that a client is going to quit. */
+  QUIT,
+  /** Removes an entry from the database. */
+  REMOVE,
   /** Saves the entries to the database. */
   SAVE,
-  /** Tells the server that a client is going to quit. */
-  QUIT;
+  /** Updates an entry in the database. */
+  UPDATE;
 
 }

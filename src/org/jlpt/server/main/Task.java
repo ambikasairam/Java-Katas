@@ -54,7 +54,10 @@ public class Task implements Runnable {
           if (request == Commands.QUIT) {
             break;
           }
-          if (request instanceof AddRemoveRequest) {
+          if (request == Commands.INIT) {
+            this.databaseManager.addEntries();
+          }
+          else if (request instanceof AddRemoveRequest) {
             AddRemoveRequest addRemoveRequest = (AddRemoveRequest) request;
             String msg = "";
             switch (addRemoveRequest.getCommand()) {

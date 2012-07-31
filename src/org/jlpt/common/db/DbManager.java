@@ -11,6 +11,8 @@ import org.jlpt.common.datamodel.JapaneseEntry;
  */
 public interface DbManager {
 
+  public void addEntries() throws IOException;
+
   /**
    * Adds an entry to the database. The entry <code>must</u> not already exist.
    * 

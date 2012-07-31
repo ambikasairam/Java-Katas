@@ -60,6 +60,12 @@ public class ClientDbManager implements DbManager {
 
   /** {@inheritDoc} */
   @Override
+  public void addEntries() throws IOException {
+    this.ostream.writeObject(Commands.INIT);
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public void addEntry(JapaneseEntry entry) throws EntryAlreadyExistsException, IOException {
     Validator.checkNull(entry);
 

@@ -63,8 +63,12 @@ public class DbManagerImpl implements DbManager {
 
     this.fileLocation = fileLocation;
     this.delimiter = delimiter;
+  }
 
-    List<String> lines = FileUtils.readFile(fileLocation);
+  /** {@inheritDoc} */
+  @Override
+  public void addEntries() throws IOException {
+    List<String> lines = FileUtils.readFile(this.fileLocation);
 
     List<String[]> parsedLines = ParsingUtils.parseLines(lines, this.delimiter);
 

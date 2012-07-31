@@ -208,6 +208,7 @@ public class NetworkedClientConfigDialogBox extends JFrame {
         btnConnect.setEnabled(false);
 
         clientDbManager = new ClientDbManager(serverName, port);
+        clientDbManager.addEntries();
 
         String msg = "Successfully connected to server.\n   Server URL: " + serverName;
         msg += "\n   Port: " + port;
