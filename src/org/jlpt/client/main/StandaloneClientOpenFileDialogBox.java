@@ -197,6 +197,8 @@ public class StandaloneClientOpenFileDialogBox extends JFrame {
             databaseLocationTextField.setEnabled(true);
             btnOpenFile.setEnabled(true);
             btnStartClient.setEnabled(true);
+            statusLabel.setText("Database Initialization Error");
+            statusLabel.setIcon(UiUtils.getOfflineIcon());
             String msg = "There was a problem trying to initialize the database: " + e;
             JOptionPane.showMessageDialog(StandaloneClientOpenFileDialogBox.this, msg, "Error",
                 JOptionPane.ERROR_MESSAGE);
