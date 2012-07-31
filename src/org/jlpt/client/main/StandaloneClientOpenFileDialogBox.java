@@ -8,8 +8,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
@@ -25,6 +23,7 @@ import org.jlpt.common.db.DbManager;
 import org.jlpt.common.db.DbManagerImpl;
 import org.jlpt.common.ui.StatusBar;
 import org.jlpt.common.ui.UiUtils;
+import org.jlpt.common.utils.ThreadUtils;
 
 /**
  * A dialog box in which a user inputs the name of the database file that is located on his or her
@@ -37,7 +36,6 @@ public class StandaloneClientOpenFileDialogBox extends JFrame {
 
   private static final Logger LOGGER = Logger.getGlobal();
 
-  private final ExecutorService threadPool = Executors.newFixedThreadPool(1);
   private JTextField databaseLocationTextField;
   private JButton btnOpenFile;
   private JButton btnStartClient;
@@ -158,7 +156,7 @@ public class StandaloneClientOpenFileDialogBox extends JFrame {
     this.databaseLocationTextField.setEnabled(false);
     this.btnOpenFile.setEnabled(false);
     this.btnStartClient.setEnabled(false);
-    this.threadPool.execute(new InitializeDatabaseTask());
+    ThreadUtils.SHARED_THREAD_POOL.execute(new InitializeDatabaseTask());
   }
 
   /**

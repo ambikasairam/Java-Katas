@@ -11,6 +11,11 @@ import org.jlpt.common.datamodel.JapaneseEntry;
  */
 public interface DbManager {
 
+  /**
+   * Reads in all of the entries from a file and adds them to the database.
+   * 
+   * @throws IOException If there are problems reading in from the file.
+   */
   public void addEntries() throws IOException;
 
   /**

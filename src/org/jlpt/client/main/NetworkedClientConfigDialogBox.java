@@ -8,8 +8,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
@@ -22,6 +20,7 @@ import javax.swing.SwingUtilities;
 import org.jlpt.common.db.DbManager;
 import org.jlpt.common.ui.StatusBar;
 import org.jlpt.common.ui.UiUtils;
+import org.jlpt.common.utils.ThreadUtils;
 
 /**
  * A dialog box in which the user inputs the URL and port of the server to which to connect.
@@ -34,8 +33,6 @@ public class NetworkedClientConfigDialogBox extends JFrame {
   private static final Logger LOGGER = Logger.getGlobal();
   private static final String CONNECT = "Connect";
   private static final String DISCONNECT = "Disconnect";
-
-  private final ExecutorService threadPool = Executors.newFixedThreadPool(1);
 
   private final JTextField serverNameTextField;
   private final JTextField portTextField;
@@ -152,7 +149,7 @@ public class NetworkedClientConfigDialogBox extends JFrame {
    */
   private void connectToServer() {
     setConnectingStatus();
-    this.threadPool.execute(new ConnectTask());
+    ThreadUtils.SHARED_THREAD_POOL.execute(new ConnectTask());
   }
 
   /**
