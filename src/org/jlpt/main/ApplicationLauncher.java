@@ -2,6 +2,9 @@ package org.jlpt.main;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
@@ -46,11 +49,9 @@ public class ApplicationLauncher extends JFrame {
       return;
     }
     UiUtils.setFrameProperties(this, "Select Mode");
-    JPanel innerPanel = new JPanel();
-    // Use absolute positioning.
-    innerPanel.setLayout(null);
+    JPanel innerPanel = new JPanel(new GridBagLayout());
 
-    getContentPane().setLayout(new BorderLayout());
+    setLayout(new BorderLayout());
 
     final JRadioButton rdbtnStandaloneClient =
         new JRadioButton("Standalone Client (no networking)");
@@ -76,8 +77,14 @@ public class ApplicationLauncher extends JFrame {
     });
     rdbtnStandaloneClient.setSelected(true);
     rdbtnStandaloneClient.setMnemonic(KeyEvent.VK_C);
-    rdbtnStandaloneClient.setBounds(30, 49, 215, 23);
-    innerPanel.add(rdbtnStandaloneClient);
+    GridBagConstraints constraints = new GridBagConstraints();
+    String msg = "<html>JLPT Study can run in client mode with or without networking<br>";
+    msg += " or server mode. Please select one.</html>";
+    JLabel lblNewLabel = new JLabel(msg);
+    constraints.fill = GridBagConstraints.HORIZONTAL;
+    innerPanel.add(lblNewLabel, constraints);
+    constraints.gridy = 1;
+    innerPanel.add(rdbtnStandaloneClient, constraints);
 
     final JRadioButton rdbtnNetworkedClient = new JRadioButton("Networked Client");
     rdbtnNetworkedClient.addKeyListener(new KeyAdapter() {
@@ -101,8 +108,9 @@ public class ApplicationLauncher extends JFrame {
 
     });
     rdbtnNetworkedClient.setMnemonic(KeyEvent.VK_N);
-    rdbtnNetworkedClient.setBounds(30, 75, 107, 23);
-    innerPanel.add(rdbtnNetworkedClient);
+
+    constraints.gridy = 2;
+    innerPanel.add(rdbtnNetworkedClient, constraints);
 
     final JRadioButton rdbtnServer = new JRadioButton("Server");
     rdbtnServer.addKeyListener(new KeyAdapter() {
@@ -126,8 +134,8 @@ public class ApplicationLauncher extends JFrame {
 
     });
     rdbtnServer.setMnemonic(KeyEvent.VK_S);
-    rdbtnServer.setBounds(30, 102, 57, 23);
-    innerPanel.add(rdbtnServer);
+    constraints.gridy = 3;
+    innerPanel.add(rdbtnServer, constraints);
 
     ButtonGroup group = new ButtonGroup();
     group.add(rdbtnStandaloneClient);
@@ -156,22 +164,19 @@ public class ApplicationLauncher extends JFrame {
         }
       }
     });
-    int width = btnLaunch.getPreferredSize().width;
-    int height = btnLaunch.getPreferredSize().height;
-    btnLaunch.setBounds(267, 118, width, height);
-    innerPanel.add(btnLaunch);
+    constraints.gridy = 4;
+    JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+    buttonsPanel.add(btnLaunch);
+    innerPanel.add(buttonsPanel, constraints);
 
-    String msg = "<html>JLPT Study can run in client mode with or without networking<br>";
-    msg += " or server mode. Please select one.</html>";
-    JLabel lblNewLabel = new JLabel(msg);
-    lblNewLabel.setBounds(30, 11, 344, 31);
-    innerPanel.add(lblNewLabel);
-    getContentPane().add(innerPanel, BorderLayout.CENTER);
+    add(innerPanel, BorderLayout.CENTER);
+    setPreferredSize(new Dimension(innerPanel.getPreferredSize().width + 50,
+        innerPanel.getPreferredSize().height + 50));
 
-    setSize(new Dimension(360, 190));
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     UiUtils.setEscKey(this);
     setLocationRelativeTo(null);
+    pack();
     setVisible(true);
   }
 
