@@ -2,6 +2,8 @@ package org.jlpt.client.main;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -46,24 +48,13 @@ public class StandaloneClientOpenFileDialogBox extends JFrame {
    */
   public StandaloneClientOpenFileDialogBox() {
     getContentPane().setLayout(new BorderLayout());
-    JPanel innerPanel = new JPanel();
-    innerPanel.setLayout(null);
+    JPanel innerPanel = new JPanel(new BorderLayout());
     UiUtils.setFrameProperties(this, "Select Database File");
 
-    this.btnStartClient = new JButton("Start Client");
-    this.btnStartClient.setMnemonic(KeyEvent.VK_S);
-    this.btnStartClient.setEnabled(false);
-    this.btnStartClient.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent event) {
-        startClient();
-      }
-    });
-    innerPanel.add(this.btnStartClient);
+    JPanel formPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
     JLabel lblDatabaseLocation = new JLabel("Database Location:");
-    lblDatabaseLocation.setBounds(10, 16, 97, 14);
-    getContentPane().add(lblDatabaseLocation);
+    formPanel.add(lblDatabaseLocation);
 
     this.databaseLocationTextField = new JTextField();
     this.databaseLocationTextField.addKeyListener(new KeyAdapter() {
@@ -82,10 +73,10 @@ public class StandaloneClientOpenFileDialogBox extends JFrame {
       }
 
     });
-    this.databaseLocationTextField.setBounds(117, 13, 300, 20);
-    this.databaseLocationTextField.setColumns(10);
+    this.databaseLocationTextField.setPreferredSize(new Dimension(250,
+        this.databaseLocationTextField.getPreferredSize().height));
     this.databaseLocationTextField.setDisabledTextColor(Color.BLACK);
-    innerPanel.add(this.databaseLocationTextField);
+    formPanel.add(this.databaseLocationTextField);
 
     this.btnOpenFile = new JButton("Open File...");
     this.btnOpenFile.setMnemonic(KeyEvent.VK_O);
@@ -98,11 +89,23 @@ public class StandaloneClientOpenFileDialogBox extends JFrame {
 
     });
 
-    int width = this.btnOpenFile.getPreferredSize().width;
-    int height = this.btnOpenFile.getPreferredSize().height;
-    this.btnOpenFile.setBounds(427, 12, width, height);
-    this.btnStartClient.setBounds(427, 46, width, height);
-    innerPanel.add(this.btnOpenFile);
+    formPanel.add(this.btnOpenFile);
+    innerPanel.add(formPanel, BorderLayout.CENTER);
+
+    this.btnStartClient = new JButton("Start Client");
+    this.btnStartClient.setMnemonic(KeyEvent.VK_S);
+    this.btnStartClient.setEnabled(false);
+    this.btnStartClient.setPreferredSize(this.btnOpenFile.getPreferredSize());
+    this.btnStartClient.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent event) {
+        startClient();
+      }
+    });
+
+    JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
+    panel.add(this.btnStartClient);
+    innerPanel.add(panel, BorderLayout.SOUTH);
 
     getContentPane().add(innerPanel, BorderLayout.CENTER);
 
@@ -117,7 +120,7 @@ public class StandaloneClientOpenFileDialogBox extends JFrame {
     statusBar.addComponent(westPanel, BorderLayout.WEST);
     getContentPane().add(statusBar, BorderLayout.SOUTH);
 
-    setSize(545, 130);
+    setSize(545, 110);
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     UiUtils.setEscKey(this);
     setLocationRelativeTo(null);

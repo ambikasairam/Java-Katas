@@ -3,6 +3,9 @@ package org.jlpt.client.main;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -48,24 +51,22 @@ public class NetworkedClientConfigDialogBox extends JFrame {
     getContentPane().setLayout(new BorderLayout());
     UiUtils.setFrameProperties(this, "Connect to Server");
 
-    JPanel centerPanel = new JPanel();
-    centerPanel.setLayout(null);
-    getContentPane().add(centerPanel, BorderLayout.CENTER);
-
+    JPanel serverUrlPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
     JLabel serverUrlLabel = new JLabel("Server URL:");
-    serverUrlLabel.setBounds(20, 14, 58, 20);
-    centerPanel.add(serverUrlLabel);
+    serverUrlPanel.add(serverUrlLabel);
 
     this.serverNameTextField = new JTextField();
     this.serverNameTextField.addKeyListener(new CustomKeyAdapter());
-    this.serverNameTextField.setBounds(88, 14, 200, 20);
     this.serverNameTextField.setDisabledTextColor(Color.BLACK);
-    this.serverNameTextField.setColumns(50);
-    centerPanel.add(this.serverNameTextField);
+    this.serverNameTextField.setColumns(20);
+    this.serverNameTextField.setMaximumSize(new Dimension(50,
+        this.serverNameTextField.getPreferredSize().height));
+    serverUrlPanel.add(this.serverNameTextField);
 
+    JPanel portPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
     JLabel portLabel = new JLabel("Port:");
-    portLabel.setBounds(54, 48, 24, 14);
-    centerPanel.add(portLabel);
+    portLabel.setPreferredSize(serverUrlLabel.getPreferredSize());
+    portPanel.add(portLabel);
 
     this.portTextField = new JTextField() {
       @Override
@@ -77,26 +78,35 @@ public class NetworkedClientConfigDialogBox extends JFrame {
       }
     };
     this.portTextField.addKeyListener(new CustomKeyAdapter());
-    this.portTextField.setColumns(10);
-    this.portTextField.setBounds(88, 45, 55, 20);
     this.portTextField.setDisabledTextColor(Color.BLACK);
-    centerPanel.add(this.portTextField);
+    this.portTextField.setColumns(5);
+    this.portTextField.setMaximumSize(new Dimension(50,
+        this.portTextField.getPreferredSize().height));
+    portPanel.add(this.portTextField);
 
+    JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
     this.btnStartClient = new JButton("Start Client");
     this.btnStartClient.setMnemonic(KeyEvent.VK_S);
     this.btnStartClient.setEnabled(false);
     this.btnStartClient.addActionListener(new StartClientButtonAction());
-    centerPanel.add(this.btnStartClient);
-
-    Dimension dimension = this.btnStartClient.getPreferredSize();
-    this.btnStartClient.setBounds(302, 45, dimension.width, dimension.height);
+    buttonPanel.add(this.btnStartClient);
 
     this.btnConnect = new JButton(CONNECT);
     this.btnConnect.addActionListener(new ConnectDisconnectAction());
     this.btnConnect.setMnemonic(KeyEvent.VK_S);
     this.btnConnect.setEnabled(false);
-    this.btnConnect.setBounds(302, 13, dimension.width, dimension.height);
-    centerPanel.add(this.btnConnect);
+    this.btnConnect.setPreferredSize(this.btnStartClient.getPreferredSize());
+    buttonPanel.add(this.btnConnect);
+
+    JPanel innerPanel = new JPanel(new GridBagLayout());
+    GridBagConstraints constraints = new GridBagConstraints();
+    constraints.fill = GridBagConstraints.HORIZONTAL;
+    innerPanel.add(serverUrlPanel, constraints);
+    constraints.gridy = 1;
+    innerPanel.add(portPanel, constraints);
+    constraints.gridy = 2;
+    innerPanel.add(buttonPanel, constraints);
+    getContentPane().add(innerPanel, BorderLayout.CENTER);
 
     JPanel westPanel = new JPanel();
     westPanel.setOpaque(false);
@@ -110,7 +120,7 @@ public class NetworkedClientConfigDialogBox extends JFrame {
     statusBar.addComponent(westPanel, BorderLayout.WEST);
     getContentPane().add(statusBar, BorderLayout.SOUTH);
 
-    setSize(415, 130);
+    setSize(350, 140);
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     UiUtils.setEscKey(this);
     setLocationRelativeTo(null);

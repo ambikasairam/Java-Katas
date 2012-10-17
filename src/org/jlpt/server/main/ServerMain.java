@@ -2,6 +2,10 @@ package org.jlpt.server.main;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -50,11 +54,8 @@ public class ServerMain extends JFrame {
     getContentPane().setLayout(new BorderLayout());
     UiUtils.setFrameProperties(this, "JLPT Study Server (Beta 1)");
 
-    JPanel centerPanel = new JPanel();
-    centerPanel.setLayout(null);
-    getContentPane().add(centerPanel, BorderLayout.CENTER);
-
-    int width = 100;
+    JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
+    JPanel centerPanel = new JPanel(new GridBagLayout());
 
     this.btnStopServer = new JButton("Stop Server");
     this.btnStopServer.addActionListener(new ActionListener() {
@@ -73,8 +74,7 @@ public class ServerMain extends JFrame {
 
     });
     this.btnStopServer.setEnabled(false);
-    this.btnStopServer.setBounds(434, 45, width, 23);
-    centerPanel.add(this.btnStopServer);
+    buttonPanel.add(this.btnStopServer);
 
     this.btnStartServer = new JButton("Start Server");
     this.btnStartServer.addActionListener(new ActionListener() {
@@ -86,11 +86,9 @@ public class ServerMain extends JFrame {
 
     });
     this.btnStartServer.setEnabled(false);
-    this.btnStartServer.setBounds(324, 45, width, 23);
-    centerPanel.add(this.btnStartServer);
+    buttonPanel.add(this.btnStartServer);
 
     this.btnOpenFile = new JButton("Open File...");
-    this.btnOpenFile.setBounds(434, 13, width, 23);
     this.btnOpenFile.addActionListener(new ActionListener() {
 
       @Override
@@ -99,22 +97,23 @@ public class ServerMain extends JFrame {
       }
 
     });
-    centerPanel.add(this.btnOpenFile);
 
     this.databaseLocationTextField = new JTextField();
     this.databaseLocationTextField.setDisabledTextColor(Color.BLACK);
     this.databaseLocationTextField.addKeyListener(new CustomKeyAdapter());
-    this.databaseLocationTextField.setColumns(10);
-    this.databaseLocationTextField.setBounds(117, 14, 307, 20);
-    centerPanel.add(this.databaseLocationTextField);
+    this.databaseLocationTextField.setPreferredSize(new Dimension(250,
+        this.databaseLocationTextField.getPreferredSize().height));
 
-    JLabel databaseLocationLabel = new JLabel("Database Location:");
-    databaseLocationLabel.setBounds(10, 17, 97, 14);
-    centerPanel.add(databaseLocationLabel);
+    JPanel dbLocationPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+    JLabel dbLocationLabel = new JLabel("Database Location:");
+    dbLocationPanel.add(dbLocationLabel);
+    dbLocationPanel.add(this.databaseLocationTextField);
+    dbLocationPanel.add(this.btnOpenFile);
 
+    JPanel portPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
     JLabel portLabel = new JLabel("Port:");
-    portLabel.setBounds(79, 49, 28, 14);
-    centerPanel.add(portLabel);
+    portLabel.setPreferredSize(dbLocationLabel.getPreferredSize());
+    portPanel.add(portLabel);
 
     this.portTextField = new JTextField() {
       @Override
@@ -127,9 +126,19 @@ public class ServerMain extends JFrame {
     };
     this.portTextField.addKeyListener(new CustomKeyAdapter());
     this.portTextField.setDisabledTextColor(Color.BLACK);
-    this.portTextField.setColumns(10);
-    this.portTextField.setBounds(117, 46, 55, 20);
-    centerPanel.add(this.portTextField);
+    this.portTextField.setColumns(5);
+    this.portTextField.setMaximumSize(new Dimension(50,
+        this.portTextField.getPreferredSize().height));
+    portPanel.add(this.portTextField);
+
+    GridBagConstraints constraints = new GridBagConstraints();
+    constraints.fill = GridBagConstraints.HORIZONTAL;
+    centerPanel.add(dbLocationPanel, constraints);
+    constraints.gridy = 1;
+    centerPanel.add(portPanel, constraints);
+    constraints.gridy = 2;
+    centerPanel.add(buttonPanel, constraints);
+    getContentPane().add(centerPanel, BorderLayout.CENTER);
 
     StatusBar statusBar = new StatusBar();
 
@@ -144,7 +153,7 @@ public class ServerMain extends JFrame {
     statusBar.addComponent(westPanel, BorderLayout.WEST);
     getContentPane().add(statusBar, BorderLayout.SOUTH);
 
-    setSize(560, 130);
+    setSize(545, 140);
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     UiUtils.setEscKey(this);
     setLocationRelativeTo(null);
