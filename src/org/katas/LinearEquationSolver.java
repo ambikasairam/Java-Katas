@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.katas.common.Kata;
+import org.katas.common.KataUtils;
+
 /**
  * A program that will solve linear equations with only one variable.
  * 

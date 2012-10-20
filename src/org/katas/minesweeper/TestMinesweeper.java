@@ -1,4 +1,4 @@
-package org.katas;
+package org.katas.minesweeper;
 
 import static org.junit.Assert.assertEquals;
 import org.junit.Before;

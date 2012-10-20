@@ -7,6 +7,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.katas.common.Kata;
+import org.katas.common.KataEnums;
+import org.katas.common.KataUtils;
+
 /**
  * Given N letters and a list of constraints, this program will return a list of strings that
  * satisfy <span style="text-decoration:underline">all</span> of the constraints.

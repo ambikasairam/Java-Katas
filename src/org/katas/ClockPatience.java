@@ -6,6 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.katas.common.Kata;
+import org.katas.common.KataUtils;
+
 /**
  * This class creates a card game in which the computer takes a card from the top of a pile, flips
  * it over, and then puts it under another pile. See {@link #playGame()} for rules on how this game

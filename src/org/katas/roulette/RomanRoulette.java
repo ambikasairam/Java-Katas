@@ -1,7 +1,11 @@
-package org.katas;
+package org.katas.roulette;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.katas.common.Kata;
+import org.katas.common.KataEnums;
+import org.katas.common.KataUtils;
 
 /**
  * My solution to the Josephus problem (a.k.a. Roman Roulette). Problem description <a

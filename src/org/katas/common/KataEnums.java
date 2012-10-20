@@ -1,4 +1,4 @@
-package org.katas;
+package org.katas.common;
 
 /**
  * This enum is used especially by the <code>KataUtils</code> class to simplify the creation of

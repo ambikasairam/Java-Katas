@@ -1,5 +1,7 @@
 package org.katas;
 
+import org.katas.common.KataUtils;
+
 /**
  * Contains transaction information needed to balance a list of transactions in the
  * TransactionProcessing class.

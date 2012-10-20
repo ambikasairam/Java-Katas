@@ -1,4 +1,4 @@
-package org.katas;
+package org.katas.minesweeper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.StringTokenizer;
+
+import org.katas.common.Kata;
+import org.katas.common.KataUtils;
 
 /**
  * A program that will display hint numbers for each grid in the Minesweeper game.

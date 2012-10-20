@@ -1,4 +1,4 @@
-package org.katas;
+package org.katas.currency;
 
 import java.io.Serializable;
 import java.util.Comparator;

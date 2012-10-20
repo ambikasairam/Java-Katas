@@ -5,6 +5,12 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
+import org.katas.common.Kata;
+import org.katas.common.KataEnums;
+import org.katas.common.KataUtils;
+import org.katas.currency.CurrencyExchange;
+import org.katas.currency.CurrencyExchangeComparator;
+
 /**
  * This program creates one or more currency exchange tables and finds the exchange sequence that
  * results in the highest profit for each currency exchange table.

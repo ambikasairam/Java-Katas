@@ -6,6 +6,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.katas.common.Kata;
+import org.katas.common.KataUtils;
+
 /**
  * This program reads in strings from a file and determines their positions in the ordered sequence
  * of permutations of their constituent characters.

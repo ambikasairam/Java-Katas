@@ -11,6 +11,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.StringTokenizer;
 import org.katas.Line.Direction;
+import org.katas.common.Kata;
+import org.katas.common.KataUtils;
 import org.utils.Point;
 
 /**

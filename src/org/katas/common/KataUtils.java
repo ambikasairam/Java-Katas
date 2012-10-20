@@ -1,4 +1,4 @@
-package org.katas;
+package org.katas.common;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -11,6 +11,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
+
+import org.katas.PlayingCard;
 
 /**
  * This class contains a set of methods that will help solving future Java katas much easier.

@@ -1,4 +1,4 @@
-package org.katas;
+package org.katas.currency;
 
 /**
  * This class is used by the Arbitrage class to store a currency exchange sequence and the profit

@@ -3,6 +3,9 @@ package org.katas;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.katas.common.Kata;
+import org.katas.common.KataUtils;
+
 /**
  * This program converts a number into a Bangla number:<br>
  * <br>

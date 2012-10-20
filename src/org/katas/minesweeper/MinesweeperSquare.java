@@ -1,4 +1,4 @@
-package org.katas;
+package org.katas.minesweeper;
 
 import org.utils.Point;
 

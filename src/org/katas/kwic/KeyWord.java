@@ -1,8 +1,12 @@
-package org.katas;
+package org.katas.kwic;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
+
+import org.katas.common.Kata;
+import org.katas.common.KataEnums;
+import org.katas.common.KataUtils;
 
 /**
  * Given a file containing profiles and titles, this program determines which titles satisfy each
@@ -10,7 +14,7 @@ import java.util.regex.Pattern;
  * 
  * @author BJ Peter DeLaCruz
  */
-public class Keywords extends Kata {
+public class KeyWord extends Kata {
 
   private final List<String> profiles;
   private final List<String> titles;
@@ -20,7 +24,7 @@ public class Keywords extends Kata {
   /**
    * Creates a new Keywords object.
    */
-  public Keywords() {
+  public KeyWord() {
     profiles = new ArrayList<String>();
     titles = new ArrayList<String>();
     results = new ArrayList<String>();
@@ -136,7 +140,7 @@ public class Keywords extends Kata {
       return;
     }
 
-    Keywords keywords = new Keywords();
+    KeyWord keywords = new KeyWord();
     keywords.setLines(KataUtils.readLines(args[0]));
 
     if (keywords.getLines() != null) {

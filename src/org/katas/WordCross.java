@@ -2,6 +2,10 @@ package org.katas;
 
 import java.util.List;
 
+import org.katas.common.Kata;
+import org.katas.common.KataEnums;
+import org.katas.common.KataUtils;
+
 /**
  * This program will form double leading crosses if common letters are found in each pair of
  * vertical and horizontal words.

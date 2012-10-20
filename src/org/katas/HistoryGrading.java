@@ -12,8 +12,8 @@ import java.util.Set;
 import java.util.StringTokenizer;
 
 /**
- * This class contains methods to read in and grade students' responses as per the instructions
- * found <a href="http://uva.onlinejudge.org/external/1/111.pdf" target="_blank">here</a>.
+ * This class contains methods that will read in and grade students' responses. (More information
+ * can be found <a href="http://uva.onlinejudge.org/external/1/111.pdf" target="_blank">here</a>.)
  * 
  * @author BJ Peter DeLaCruz
  * @version 1.0

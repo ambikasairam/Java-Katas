@@ -1,4 +1,4 @@
-package org.katas;
+package org.katas.kwic;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -7,12 +7,16 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import org.katas.common.Kata;
+import org.katas.common.KataEnums;
+import org.katas.common.KataUtils;
+
 /**
  * This program sorts a list of titles using KWIC (Keywords In Context).
  * 
  * @author BJ Peter DeLaCruz
  */
-public class Kwic extends Kata {
+public class KeyWordInContext extends Kata {
 
   private final List<String> ignoreWordsList;
   private final List<String> keywordsList;
@@ -22,7 +26,7 @@ public class Kwic extends Kata {
    * Creates a new Kwic object with two empty lists: one to store words that are to be ignored
    * during the sorting process, and one to store keywords that are used to sort a list of titles.
    */
-  public Kwic() {
+  public KeyWordInContext() {
     ignoreWordsList = new ArrayList<String>();
     keywordsList = new ArrayList<String>();
   }
@@ -120,7 +124,7 @@ public class Kwic extends Kata {
       return;
     }
 
-    Kwic kwic = new Kwic();
+    KeyWordInContext kwic = new KeyWordInContext();
     kwic.setLines(KataUtils.readLines(args[0]));
 
     if (kwic.getLines() != null) {
