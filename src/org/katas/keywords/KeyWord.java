@@ -1,4 +1,4 @@
-package org.katas.kwic;
+package org.katas.keywords;
 
 import java.util.ArrayList;
 import java.util.List;
