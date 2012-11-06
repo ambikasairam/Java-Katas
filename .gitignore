@@ -18,7 +18,3 @@ lib/*
 Thumbs.db
 *.~*
 *.*~
-
-# Except these files:
-
-!japanese_words.db
