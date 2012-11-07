@@ -1,4 +1,4 @@
-package org.utils;
+package org.components;
 
 import java.awt.Component;
 import java.awt.event.MouseWheelEvent;

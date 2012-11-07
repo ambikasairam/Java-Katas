@@ -1,4 +1,4 @@
-package org.utils;
+package org.components;
 
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
