@@ -32,7 +32,7 @@ public final class Validator {
    * 
    * @param list The list that cannot be null nor empty.
    */
-  public static void checkIfNotEmpty(List<?> list) {
+  public static void checkEmptyList(List<?> list) {
     if (list == null) {
       throw new IllegalArgumentException("list is null.");
     }
@@ -47,7 +47,7 @@ public final class Validator {
    * 
    * @param string The string that cannot be null not empty.
    */
-  public static void checkIfNotEmptyString(String string) {
+  public static void checkEmptyString(String string) {
     if (string == null) {
       throw new IllegalArgumentException("string is null.");
     }
@@ -62,7 +62,7 @@ public final class Validator {
    * 
    * @param number The number that cannot be negative.
    */
-  public static void checkIfNonNegative(long number) {
+  public static void checkNegative(long number) {
     if (number < 0) {
       throw new IllegalArgumentException("number is negative.");
     }
@@ -74,7 +74,7 @@ public final class Validator {
    * 
    * @param number The number that cannot be negative.
    */
-  public static void checkIfNonNegative(double number) {
+  public static void checkNegative(double number) {
     if (number < 0) {
       throw new IllegalArgumentException("number is negative.");
     }
@@ -86,7 +86,7 @@ public final class Validator {
    * 
    * @param number The number that cannot be negative.
    */
-  public static void checkIfNonNegative(byte number) {
+  public static void checkNegative(byte number) {
     if (number < 0) {
       throw new IllegalArgumentException("number is negative.");
     }

@@ -28,7 +28,7 @@ public class ConsecutivePrimes {
    * @param number The number for which to find the number of representations.
    */
   private void sieveEratosthenes(int number) {
-    Validator.checkIfNonNegative(number);
+    Validator.checkNegative(number);
 
     for (int n = 2; n <= number; n++) {
       if (composites.contains(n)) {
@@ -47,7 +47,7 @@ public class ConsecutivePrimes {
    * @param number The number for which to find the number of representations.
    */
   private void countSum(int number) {
-    Validator.checkIfNonNegative(number);
+    Validator.checkNegative(number);
 
     if (resultsMap.get(number) != null) {
       return;
@@ -80,7 +80,7 @@ public class ConsecutivePrimes {
    * @return The number of representations.
    */
   public Integer getCount(int number) {
-    Validator.checkIfNonNegative(number);
+    Validator.checkNegative(number);
 
     countSum(number);
     return resultsMap.get(number).size();
