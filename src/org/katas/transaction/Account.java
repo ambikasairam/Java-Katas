@@ -1,4 +1,4 @@
-package org.katas;
+package org.katas.transaction;
 
 /**
  * Contains account information needed to process a transaction in the TransactionProcessing class.

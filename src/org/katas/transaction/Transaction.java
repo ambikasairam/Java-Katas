@@ -1,4 +1,4 @@
-package org.katas;
+package org.katas.transaction;
 
 import org.katas.common.KataUtils;
 
