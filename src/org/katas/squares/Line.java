@@ -1,4 +1,4 @@
-package org.katas;
+package org.katas.squares;
 
 import org.utils.Point;
 

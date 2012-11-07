@@ -1,4 +1,4 @@
-package org.katas;
+package org.katas.treelevel;
 
 /**
  * This class is used to create a Node object that will be put into a tree ADT.

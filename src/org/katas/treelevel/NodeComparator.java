@@ -1,4 +1,4 @@
-package org.katas;
+package org.katas.treelevel;
 
 import java.io.Serializable;
 import java.util.Comparator;

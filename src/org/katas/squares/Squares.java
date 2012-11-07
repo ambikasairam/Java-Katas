@@ -1,4 +1,4 @@
-package org.katas;
+package org.katas.squares;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,9 +10,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.StringTokenizer;
-import org.katas.Line.Direction;
 import org.katas.common.Kata;
 import org.katas.common.KataUtils;
+import org.katas.squares.Line.Direction;
 import org.utils.Point;
 
 /**
