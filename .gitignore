@@ -13,7 +13,6 @@ lib/*
 *.xlsx
 .classpath
 .DS_Store
-.gitignore~
 .project
 Thumbs.db
 *.~*
