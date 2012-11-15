@@ -2,7 +2,6 @@ package org.katas;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.katas.common.Kata;
 import org.katas.common.KataUtils;
 
@@ -15,6 +14,8 @@ import org.katas.common.KataUtils;
  * 10^7 = kuti<br>
  * <br>
  * The number to convert cannot be greater than 999,999,999,999,999.
+ * 
+ * @see <a href="http://www.bjpeterdelacruz.com/files/katas/Bangla_Numbers.pdf">Bangla Numbers</a>
  * 
  * @author BJ Peter DeLaCruz <bjpeter@hawaii.edu>
  */
