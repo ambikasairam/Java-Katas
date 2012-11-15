@@ -12,7 +12,8 @@ Katas are programming exercises designed to hone one's programming skills throug
 * [Intersection](http://www.bjpeterdelacruz.com/files/katas/191_Intersection.pdf)
 * [Linear Equation Solver](http://www.bjpeterdelacruz.com/files/katas/1200_Linear_Equation.pdf)
 * [Mouse Clicks](http://www.bjpeterdelacruz.com/files/katas/142_Mouse_Clicks.pdf)
-* [Pancake Stacks](http://www.bjpeterdelacruz.com/files/katas/120_Pancake_Stacks)
+* [Pancake Stacks](http://www.bjpeterdelacruz.com/files/katas/120_Pancake_Stacks.pdf)
+* [Permalex](http://www.bjpeterdelacruz.com/files/katas/153_Permalex.pdf)
 
 ## Links
 Developer's Website: [BJ Peter DeLaCruz](http://www.bjpeterdelacruz.com)
