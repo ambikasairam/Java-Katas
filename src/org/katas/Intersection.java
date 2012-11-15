@@ -2,7 +2,6 @@ package org.katas;
 
 import java.awt.Point;
 import java.util.List;
-
 import org.katas.common.Kata;
 import org.katas.common.KataEnums;
 import org.katas.common.KataUtils;
@@ -10,6 +9,8 @@ import org.katas.common.KataUtils;
 /**
  * This program determines whether a line intersects a rectangle by checking if a point on the line
  * is inside the rectangle.
+ * 
+ * @see <a href="http://www.bjpeterdelacruz.com/files/katas/191_Intersection.pdf">Intersection</a>
  * 
  * @author BJ Peter DeLaCruz
  */

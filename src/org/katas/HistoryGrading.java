@@ -12,11 +12,12 @@ import java.util.Set;
 import java.util.StringTokenizer;
 
 /**
- * This class contains methods that will read in and grade students' responses. (More information
- * can be found <a href="http://uva.onlinejudge.org/external/1/111.pdf" target="_blank">here</a>.)
+ * This class contains methods that will read in and grade students' responses.
  * 
- * @author BJ Peter DeLaCruz
- * @version 1.0
+ * @see <a href="http://www.bjpeterdelacruz.com/files/katas/111_History_Grading.pdf">History
+ * Grading</a>
+ * 
+ * @author BJ Peter DeLaCruz <bjpeter@hawaii.edu>
  */
 public class HistoryGrading {
 
