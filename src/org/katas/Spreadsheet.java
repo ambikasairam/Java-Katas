@@ -3,7 +3,6 @@ package org.katas;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
-
 import org.katas.common.Kata;
 import org.katas.common.KataEnums;
 import org.katas.common.KataUtils;
@@ -11,6 +10,8 @@ import org.katas.common.KataUtils;
 /**
  * This program reads in a file containing one or more spreadsheets that contain formulas and
  * outputs one or more new spreadsheets that contain the results of calculating those formulas.
+ * 
+ * @see <a href="http://www.bjpeterdelacruz.com/files/katas/196_Spreadsheet.pdf">Spreadsheet</a>
  * 
  * @author BJ Peter DeLaCruz
  */

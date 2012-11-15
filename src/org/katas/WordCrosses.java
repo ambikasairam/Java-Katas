@@ -10,9 +10,11 @@ import org.katas.common.KataUtils;
  * This program will form double leading crosses if common letters are found in each pair of
  * vertical and horizontal words.
  * 
+ * @see <a href="http://www.bjpeterdelacruz.com/files/katas/159_Word_Crosses.pdf">Word Crosses</a>
+ * 
  * @author BJ Peter DeLaCruz
  */
-public class WordCross extends Kata {
+public class WordCrosses extends Kata {
 
   /** Number of spaces between each horizontal word. */
   private static final int NUM_SPACES = 3;
@@ -20,7 +22,7 @@ public class WordCross extends Kata {
   /**
    * Constructs a new WordCross object.
    */
-  public WordCross() {
+  public WordCrosses() {
     // Empty constructor.
   }
 
@@ -182,7 +184,7 @@ public class WordCross extends Kata {
       return;
     }
 
-    WordCross wordCross = new WordCross();
+    WordCrosses wordCross = new WordCrosses();
     wordCross.setLines(KataUtils.readLines(args[0]));
 
     if (wordCross.getLines() != null) {

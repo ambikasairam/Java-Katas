@@ -1,13 +1,14 @@
 package org.katas;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 /**
- * Java Kata: Friday the 13th.
+ * This program finds the closest Friday the 13th before or after the current date.
  * 
  * @author BJ Peter DeLaCruz
- * @version 1.0
  */
 public class AdjacentFriday13th {
 
@@ -23,7 +24,7 @@ public class AdjacentFriday13th {
    * @param target Date specified by the user.
    * @return Date object containing the date for the nearest Friday the 13th.
    */
-  public static Date adjacentFriday13th(Date target) {
+  public static Date find(Date target) {
     Calendar calendar = Calendar.getInstance();
     calendar.setTime(target);
 
@@ -71,15 +72,21 @@ public class AdjacentFriday13th {
     Calendar calendar = Calendar.getInstance();
     Date date = calendar.getTime();
 
-    System.out.println("The Friday the 13th that is closest to " + date + " is "
-        + adjacentFriday13th(date) + ".\n");
+    SimpleDateFormat formatter = new SimpleDateFormat("MMMM dd, YYYY", Locale.getDefault());
+    String msg = "The Friday the 13th that is closest to ";
+    msg += formatter.format(date) + " is " + formatter.format(find(date)) + ".";
 
-    calendar.set(Calendar.YEAR, 1989);
-    calendar.set(Calendar.MONTH, 10);
-    calendar.set(Calendar.DAY_OF_MONTH, 9);
+    System.out.println(msg);
+    System.out.println();
+
+    calendar.set(Calendar.YEAR, 1986);
+    calendar.set(Calendar.MONTH, Calendar.MARCH);
+    calendar.set(Calendar.DAY_OF_MONTH, 31);
     date = calendar.getTime();
 
-    System.out.println("The Friday the 13th that is closest to " + date + " is "
-        + adjacentFriday13th(date) + ".");
+    msg = "The Friday the 13th that is closest to ";
+    msg += formatter.format(date) + " is " + formatter.format(find(date)) + ".";
+
+    System.out.println(msg);
   }
 }
