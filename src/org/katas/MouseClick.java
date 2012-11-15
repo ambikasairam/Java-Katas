@@ -4,13 +4,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.StringTokenizer;
-
 import org.katas.common.Kata;
 import org.katas.common.KataUtils;
 
 /**
  * This program processes a file containing coordinates for icons, regions, and mouse clicks, and
  * outputs all regions that were clicked on and all icons that were nearest to a mouse click.
+ * 
+ * @see <a href="http://www.bjpeterdelacruz.com/files/katas/142_Mouse_Clicks.pdf">Mouse Clicks</a>
  * 
  * @author BJ Peter DeLaCruz
  */

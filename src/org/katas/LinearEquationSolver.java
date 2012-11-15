@@ -3,12 +3,14 @@ package org.katas;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
-
 import org.katas.common.Kata;
 import org.katas.common.KataUtils;
 
 /**
  * A program that will solve linear equations with only one variable.
+ * 
+ * @see <a href="http://www.bjpeterdelacruz.com/files/katas/1200_Linear_Equation.pdf">Linear
+ * Equation</a>
  * 
  * @author BJ Peter DeLaCruz <bjpeter@hawaii.edu>
  */
