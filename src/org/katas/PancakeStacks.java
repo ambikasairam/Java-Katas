@@ -2,7 +2,6 @@ package org.katas;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.katas.common.Kata;
 import org.katas.common.KataEnums;
 import org.katas.common.KataUtils;
@@ -11,6 +10,9 @@ import org.katas.common.KataUtils;
  * This program sorts one or more stacks of pancakes that were read in from a file from smallest to
  * biggest; the biggest pancake will be at the bottom of the stack and the smallest one will be at
  * the top.
+ * 
+ * @see <a href="http://www.bjpeterdelacruz.com/files/katas/120_Pancake_Stacks.pdf">Pancake
+ * Stacks</a>
  * 
  * @author BJ Peter DeLaCruz
  */

@@ -1,4 +1,4 @@
-package org.katas;
+package org.katas.linear;
 
 import java.util.ArrayList;
 import java.util.List;
