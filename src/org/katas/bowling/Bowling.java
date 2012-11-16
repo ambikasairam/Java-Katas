@@ -1,10 +1,9 @@
 package org.katas.bowling;
 
 /**
- * Java Kata: Bowling.
+ * This class calculates a bowler's final score.
  * 
  * @author BJ Peter DeLaCruz
- * @version 1.0
  */
 public class Bowling {
 
@@ -15,7 +14,7 @@ public class Bowling {
    * @return Final score.
    * @throws IllegalArgumentException If bowling record is invalid.
    */
-  public int getBowlingScore(String score) throws IllegalArgumentException {
+  public static int getScore(String score) throws IllegalArgumentException {
     if (score.length() > 21 || score.length() < 11) {
       String msg = "Invalid bowling record: invalid bowling record length.";
       throw new IllegalArgumentException(msg);
@@ -106,14 +105,15 @@ public class Bowling {
    * @param score Character representing score.
    * @return A score.
    */
-  private int getScore(char score) {
-    if (score == 'X' || score == '/') {
+  private static int getScore(char score) {
+    switch (score) {
+    case 'X':
       return 10;
-    }
-    else if (score == '-') {
+    case '/':
+      return 10;
+    case '-':
       return 0;
-    }
-    else {
+    default:
       return Integer.parseInt(Character.toString(score));
     }
   }
@@ -124,67 +124,23 @@ public class Bowling {
    * @param args None.
    */
   public static void main(String[] args) {
-    Bowling bowling = new Bowling();
-    int score = bowling.getBowlingScore("XXXXXXXXXXXX");
-    System.out.println("XXXXXXXXXXXX : " + score);
-    score = bowling.getBowlingScore("9-9-9-9-9-9-9-9-9-9-");
-    System.out.println("9-9-9-9-9-9-9-9-9-9- : " + score);
-    score = bowling.getBowlingScore("5/5/5/5/5/5/5/5/5/5/5");
-    System.out.println("5/5/5/5/5/5/5/5/5/5/5 : " + score);
-    score = bowling.getBowlingScore("11111111111111111111");
-    System.out.println("11111111111111111111 : " + score);
-    score = bowling.getBowlingScore("XXXXXXXXX5/5");
+    int score = Bowling.getScore("XXXXXXXXX5/5");
     System.out.println("XXXXXXXXX5/5 : " + score);
-    score = bowling.getBowlingScore("XX5/XXXXXXXXX");
+    score = Bowling.getScore("XX5/XXXXXXXXX");
     System.out.println("XX5/XXXXXXXXX : " + score);
-    score = bowling.getBowlingScore("X5-5/5-5/5-5/5-5/54");
+    score = Bowling.getScore("X5-5/5-5/5-5/5-5/54");
     System.out.println("X5-5/5-5/5-5/5-5/54 : " + score);
-    score = bowling.getBowlingScore("X5-5/5-5/5-5/5-5/5/5");
+    score = Bowling.getScore("X5-5/5-5/5-5/5-5/5/5");
     System.out.println("X5-5/5-5/5-5/5-5/5/5 : " + score);
-    score = bowling.getBowlingScore("X5-5/5-5/5-5/5-5/X54");
+    score = Bowling.getScore("X5-5/5-5/5-5/5-5/X54");
     System.out.println("X5-5/5-5/5-5/5-5/X54 : " + score);
-    score = bowling.getBowlingScore("X5-5/5-5/5-5/5-5/X5/");
+    score = Bowling.getScore("X5-5/5-5/5-5/5-5/X5/");
     System.out.println("X5-5/5-5/5-5/5-5/X5/ : " + score);
-    score = bowling.getBowlingScore("X5-5/5-5/5-5/5-5/XX5");
+    score = Bowling.getScore("X5-5/5-5/5-5/5-5/XX5");
     System.out.println("X5-5/5-5/5-5/5-5/XX5 : " + score);
-    score = bowling.getBowlingScore("XXXXX5/XXX5-");
+    score = Bowling.getScore("XXXXX5/XXX5-");
     System.out.println("XXXXX5/XXX5- : " + score);
-    score = bowling.getBowlingScore("XXXXXXXXX5-");
+    score = Bowling.getScore("XXXXXXXXX5-");
     System.out.println("XXXXXXXXX5- : " + score);
-
-    try {
-      score = bowling.getBowlingScore("5/5/5/5/5/5/5/5/5/5/5-");
-    }
-    catch (IllegalArgumentException e) {
-      System.out.println(e);
-    }
-
-    try {
-      score = bowling.getBowlingScore("5/5/5/5/5/5/5/5/5/");
-    }
-    catch (IllegalArgumentException e) {
-      System.out.println(e);
-    }
-
-    try {
-      score = bowling.getBowlingScore("5/5/5/5/5/5/5/5/X/5/5");
-    }
-    catch (IllegalArgumentException e) {
-      System.out.println(e);
-    }
-
-    try {
-      score = bowling.getBowlingScore("5/5/5/5/5/5/5/5/5/555");
-    }
-    catch (IllegalArgumentException e) {
-      System.out.println(e);
-    }
-
-    try {
-      score = bowling.getBowlingScore("555/5/5/5/5/5/5/5/5-");
-    }
-    catch (IllegalArgumentException e) {
-      System.out.println(e);
-    }
   }
 }

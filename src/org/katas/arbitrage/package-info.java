@@ -1,4 +1,4 @@
 /**
  * Currency Exchange kata.
  */
-package org.katas.currency;
+package org.katas.arbitrage;

@@ -12,46 +12,20 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 
 /**
- * An Applet version of the command-line program Bowling in the org.katas package.
+ * An applet front-end for the Bowling kata.
  * 
  * @author BJ Peter DeLaCruz
- * @version 1.0
  */
+@SuppressWarnings("serial")
 public class BowlingApplet extends JApplet {
 
   /**
-   * Used for serialization.
-   */
-  private static final long serialVersionUID = 1L;
-
-  /**
-   * An Applet version of the command-line program Bowling in the org.katas package.
+   * Initializes this applet.
    */
   @Override
   public void init() {
-    try {
-      UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-    }
-    catch (ClassNotFoundException e1) {
-      e1.printStackTrace();
-      return;
-    }
-    catch (InstantiationException e1) {
-      e1.printStackTrace();
-      return;
-    }
-    catch (IllegalAccessException e1) {
-      e1.printStackTrace();
-      return;
-    }
-    catch (UnsupportedLookAndFeelException e1) {
-      e1.printStackTrace();
-      return;
-    }
     JPanel panel1 = new JPanel();
     JLabel label1 = new JLabel("Bowling Score Calculator");
     label1.setFont(new Font("Arial", Font.BOLD, 16));
@@ -81,11 +55,10 @@ public class BowlingApplet extends JApplet {
       @Override
       public void actionPerformed(ActionEvent actionEvent) {
         final JDialog dlg = new JDialog();
-        Bowling bowling = new Bowling();
         JLabel results = null;
         int score = 0;
         try {
-          score = bowling.getBowlingScore(textField.getText());
+          score = Bowling.getScore(textField.getText());
           results = new JLabel("Your final score is " + score + ".");
         }
         catch (IllegalArgumentException e) {

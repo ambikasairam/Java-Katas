@@ -1,4 +1,4 @@
-package org.katas;
+package org.katas.arbitrage;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -7,8 +7,6 @@ import java.util.List;
 import org.katas.common.Kata;
 import org.katas.common.KataEnums;
 import org.katas.common.KataUtils;
-import org.katas.currency.CurrencyExchange;
-import org.katas.currency.CurrencyExchangeComparator;
 
 /**
  * This program creates one or more currency exchange tables and finds the exchange sequence that
@@ -165,7 +163,7 @@ public class Arbitrage extends Kata {
    * @param exchanges The list of exchange sequences to update.
    */
   private void updateList(List<CurrencyExchange> exchanges) {
-    Collections.sort(exchanges, new CurrencyExchangeComparator());
+    Collections.sort(exchanges);
     // Remove the longest exchanges.
     for (int index = 0; index < exchanges.size() - 1; index++) {
       if (exchanges.get(index).getExchangeSequence().length() < exchanges.get(index + 1)

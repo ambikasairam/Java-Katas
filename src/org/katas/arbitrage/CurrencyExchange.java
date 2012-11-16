@@ -1,4 +1,6 @@
-package org.katas.currency;
+package org.katas.arbitrage;
+
+import java.util.Objects;
 
 /**
  * This class is used by the Arbitrage class to store a currency exchange sequence and the profit
@@ -6,10 +8,10 @@ package org.katas.currency;
  * 
  * @author BJ Peter DeLaCruz
  */
-public class CurrencyExchange {
+public class CurrencyExchange implements Comparable<CurrencyExchange> {
 
   private final String exchangeSequence;
-  private final double profit;
+  private final Double profit;
 
   /**
    * Creates a new CurrencyExchange object; holds the exchange sequence and the profit made by it.
@@ -28,7 +30,7 @@ public class CurrencyExchange {
    * @return The exchange sequence.
    */
   public String getExchangeSequence() {
-    return this.exchangeSequence;
+    return exchangeSequence;
   }
 
   /**
@@ -37,16 +39,35 @@ public class CurrencyExchange {
    * @return The profit made by the exchange sequence.
    */
   public double getProfit() {
-    return this.profit;
+    return profit;
   }
 
-  /**
-   * Prints the exchange sequence and the profit made by it.
-   * 
-   * @return A string displaying the exchange sequence and profit.
-   */
+  /** {@inheritDoc} */
   @Override
   public String toString() {
-    return this.exchangeSequence + ": " + this.profit;
+    return exchangeSequence + ": " + profit;
   }
+
+  /** {@inheritDoc} */
+  @Override
+  public boolean equals(Object object) {
+    if (!(object instanceof CurrencyExchange)) {
+      return false;
+    }
+    CurrencyExchange exchange = (CurrencyExchange) object;
+    return exchangeSequence.equals(exchange.exchangeSequence) && profit.equals(exchange.profit);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public int hashCode() {
+    return Objects.hash(exchangeSequence, profit);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public int compareTo(CurrencyExchange exchange) {
+    return profit.compareTo(exchange.profit);
+  }
+
 }
