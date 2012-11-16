@@ -1,5 +1,6 @@
 package org.katas.squares;
 
+import java.util.Objects;
 import org.utils.Point;
 
 /**
@@ -120,7 +121,7 @@ public class Line implements Comparable<Line> {
       return false;
     }
     Line line = (Line) obj;
-    if (this.direction.equals(line.direction) && this.start.equals(line.start)
+    if (this.direction == line.direction && this.start.equals(line.start)
         && this.end.equals(line.end)) {
       return true;
     }
@@ -130,8 +131,6 @@ public class Line implements Comparable<Line> {
   /** {@inheritDoc} */
   @Override
   public int hashCode() {
-    int hashCode = this.direction.getDisplayName().hashCode() + this.start.hashCode();
-    hashCode += this.end.hashCode() + 7;
-    return hashCode;
+    return Objects.hash(direction, start, end);
   }
 }

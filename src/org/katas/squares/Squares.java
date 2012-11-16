@@ -20,6 +20,7 @@ import org.utils.Point;
  * counts the number of squares that the lines form.
  * 
  * @author BJ Peter DeLaCruz <bjpeter@hawaii.edu>
+ * @see <a href="http://www.bjpeterdelacruz.com/files/katas/201_Squares.pdf">Squares</a>
  */
 public class Squares extends Kata {
 

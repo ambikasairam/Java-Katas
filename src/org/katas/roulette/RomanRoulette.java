@@ -2,16 +2,15 @@ package org.katas.roulette;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.katas.common.Kata;
 import org.katas.common.KataEnums;
 import org.katas.common.KataUtils;
 
 /**
- * My solution to the Josephus problem (a.k.a. Roman Roulette). Problem description <a
- * href="http://uva.onlinejudge.org/external/1/130.pdf" target="_blank">here</a>.
+ * My solution to the Josephus problem (also known as Roman Roulette).
  * 
  * @author BJ Peter DeLaCruz
+ * @see <a href="http://www.bjpeterdelacruz.com/files/katas/Roman_Roulette.pdf">Roman Roulette</a>
  */
 public class RomanRoulette extends Kata {
 
