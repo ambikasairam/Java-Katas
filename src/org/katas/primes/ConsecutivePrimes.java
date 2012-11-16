@@ -14,6 +14,8 @@ import org.utils.Validator;
  * be found <a href="http://uva.onlinejudge.org/external/12/1210.pdf" target="_blank">here</a>.)
  * 
  * @author BJ Peter DeLaCruz
+ * @see <a href="http://www.bjpeterdelacruz.com/files/katas/1210_Consecutive_Primes.pdf">Consecutive
+ * Primes</a>
  */
 public class ConsecutivePrimes {
 
