@@ -6,16 +6,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.StringTokenizer;
-
 import org.katas.common.Kata;
 import org.katas.common.KataUtils;
 
 /**
  * A program that will display hint numbers for each grid in the Minesweeper game.
  * 
- * @see <a href=""></a>
- * 
  * @author BJ Peter DeLaCruz <bjpeter@hawaii.edu>
+ * @see <a href="http://www.bjpeterdelacruz.com/files/katas/Minesweeper.pdf">Minesweeper</a>
  */
 public class Minesweeper extends Kata {
 

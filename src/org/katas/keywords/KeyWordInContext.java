@@ -6,7 +6,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
-
 import org.katas.common.Kata;
 import org.katas.common.KataEnums;
 import org.katas.common.KataUtils;
@@ -15,6 +14,8 @@ import org.katas.common.KataUtils;
  * This program sorts a list of titles using KWIC (Keywords In Context).
  * 
  * @author BJ Peter DeLaCruz
+ * @see <a href="http://www.bjpeterdelacruz.com/files/katas/123_Searching_Quickly.pdf">Searching
+ * Quickly</a>
  */
 public class KeyWordInContext extends Kata {
 
