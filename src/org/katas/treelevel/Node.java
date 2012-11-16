@@ -1,11 +1,14 @@
 package org.katas.treelevel;
 
+import java.util.Locale;
+import java.util.Objects;
+
 /**
  * This class is used to create a Node object that will be put into a tree ADT.
  * 
  * @author BJ Peter DeLaCruz
  */
-public class Node {
+public class Node implements Comparable<Node> {
 
   private final int value;
   private final String position;
@@ -79,14 +82,34 @@ public class Node {
     return this.right;
   }
 
-  /**
-   * Prints the contents of this node.
-   * 
-   * @return A string representing the contents of this node.
-   */
+  /** {@inheritDoc} */
   @Override
   public String toString() {
     String info = "Node=[value=" + this.value + ",position=" + this.position;
     return info + ",left=" + this.left + ",right=" + this.right + "]";
   }
+
+  /** {@inheritDoc} */
+  @Override
+  public boolean equals(Object object) {
+    if (!(object instanceof Node)) {
+      return false;
+    }
+    Node node = (Node) object;
+    return value == node.value && Objects.equals(position, node.position)
+        && Objects.equals(left, node.left) && Objects.equals(right, node.right);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public int hashCode() {
+    return Objects.hash(value, position, left, right);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public int compareTo(Node node) {
+    return position.toUpperCase(Locale.US).compareTo(node.position.toUpperCase(Locale.US));
+  }
+
 }

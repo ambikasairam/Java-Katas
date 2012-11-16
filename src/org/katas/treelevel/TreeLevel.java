@@ -76,7 +76,7 @@ public class TreeLevel extends Kata {
       nodes.add(new Node(value, position));
     }
 
-    Collections.sort(nodes, new NodeComparator());
+    Collections.sort(nodes);
     return nodes;
   }
 
