@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.StringTokenizer;
-
 import org.katas.common.Kata;
 import org.katas.common.KataUtils;
 
@@ -14,6 +13,8 @@ import org.katas.common.KataUtils;
  * Processes a file containing a list of transactions and finds those that are not balanced.
  * 
  * @author BJ Peter DeLaCruz
+ * @see <a href="http://www.bjpeterdelacruz.com/files/katas/Transaction_Processing.pdf">Transaction
+ * Processing</a>
  */
 public class TransactionProcessing extends Kata {
 

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.StringTokenizer;
-
 import org.katas.common.Kata;
 import org.katas.common.KataUtils;
 
@@ -12,6 +11,7 @@ import org.katas.common.KataUtils;
  * This program builds one or more trees and then prints the contents of each in level order.
  * 
  * @author BJ Peter DeLaCruz
+ * @see <a href="http://www.bjpeterdelacruz.com/files/katas/122_Tree_Level.pdf">Tree Level</a>
  */
 public class TreeLevel extends Kata {
 
