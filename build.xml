@@ -12,7 +12,8 @@
   <property name="commons.version" value="3.1" />
   
   <target name="install-libraries" description="Install libraries needed for compilation">
-    <ivy:retrieve organisation="org.junit" module="junit" revision="${junit.version}" pattern="${lib.dir}/junit/[artifact].[ext]" sync="true" inline="true" conf="default" log="download-only" transitive="false" type="jar" />
+    <ivy:retrieve organisation="org.junit" module="junit" revision="${junit.version}" pattern="${lib.dir}/junit/[artifact].[ext]"
+	   sync="true" inline="true" conf="default" log="download-only" transitive="false" type="jar" />
     <path id="junit.path" location="${lib.dir}/junit/junit.jar" />
 
     <ivy:retrieve organisation="org.jfree" module="jcommon" revision="${jcommon.version}" pattern="${lib.dir}/jcommon/[artifact].[ext]"
@@ -36,7 +37,7 @@
     <path id="apache.commons.path" location="${lib.dir}/apache/commons/commons-lang.jar" />
   </target>
 
-  <!-- Basic properties for this system. -->
+  <!-- Basic properties for this system -->
   <property name="system.name" value="java-katas" />
   <property name="system.main.class" value="" />
   <property name="majorVersionNumber" value="1" />
@@ -55,16 +56,15 @@
 	<path refid="apache.commons.path" />
   </path>
 
-
   <target name="compile" depends="install-ivy, install-libraries" description="Compiles the code and copies resource files to build.classes.dir">
-    <!-- Now compile the code into build/classes -->
+    <!-- Now compile code and put in build/classes -->
     <mkdir dir="${build.classes.dir}" />
     <javac srcdir="${src.dir}" destdir="${build.classes.dir}" debug="on" includeAntRuntime="no">
       <classpath refid="compile.classpath" />
       <compilerarg value="-Xlint:all" />
       <compilerarg value="-Werror" />
     </javac>
-    <!-- Copy html markup and static files from webapp directory to build.classes.dir -->
+    <!-- Copy files to build.classes.dir -->
     <copy todir="${build.classes.dir}" overwrite="true">
       <fileset dir="${src.dir}">
         <include name="**/*.*" />
@@ -83,8 +83,3 @@
   </target>
 
 </project>
-
-
-
-
-

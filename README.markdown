@@ -9,6 +9,7 @@ Katas are programming exercises designed to hone one's programming skills throug
 * **Bowling**. Given a string of scores, calculates a bowler's final score.
 * [Consecutive Primes](http://www.bjpeterdelacruz.com/files/katas/1210_Consecutive_Primes.pdf)
 * [Clock Patience](http://www.bjpeterdelacruz.com/files/katas/170_Clock_Patience.pdf)
+* [Crazy Calculator](http://www.bjpeterdelacruz.com/files/katas/354_Crazy_Calculator.pdf)
 * [Following Orders](http://www.bjpeterdelacruz.com/files/katas/124_Following_Orders.pdf)
 * [History Grading](http://www.bjpeterdelacruz.com/files/katas/111_History_Grading.pdf)
 * [Intersection](http://www.bjpeterdelacruz.com/files/katas/191_Intersection.pdf)
