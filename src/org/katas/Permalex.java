@@ -32,9 +32,9 @@ public class Permalex extends Kata {
   @SuppressWarnings("deprecation")
   @Override
   public void processLines() {
-    while (!this.getLines().isEmpty()) {
+    while (!this.lines.isEmpty()) {
 
-      String line = this.getLines().remove(0);
+      String line = this.lines.remove(0);
       if ("#".equals(line)) { // EOF
         return;
       }

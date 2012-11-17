@@ -36,9 +36,9 @@ public class FollowingOrders extends Kata {
   @SuppressWarnings({ "deprecation", "unchecked" })
   @Override
   public void processLines() {
-    while (!this.getLines().isEmpty()) {
+    while (!this.lines.isEmpty()) {
 
-      String line = this.getLines().remove(0);
+      String line = this.lines.remove(0);
       List<Character> letters =
           (List<Character>) KataUtils.createList(line, " ", KataEnums.CHARACTER);
       Set<Character> tempSet = new HashSet<Character>(letters);
@@ -52,7 +52,7 @@ public class FollowingOrders extends Kata {
         }
       }
 
-      String constraints = this.getLines().remove(0);
+      String constraints = this.lines.remove(0);
       List<Character> constraintsList =
           (List<Character>) KataUtils.createList(constraints, " ", KataEnums.CHARACTER);
       if (constraintsList.size() % 2 != 0) {

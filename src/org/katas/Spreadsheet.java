@@ -54,7 +54,7 @@ public class Spreadsheet extends Kata {
   @Override
   public void processLines() {
     for (int count = 0; count < this.numSpreadsheets; count++) {
-      String line = this.getLines().remove(0);
+      String line = this.lines.remove(0);
       @SuppressWarnings("unchecked")
       List<Integer> dimensions = (List<Integer>) KataUtils.createList(line, " ", KataEnums.INTEGER);
       if (dimensions.size() != 2) {
@@ -86,7 +86,7 @@ public class Spreadsheet extends Kata {
    */
   private void populateSpreadsheet(List<Integer> dimensions) {
     for (int rowIndex = 0; rowIndex < dimensions.get(1); rowIndex++) {
-      StringTokenizer tokenizer = new StringTokenizer(this.getLines().remove(0), " ");
+      StringTokenizer tokenizer = new StringTokenizer(this.lines.remove(0), " ");
       // Get recently added spreadsheet.
       Object[][] tempSpreadsheet = this.spreadsheets.get(this.spreadsheets.size() - 1);
       // Add values to each cell in row.

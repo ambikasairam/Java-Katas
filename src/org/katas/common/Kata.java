@@ -10,7 +10,7 @@ import java.util.List;
 public abstract class Kata {
 
   /** The lines read in from a file. */
-  private List<String> lines;
+  protected List<String> lines;
 
   /**
    * Sets lines read in from a file.

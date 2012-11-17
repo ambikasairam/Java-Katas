@@ -21,23 +21,23 @@ public class LinearEquationSolver extends Kata {
   public void processLines() {
     int numLines = 0;
     try {
-      numLines = Integer.parseInt(this.getLines().get(0));
-      this.getLines().remove(0);
+      numLines = Integer.parseInt(this.lines.get(0));
+      this.lines.remove(0);
     }
     catch (NumberFormatException e) {
-      System.err.print("Invalid argument: " + this.getLines().get(0));
+      System.err.print("Invalid argument: " + this.lines.get(0));
       System.err.println(". Expected a value for the number of equations to process.");
       return;
     }
 
-    if (numLines != this.getLines().size()) {
+    if (numLines != this.lines.size()) {
       System.err.print("Expected " + numLines + " equations. ");
-      System.err.println("Found " + this.getLines().size() + ".");
+      System.err.println("Found " + this.lines.size() + ".");
       return;
     }
 
-    while (!this.getLines().isEmpty()) {
-      String equation = this.getLines().remove(0);
+    while (!this.lines.isEmpty()) {
+      String equation = this.lines.remove(0);
       List<String> variablesL = new ArrayList<String>();
       List<String> constantsL = new ArrayList<String>();
       List<String> variablesR = new ArrayList<String>();

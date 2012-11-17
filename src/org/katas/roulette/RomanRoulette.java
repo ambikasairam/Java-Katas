@@ -32,8 +32,8 @@ public class RomanRoulette extends Kata {
    */
   @Override
   public void processLines() {
-    while (!this.getLines().isEmpty()) {
-      String line = this.getLines().remove(0);
+    while (!this.lines.isEmpty()) {
+      String line = this.lines.remove(0);
       @SuppressWarnings("unchecked")
       List<Integer> params = (List<Integer>) KataUtils.createList(line, " ", KataEnums.INTEGER);
       if (params == null) {

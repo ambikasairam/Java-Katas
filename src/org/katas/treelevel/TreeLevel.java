@@ -28,12 +28,12 @@ public class TreeLevel extends Kata {
    */
   @Override
   public void processLines() {
-    while (!this.getLines().isEmpty()) {
+    while (!this.lines.isEmpty()) {
       StringBuffer buffer = new StringBuffer();
-      String line = this.getLines().remove(0) + " ";
+      String line = this.lines.remove(0) + " ";
       buffer.append(line);
       while (!line.contains("()")) {
-        line = this.getLines().remove(0) + " ";
+        line = this.lines.remove(0) + " ";
         buffer.append(line);
       }
 

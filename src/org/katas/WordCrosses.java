@@ -33,8 +33,8 @@ public class WordCrosses extends Kata {
    */
   @Override
   public void processLines() {
-    while (!this.getLines().isEmpty()) {
-      String line = this.getLines().remove(0);
+    while (!this.lines.isEmpty()) {
+      String line = this.lines.remove(0);
       if ("#".equals(line)) { // EOF
         return;
       }

@@ -51,7 +51,7 @@ public class ClockPatience extends Kata {
    */
   @Override
   public void processLines() {
-    this.playingCards = KataUtils.createPlayingCards(this.getLines());
+    this.playingCards = KataUtils.createPlayingCards(this.lines);
 
     dealCards();
 

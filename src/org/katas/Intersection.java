@@ -78,24 +78,24 @@ public class Intersection extends Kata {
   public void processLines() {
     int numLines = 0;
     try {
-      numLines = Integer.parseInt(this.getLines().get(0));
-      this.getLines().remove(0);
+      numLines = Integer.parseInt(this.lines.get(0));
+      this.lines.remove(0);
     }
     catch (NumberFormatException e) {
-      System.err.println("Non-numeric character(s) found: " + this.getLines().get(0));
+      System.err.println("Non-numeric character(s) found: " + this.lines.get(0));
       return;
     }
 
-    if (numLines != this.getLines().size()) {
+    if (numLines != this.lines.size()) {
       System.err.print("Expected " + numLines + " line(s). ");
-      System.err.println("Found " + this.getLines().size() + ".");
+      System.err.println("Found " + this.lines.size() + ".");
       return;
     }
 
-    while (!this.getLines().isEmpty()) {
+    while (!this.lines.isEmpty()) {
       @SuppressWarnings("unchecked")
       List<Integer> coordinates =
-          (List<Integer>) KataUtils.createList(this.getLines().remove(0), " ", KataEnums.INTEGER);
+          (List<Integer>) KataUtils.createList(this.lines.remove(0), " ", KataEnums.INTEGER);
 
       if (coordinates == null) {
         continue;

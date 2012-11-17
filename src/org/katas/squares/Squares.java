@@ -29,13 +29,13 @@ public class Squares extends Kata {
   public void processLines() {
     try {
       int problemNum = 1;
-      while (!this.getLines().isEmpty()) {
+      while (!this.lines.isEmpty()) {
 
-        int dimension = Integer.parseInt(this.getLines().remove(0)) + 1;
-        int numLines = Integer.parseInt(this.getLines().remove(0));
+        int dimension = Integer.parseInt(this.lines.remove(0)) + 1;
+        int numLines = Integer.parseInt(this.lines.remove(0));
 
         Set<Line> linesSet = new HashSet<Line>();
-        while (!this.getLines().isEmpty() && this.getLines().get(0).length() > 1) {
+        while (!this.lines.isEmpty() && this.lines.get(0).length() > 1) {
           processLine(linesSet, dimension);
         }
 
@@ -65,7 +65,7 @@ public class Squares extends Kata {
    * @param dimension The number of points in a row or column in the grid.
    */
   private void processLine(Set<Line> lines, int dimension) {
-    String line = this.getLines().remove(0);
+    String line = this.lines.remove(0);
     StringTokenizer tokenizer = new StringTokenizer(line);
     if (tokenizer.countTokens() == 3) {
       String direction = tokenizer.nextToken();

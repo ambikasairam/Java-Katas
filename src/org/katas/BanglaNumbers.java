@@ -30,8 +30,8 @@ public class BanglaNumbers extends Kata {
   /** {@inheritDoc} */
   @Override
   public void processLines() {
-    while (!this.getLines().isEmpty()) {
-      long number = Long.parseLong(this.getLines().remove(0));
+    while (!this.lines.isEmpty()) {
+      long number = Long.parseLong(this.lines.remove(0));
       if (number > MAX) {
         System.err.println("Error: " + number + " > " + MAX);
         continue;

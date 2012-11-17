@@ -25,8 +25,8 @@ public class Minesweeper extends Kata {
   @Override
   public void processLines() {
     int numGrids = 1;
-    while (!this.getLines().isEmpty()) {
-      String info = this.getLines().remove(0);
+    while (!this.lines.isEmpty()) {
+      String info = this.lines.remove(0);
       StringTokenizer tokenizer = new StringTokenizer(info);
       if (tokenizer.countTokens() != 2) {
         String msg = "Expected 2 arguments: number of rows and number of columns.";
@@ -36,8 +36,8 @@ public class Minesweeper extends Kata {
       this.numRows = Integer.parseInt(tokenizer.nextToken());
       this.numColumns = Integer.parseInt(tokenizer.nextToken());
       int rowCount = 1;
-      for (int index = 0; index < this.numRows && !this.getLines().isEmpty(); index++, rowCount++) {
-        String line = this.getLines().remove(0);
+      for (int index = 0; index < this.numRows && !this.lines.isEmpty(); index++, rowCount++) {
+        String line = this.lines.remove(0);
         int columnCount = addRow(line, rowCount);
         if (columnCount != this.numColumns) {
           String msg = "Expected " + this.numColumns + " columns. ";

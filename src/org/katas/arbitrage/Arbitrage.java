@@ -31,15 +31,15 @@ public class Arbitrage extends Kata {
    */
   @Override
   public void processLines() {
-    while (!this.getLines().isEmpty()) {
+    while (!this.lines.isEmpty()) {
       // Get the dimension of the currency exchange table.
       int dimension;
       try {
-        dimension = Integer.parseInt(this.getLines().get(0));
-        this.getLines().remove(0);
+        dimension = Integer.parseInt(this.lines.get(0));
+        this.lines.remove(0);
       }
       catch (NumberFormatException e) {
-        System.err.println("Invalid dimension found: " + this.getLines().get(0));
+        System.err.println("Invalid dimension found: " + this.lines.get(0));
         return;
       }
 
@@ -81,7 +81,7 @@ public class Arbitrage extends Kata {
       Double[] row = new Double[dimension];
       @SuppressWarnings("unchecked")
       List<Double> data =
-          (List<Double>) KataUtils.createList(this.getLines().remove(0), " ", KataEnums.DOUBLE);
+          (List<Double>) KataUtils.createList(this.lines.remove(0), " ", KataEnums.DOUBLE);
       for (int pos = 0; pos < row.length; pos++) {
         if (pos == index) {
           row[pos] = 1.0;

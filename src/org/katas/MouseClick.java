@@ -36,13 +36,13 @@ public class MouseClick extends Kata {
    */
   @Override
   public void processLines() {
-    for (int index = 1, letter = 65; !this.getLines().isEmpty();) {
-      if ("#".equals(this.getLines().get(0))) {
+    for (int index = 1, letter = 65; !this.lines.isEmpty();) {
+      if ("#".equals(this.lines.get(0))) {
         break;
       }
 
       // Read in all icons, regions, and mouse clicks first.
-      StringTokenizer tokenizer = new StringTokenizer(this.getLines().remove(0), " ");
+      StringTokenizer tokenizer = new StringTokenizer(this.lines.remove(0), " ");
       while (tokenizer.hasMoreTokens()) {
         String type = tokenizer.nextToken();
         if ("I".equals(type)) {

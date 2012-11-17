@@ -83,8 +83,8 @@ public class KeyWord extends Kata {
    * Gets all of the profiles and titles found in a file.
    */
   private void processFile() {
-    while (!this.getLines().isEmpty()) {
-      String line = this.getLines().remove(0);
+    while (!this.lines.isEmpty()) {
+      String line = this.lines.remove(0);
       // This line is a profile.
       if (line.contains("P:")) {
         line = line.replace("P:", "").toLowerCase();

@@ -59,7 +59,7 @@ public class KeyWordInContext extends Kata {
   public void processLines() {
     processIgnoreWords();
 
-    if (this.getLines().isEmpty()) {
+    if (this.lines.isEmpty()) {
       System.err.println("At least one title must be specified.");
       return;
     }
@@ -70,7 +70,7 @@ public class KeyWordInContext extends Kata {
     Set<String> titles = new LinkedHashSet<String>(); // No repeats, keeps insertion order.
 
     for (String word : this.keywordsList) {
-      for (String title : this.getLines()) {
+      for (String title : this.lines) {
         if (title.toLowerCase(Locale.US).contains(word.toLowerCase(Locale.US))) {
           titles.addAll(KataUtils.replace(title.toLowerCase(Locale.US),
               word.toLowerCase(Locale.US), word.toUpperCase(Locale.US)));
@@ -88,11 +88,11 @@ public class KeyWordInContext extends Kata {
    * word that is to be ignored when sorting the list of titles.
    */
   private void processIgnoreWords() {
-    if (!this.getLines().isEmpty()) {
-      String line = this.getLines().remove(0).toLowerCase();
+    if (!this.lines.isEmpty()) {
+      String line = this.lines.remove(0).toLowerCase();
       while (!line.equals(SEPARATOR)) {
         this.ignoreWordsList.add(line);
-        line = this.getLines().remove(0).toLowerCase();
+        line = this.lines.remove(0).toLowerCase();
       }
     }
   }
@@ -102,7 +102,7 @@ public class KeyWordInContext extends Kata {
    * list of keywords, which is used for sorting the titles.
    */
   private void processKeywords() {
-    for (String line : this.getLines()) {
+    for (String line : this.lines) {
       @SuppressWarnings("unchecked")
       List<String> keywords = (List<String>) KataUtils.createList(line, " ", KataEnums.STRING);
       for (int index = 0; index < keywords.size(); index++) {

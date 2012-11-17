@@ -37,7 +37,7 @@ public class PancakeStacks extends Kata {
   @SuppressWarnings("unchecked")
   @Override
   public void processLines() {
-    for (String s : this.getLines()) {
+    for (String s : this.lines) {
       List<Integer> list = (List<Integer>) KataUtils.createList(s, " ", KataEnums.INTEGER);
       this.pancakeStacks.add(list);
     }

@@ -40,7 +40,7 @@ public class TransactionProcessing extends Kata {
   public void processLines() {
     inputAccounts();
 
-    this.getLines().remove(0);
+    this.lines.remove(0);
 
     inputTransactions();
 
@@ -51,8 +51,8 @@ public class TransactionProcessing extends Kata {
    * Inputs all account information read in from a file into a HashMap.
    */
   private void inputAccounts() {
-    while (!this.getLines().get(0).contains("000")) {
-      String info = this.getLines().remove(0);
+    while (!this.lines.get(0).contains("000")) {
+      String info = this.lines.remove(0);
       int accountNo = Integer.parseInt(info.substring(0, 3));
       String accountDescr = info.substring(3);
       Account account = new Account(accountNo, accountDescr);
@@ -64,8 +64,8 @@ public class TransactionProcessing extends Kata {
    * Inserts all transactions read in from a file into a HashMap.
    */
   private void inputTransactions() {
-    while (!this.getLines().isEmpty()) {
-      String line = this.getLines().remove(0);
+    while (!this.lines.isEmpty()) {
+      String line = this.lines.remove(0);
       StringTokenizer tokenizer = new StringTokenizer(line, " ");
       if (tokenizer.countTokens() != 2) {
         System.err.println("Line in incorrect format: " + line);
