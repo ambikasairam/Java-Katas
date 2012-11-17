@@ -136,19 +136,24 @@ public class CrazyCalculator extends Kata {
       Map<Character, Rule> rulesMap = new TreeMap<>();
       for (int idx = 0; idx < 4; idx++) {
         String line = lines.remove(0);
+        if (line.isEmpty()) {
+          return;
+        }
         if (line.length() != 4) {
           throw new IllegalArgumentException("Line doesn't contain four characters.");
         }
         int precedence = Integer.parseInt(line.charAt(2) + "");
-        Rule rule =
-            rulesMap.put(line.charAt(1),
-                new Rule(line.charAt(0), line.charAt(1), precedence, line.charAt(3), -1));
-        if (rule != null) {
+        Rule newRule = new Rule(line.charAt(0), line.charAt(1), precedence, line.charAt(3), -1);
+        Rule oldRule = rulesMap.put(newRule.getCrazyOp(), newRule);
+        if (oldRule != null) {
           throw new IllegalArgumentException("Rule already defined.");
         }
       }
       while (!lines.isEmpty()) {
         String oldLine = lines.remove(0);
+        if (oldLine.isEmpty()) {
+          break;
+        }
         String line = replaceCrazyOps(rulesMap, oldLine);
         List<Rule> rulesList = new ArrayList<>();
         for (Entry<Character, Rule> entry : rulesMap.entrySet()) {
@@ -293,13 +298,15 @@ public class CrazyCalculator extends Kata {
         throw new IllegalArgumentException("Invalid argument: " + rule.getAssociativity());
       }
 
-      if (newLine.length() <= 2) {
-        break;
+      try {
+        Integer.parseInt(newLine);
+        return newLine;
+      }
+      catch (NumberFormatException nfe) {
+        continue;
       }
 
     }
-
-    return newLine;
   }
 
   /**
@@ -311,6 +318,8 @@ public class CrazyCalculator extends Kata {
    * position >= chars.length, or the given array of characters does not represent a number.
    */
   private static boolean isNumeric(char[] chars, int position) {
+    Validator.checkNull(chars);
+
     if (position < 0 || position >= chars.length) {
       return false;
     }
