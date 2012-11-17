@@ -1,9 +1,5 @@
-package org.katas;
+package org.katas.calculator;
 
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -16,7 +12,7 @@ import org.katas.common.Kata;
 import org.utils.Validator;
 
 /**
- * 
+ * A calculator that uses custom operators, and precedence and associativity rules.
  * 
  * @author BJ Peter DeLaCruz <bjpeter@hawaii.edu>
  * @see <a href="http://www.bjpeterdelacruz.com/files/katas/354_Crazy_Calculator.pdf">Crazy
@@ -29,9 +25,11 @@ public class CrazyCalculator extends Kata {
 
   private static final String OPERATORS = "~@#$%^&*()_+=-{}[]:;|<>,.?/";
 
+  private final List<String> results = new ArrayList<>();
+
   /**
-   * Represents a rule for this calculator, which contains an operation, a crazy operation, and
-   * precedence and associativity for the operation.
+   * Represents a rule for this calculator, which contains an operator, a crazy operator, and
+   * precedence and associativity for the operator.
    * 
    * @author BJ Peter DeLaCruz <bjpeter@hawaii.edu>
    */
@@ -46,11 +44,11 @@ public class CrazyCalculator extends Kata {
     /**
      * Creates a new Rule.
      * 
-     * @param op The operation.
-     * @param crazyOp The crazy operation.
-     * @param precedence The precedence of the operation.
-     * @param associativity The associativity of the operation.
-     * @param lastPosition The last position that the given crazy operation appears in a string.
+     * @param op The operator.
+     * @param crazyOp The crazy operator.
+     * @param precedence The precedence of the operator.
+     * @param associativity The associativity of the operator.
+     * @param lastPosition The last position that the given crazy operator appears in a string.
      */
     Rule(char op, char crazyOp, int precedence, char associativity, int lastPosition) {
       this.op = op;
@@ -66,25 +64,25 @@ public class CrazyCalculator extends Kata {
       this.lastPosition = lastPosition;
     }
 
-    /** @return The operation. */
+    /** @return The operator. */
     public char getOp() {
       return op;
     }
 
-    /** @return The crazy operation. */
+    /** @return The crazy operator. */
     public char getCrazyOp() {
       return crazyOp;
     }
 
-    /** @return The associativity of the operation. */
+    /** @return The associativity of the operator. */
     public char getAssociativity() {
       return associativity;
     }
 
     /**
-     * Sets the last position that the given crazy operation appears in a string.
+     * Sets the last position that the given crazy operator appears in a string.
      * 
-     * @param lastPosition The last position that the given crazy operation appears in a string.
+     * @param lastPosition The last position that the given crazy operator appears in a string.
      * @return A new Rule with a new value for the last position.
      */
     public Rule setLastPosition(int lastPosition) {
@@ -134,6 +132,7 @@ public class CrazyCalculator extends Kata {
     lines.remove(0);
     for (int index = 0; index < numCases; index++) {
       Map<Character, Rule> rulesMap = new TreeMap<>();
+      results.clear();
       for (int idx = 0; idx < 4; idx++) {
         String line = lines.remove(0);
         if (line.isEmpty()) {
@@ -168,16 +167,17 @@ public class CrazyCalculator extends Kata {
         }
         System.out.println(line);
         System.out.println();
+        results.add(line);
       }
     }
   }
 
   /**
-   * Replaces all crazy operations with regular operations (i.e. '+', '-', '*', and '/').
+   * Replaces all crazy operators with regular operators (i.e. '+', '-', '*', and '/').
    * 
    * @param rules The map of arithmetic rules.
-   * @param line The line that contains crazy operations that need to be replaced.
-   * @return A line with regular operations.
+   * @param line The line that contains crazy operators that need to be replaced.
+   * @return A line with regular operators.
    */
   private static String replaceCrazyOps(Map<Character, Rule> rules, String line) {
     Validator.checkNull(rules);
@@ -210,7 +210,7 @@ public class CrazyCalculator extends Kata {
    * 
    * @param line The line that represents an equation.
    * @param rule An arithmetic rule.
-   * @return The original line if the given operation is not found in the line, or a partially or
+   * @return The original line if the given operator is not found in the line, or a partially or
    * fully solved equation.
    */
   private static String calculate(String line, Rule rule) {
@@ -240,6 +240,9 @@ public class CrazyCalculator extends Kata {
 
       // Get value for left operand
       int leftmostPosition = position;
+      if (!isNumeric(chars, leftmostPosition - 1)) {
+        return newLine;
+      }
       int end = leftmostPosition - 1;
       while (isNumeric(chars, --leftmostPosition)) {
         ;
@@ -323,21 +326,26 @@ public class CrazyCalculator extends Kata {
     if (position < 0 || position >= chars.length) {
       return false;
     }
+    if (position == 0 && chars[position] == '-') {
+      return true;
+    }
+    try {
+      if (position - 1 >= 0) {
+        Integer.parseInt(chars[position - 1] + "");
+      }
+    }
+    catch (NumberFormatException nfe) {
+      if (chars[position] == '-') {
+        return true;
+      }
+    }
     return chars[position] != '+' && chars[position] != '-' && chars[position] != '*'
         && chars[position] != '/';
   }
 
-  /**
-   * Tests this class.
-   * 
-   * @param args None.
-   * @throws Exception If the given file cannot be found.
-   */
-  public static void main(String... args) throws Exception {
-    CrazyCalculator calculator = new CrazyCalculator();
-    Path path = Paths.get(calculator.getClass().getResource("calculator.txt").toURI());
-    calculator.setLines(Files.readAllLines(path, Charset.defaultCharset()));
-    calculator.processLines();
+  /** @return A copy of the results for one set of calculations. */
+  public List<String> getResults() {
+    return new ArrayList<>(results);
   }
 
 }
