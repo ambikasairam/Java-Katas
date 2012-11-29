@@ -26,5 +26,21 @@ Katas are programming exercises designed to hone one's programming skills throug
 * [Transaction Processing](http://www.bjpeterdelacruz.com/files/katas/Transaction_Processing.pdf)
 * [Tree Level](http://www.bjpeterdelacruz.com/files/katas/122_Tree_Level.pdf)
 
+## Developer Guide
+1. Download and install JDK 7.
+2. Download and install Apache Ant 1.8.4.
+3. Download and install Git. If you are using Windows, I suggest installing [GitHub for Windows](http://windows.github.com).
+4. Clone this repository into a directory on your machine.
+5. Type **ant -f verify.build.xml** to download and install dependencies (see below), compile the Java source files, and run the QA tools (Checkstyle, PMD, FindBugs, and JUnit).
+6. Start developing. Enjoy!
+
+## Dependencies
+* Apache Commons
+* Checkstyle
+* FindBugs
+* JFreeChart
+* JUnit
+* PMD
+
 ## Links
 Developer's Website: [BJ Peter DeLaCruz](http://www.bjpeterdelacruz.com)
