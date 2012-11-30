@@ -35,6 +35,8 @@
     <ivy:retrieve organisation="org.apache.commons" module="commons-lang" revision="${commons.version}" pattern="${lib.dir}/apache/commons/[artifact].[ext]"
 	   sync="true" inline="true" conf="default" log="download-only" transitive="false" type="jar,javadoc" />
     <path id="apache.commons.path" location="${lib.dir}/apache/commons/commons-lang.jar" />
+
+    <path id="bpd.commons.path" location="${libs.dir}/bpd-commons.jar" />
   </target>
 
   <!-- Basic properties for this system -->
@@ -53,7 +55,8 @@
     <path refid="junit.path" />
     <path refid="jcommon.path" />
     <path refid="jfreechart.path" />
-	<path refid="apache.commons.path" />
+    <path refid="apache.commons.path" />
+    <path refid="bpd.commons.path" />
   </path>
 
   <target name="compile" depends="install-ivy, install-libraries" description="Compiles the code and copies resource files to build.classes.dir">

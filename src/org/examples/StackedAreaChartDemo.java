@@ -16,7 +16,7 @@ import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.time.TimeSeriesDataItem;
 import org.jfree.data.time.TimeTableXYDataset;
-import org.utils.Point;
+import com.bpd.utils.math.Point;
 
 /**
  * Test class.

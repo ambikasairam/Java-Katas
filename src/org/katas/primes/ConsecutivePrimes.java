@@ -7,7 +7,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.utils.Validator;
+import com.bpd.utils.validation.Validator;
 
 /**
  * This kata finds the number of representations for a given positive integer. (More information can

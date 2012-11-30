@@ -6,6 +6,7 @@
   <!-- Basic directory structure. -->
   <property name="src.dir" location="${basedir}/src" />
   <property name="lib.dir" location="${basedir}/lib" />
+  <property name="libs.dir" location="${basedir}/libs" />
   <property name="build.dir" location="${basedir}/build" />
   <property name="build.classes.dir" location="${basedir}/build/classes" />
 

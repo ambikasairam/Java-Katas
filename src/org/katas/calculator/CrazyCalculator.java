@@ -9,7 +9,7 @@ import java.util.Objects;
 import java.util.TreeMap;
 import org.apache.commons.lang3.StringUtils;
 import org.katas.common.Kata;
-import org.utils.Validator;
+import com.bpd.utils.validation.Validator;
 
 /**
  * A calculator that uses custom operators, and precedence and associativity rules.
@@ -295,7 +295,7 @@ public class CrazyCalculator extends Kata {
         newLine = StringUtils.replace(newLine, oldSubstring, result + "");
         break;
       case RIGHT_ASSOC:
-        newLine = org.utils.StringUtils.replaceLast(newLine, oldSubstring, result + "");
+        newLine = com.bpd.utils.StringUtils.replaceLast(newLine, oldSubstring, result + "");
         break;
       default:
         throw new IllegalArgumentException("Invalid argument: " + rule.getAssociativity());

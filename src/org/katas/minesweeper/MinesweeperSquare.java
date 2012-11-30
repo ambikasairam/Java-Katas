@@ -1,6 +1,6 @@
 package org.katas.minesweeper;
 
-import org.utils.Point;
+import com.bpd.utils.math.Point;
 
 /**
  * A class representing a square in the Minesweeper game.

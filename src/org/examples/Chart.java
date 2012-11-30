@@ -12,8 +12,8 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.time.FixedMillisecond;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
-import org.utils.Interpolator;
-import org.utils.Point;
+import com.bpd.utils.math.Interpolator;
+import com.bpd.utils.math.Point;
 
 /**
  * Test class.

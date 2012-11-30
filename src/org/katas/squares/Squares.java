@@ -13,7 +13,7 @@ import java.util.StringTokenizer;
 import org.katas.common.Kata;
 import org.katas.common.KataUtils;
 import org.katas.squares.Line.Direction;
-import org.utils.Point;
+import com.bpd.utils.math.Point;
 
 /**
  * This program reads in lines representing start or end points for horizontal or vertical lines and

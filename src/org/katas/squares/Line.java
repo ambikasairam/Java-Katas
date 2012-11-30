@@ -1,7 +1,7 @@
 package org.katas.squares;
 
 import java.util.Objects;
-import org.utils.Point;
+import com.bpd.utils.math.Point;
 
 /**
  * A class representing a line for the {@link Squares} kata.
