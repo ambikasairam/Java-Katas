@@ -32,7 +32,8 @@ Katas are programming exercises designed to hone one's programming skills throug
 3. Download and install Git. If you are using Windows, I suggest installing [GitHub for Windows](http://windows.github.com).
 4. Clone this repository into a directory on your machine.
 5. Type **ant -f verify.build.xml** to download and install dependencies (see below), compile the Java source files, and run the QA tools (Checkstyle, PMD, FindBugs, and JUnit).
-6. Start developing. Enjoy!
+6. Include **bpd-commons.jar**, which is found in the **libs** directory, in your Java build path.
+7. Start developing. Enjoy!
 
 ## Dependencies
 * Apache Commons
