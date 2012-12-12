@@ -50,7 +50,7 @@ public class TreeLevel extends Kata {
    * @return A string containing the tree printed in level order, or <code>nulL</code> if the tree
    * couldn't be built.
    */
-  public String getLevelOrder(String line) {
+  public static String getLevelOrder(String line) {
     Validator.checkEmptyString(line);
 
     Node root = buildTree(createNodesList(line));
@@ -64,7 +64,7 @@ public class TreeLevel extends Kata {
    * @param line The line read in from a file containing pairs of values and paths.
    * @return The list of nodes.
    */
-  private List<Node> createNodesList(String line) {
+  private static List<Node> createNodesList(String line) {
     Validator.checkEmptyString(line);
 
     StringTokenizer tokenizer = new StringTokenizer(line, "(), ");
@@ -100,7 +100,7 @@ public class TreeLevel extends Kata {
    * @param nodes The list of nodes with which to build a tree.
    * @return The root of the tree.
    */
-  private Node buildTree(List<Node> nodes) {
+  private static Node buildTree(List<Node> nodes) {
     Validator.checkNull(nodes);
 
     List<Node> tree = new ArrayList<Node>();
@@ -148,7 +148,7 @@ public class TreeLevel extends Kata {
    * @param node The root of the tree.
    * @return A string containing the tree printed in level order.
    */
-  private String getLevelOrder(Node node) {
+  private static String getLevelOrder(Node node) {
     Validator.checkNull(node);
 
     List<Node> queue = new ArrayList<Node>();
