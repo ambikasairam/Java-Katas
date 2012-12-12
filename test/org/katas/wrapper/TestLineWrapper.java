@@ -7,7 +7,7 @@ import java.util.List;
 import org.junit.Test;
 
 /**
- * A JUnit test for the {@link LineWrapper} class.
+ * JUnit tests for the {@link LineWrapper} class.
  * 
  * @author BJ Peter DeLaCruz <bjpeter@hawaii.edu>
  */

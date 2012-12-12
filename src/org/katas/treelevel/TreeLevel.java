@@ -28,19 +28,19 @@ public class TreeLevel extends Kata {
    */
   @Override
   public void processLines() {
-    while (!this.lines.isEmpty()) {
+    while (!lines.isEmpty()) {
       StringBuffer buffer = new StringBuffer();
-      String line = this.lines.remove(0) + " ";
+      String line = lines.remove(0) + " ";
       buffer.append(line);
-      while (!line.contains("()") && !this.lines.isEmpty()) {
-        line = this.lines.remove(0) + " ";
+      while (!line.contains("()") && !lines.isEmpty()) {
+        line = lines.remove(0) + " ";
         buffer.append(line);
       }
 
-      List<Node> nodes = this.createNodesList(buffer.toString());
-      Node tree = this.buildTree(nodes);
+      List<Node> nodes = createNodesList(buffer.toString());
+      Node tree = buildTree(nodes);
       if (tree != null) {
-        this.printLevelOrder(tree);
+        System.out.println(getLevelOrder(tree));
       }
     }
   }
@@ -52,7 +52,7 @@ public class TreeLevel extends Kata {
    * @param line The line read in from a file containing pairs of values and paths.
    * @return The list of nodes.
    */
-  private List<Node> createNodesList(String line) {
+  public List<Node> createNodesList(String line) {
     StringTokenizer tokenizer = new StringTokenizer(line, "(), ");
     List<String> strings = new ArrayList<String>();
     while (tokenizer.hasMoreTokens()) {
@@ -70,7 +70,7 @@ public class TreeLevel extends Kata {
     }
 
     List<Node> nodes = new ArrayList<Node>();
-    for (int index = 0; index < strings.size(); index += 2) {
+    for (int index = 0; index < strings.size() - 1; index += 2) {
       int value = Integer.parseInt(strings.get(index));
       String position = strings.get(index + 1);
       nodes.add(new Node(value, position));
@@ -86,7 +86,7 @@ public class TreeLevel extends Kata {
    * @param nodes The list of nodes with which to build a tree.
    * @return The root of the tree.
    */
-  private Node buildTree(List<Node> nodes) {
+  public Node buildTree(List<Node> nodes) {
     List<Node> tree = new ArrayList<Node>();
     tree.add(nodes.remove(0));
     if (!"-".equals(tree.get(0).getPosition())) {
@@ -127,15 +127,17 @@ public class TreeLevel extends Kata {
   }
 
   /**
-   * Prints a tree in level order using a queue.
+   * Returns a string containing the tree printed in level order.
    * 
    * @param node The root of the tree.
+   * @return A string containing the tree printed in level order.
    */
-  private void printLevelOrder(Node node) {
+  public String getLevelOrder(Node node) {
     List<Node> queue = new ArrayList<Node>();
     queue.add(node);
     Node currentNode = null;
 
+    StringBuffer buffer = new StringBuffer();
     while (true) {
       currentNode = queue.get(0);
       if (currentNode.getLeft() != null) {
@@ -145,13 +147,14 @@ public class TreeLevel extends Kata {
         queue.add(currentNode.getRight());
       }
       if (queue.size() > 1) {
-        System.out.print(queue.remove(0).getValue() + " ");
+        String temp = queue.remove(0).getValue() + " ";
+        buffer.append(temp);
       }
       else {
         break;
       }
     }
-    System.out.println(queue.remove(0).getValue());
+    return buffer.toString() + queue.remove(0).getValue();
   }
 
   /**

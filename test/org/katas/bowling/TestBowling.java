@@ -5,7 +5,7 @@ import static org.junit.Assert.fail;
 import org.junit.Test;
 
 /**
- * JUnit tests for the Bowling kata.
+ * JUnit tests for the {@link Bowling} class.
  * 
  * @author BJ Peter DeLaCruz <bjpeter@hawaii.edu>
  */
