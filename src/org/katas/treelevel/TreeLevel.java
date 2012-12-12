@@ -32,7 +32,7 @@ public class TreeLevel extends Kata {
       StringBuffer buffer = new StringBuffer();
       String line = this.lines.remove(0) + " ";
       buffer.append(line);
-      while (!line.contains("()")) {
+      while (!line.contains("()") && !this.lines.isEmpty()) {
         line = this.lines.remove(0) + " ";
         buffer.append(line);
       }
@@ -161,13 +161,10 @@ public class TreeLevel extends Kata {
    * @param args Name of the file containing nodes with which to build one or more trees.
    */
   public static void main(String... args) {
-    if (args.length != 1) {
-      System.err.println("Need filename.");
-      return;
-    }
+    String filename = TreeLevel.class.getResource("example.kata").getPath().trim();
 
     TreeLevel treeLevel = new TreeLevel();
-    treeLevel.setLines(KataUtils.readLines(args[0]));
+    treeLevel.setLines(KataUtils.readLines(filename));
 
     if (treeLevel.getLines() != null) {
       treeLevel.processLines();

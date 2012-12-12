@@ -307,11 +307,9 @@ public final class KataUtils {
    */
   public static List<String> readLines(String filename) {
     List<String> list = new ArrayList<String>();
-    BufferedReader reader = null;
-    try {
-      reader =
-          new BufferedReader(new InputStreamReader(new FileInputStream(new File(filename)),
-              "UTF-16"));
+    File file = new File(filename);
+    try (BufferedReader reader =
+        new BufferedReader(new InputStreamReader(new FileInputStream(file), "ASCII"))) {
       String line = "";
       while ((line = reader.readLine()) != null) {
         list.add(line);
@@ -320,17 +318,6 @@ public final class KataUtils {
     catch (IOException e) {
       System.err.println(e.getMessage());
       return null;
-    }
-    finally {
-      try {
-        if (reader != null) {
-          reader.close();
-        }
-      }
-      catch (IOException e) {
-        System.err.println(e.getMessage());
-        list = null;
-      }
     }
     return list;
   }

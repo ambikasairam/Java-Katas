@@ -74,6 +74,17 @@
         <exclude name="**/*.java" />
       </fileset>
     </copy>
+    <javac srcdir="${test.dir}" destdir="${build.classes.dir}" debug="on" includeAntRuntime="no">
+      <classpath refid="compile.classpath" />
+      <compilerarg value="-Xlint:all" />
+      <compilerarg value="-Werror" />
+    </javac>
+    <copy todir="${build.classes.dir}" overwrite="true">
+      <fileset dir="${test.dir}">
+        <include name="**/*.*" />
+        <exclude name="**/*.java" />
+      </fileset>
+    </copy>
   </target>
 
   <path id="run.classpath">
