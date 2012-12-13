@@ -27,45 +27,53 @@ public class TransactionProcessing extends Kata {
    * transactions and account information.
    */
   public TransactionProcessing() {
-    this.transactions = new HashMap<Integer, List<Transaction>>();
-    this.accounts = new HashMap<Integer, Account>();
+    transactions = new HashMap<Integer, List<Transaction>>();
+    accounts = new HashMap<Integer, Account>();
   }
 
   /**
-   * Inputs all accounts and transactions, and process all transactions by summing all of the items
-   * in each transaction. If the sum is not equal to zero, i.e. a transaction is not balanced,
+   * Inputs all accounts and transactions, and processes all transactions by summing all of the
+   * items in each transaction. If the sum is not equal to zero, i.e. a transaction is not balanced,
    * information about that transaction will be printed to the screen.
    */
   @Override
   public void processLines() {
+    System.out.println(process());
+  }
+
+  /**
+   * Inputs all accounts and transactions, and processes all transactions by summing all of the
+   * items in each transaction. If the sum is not equal to zero, i.e. a transaction is not balanced,
+   * information about that transaction will be in the string that is returned.
+   * 
+   * @return The string that contains all transactions that are not balanced.
+   */
+  public String process() {
     inputAccounts();
-
-    this.lines.remove(0);
-
     inputTransactions();
-
-    processTransactions();
+    return processTransactions();
   }
 
   /**
    * Inputs all account information read in from a file into a HashMap.
    */
   private void inputAccounts() {
-    while (!this.lines.get(0).contains("000")) {
-      String info = this.lines.remove(0);
+    while (!lines.get(0).contains("000")) {
+      String info = lines.remove(0);
       int accountNo = Integer.parseInt(info.substring(0, 3));
       String accountDescr = info.substring(3);
       Account account = new Account(accountNo, accountDescr);
-      this.accounts.put(accountNo, account);
+      accounts.put(accountNo, account);
     }
+    lines.remove(0);
   }
 
   /**
    * Inserts all transactions read in from a file into a HashMap.
    */
   private void inputTransactions() {
-    while (!this.lines.isEmpty()) {
-      String line = this.lines.remove(0);
+    while (!lines.isEmpty()) {
+      String line = lines.remove(0);
       StringTokenizer tokenizer = new StringTokenizer(line, " ");
       if (tokenizer.countTokens() != 2) {
         System.err.println("Line in incorrect format: " + line);
@@ -79,26 +87,30 @@ public class TransactionProcessing extends Kata {
       int transactionNo = Integer.parseInt(info.substring(0, 3));
       int balance = Integer.parseInt(tokenizer.nextToken());
       Transaction transaction = new Transaction(accountNo, transactionNo, balance);
-      if (this.transactions.get(Integer.parseInt(info.substring(0, 3))) == null) {
-        this.transactions.put(Integer.parseInt(info.substring(0, 3)), new ArrayList<Transaction>());
+      if (transactions.get(Integer.parseInt(info.substring(0, 3))) == null) {
+        transactions.put(Integer.parseInt(info.substring(0, 3)), new ArrayList<Transaction>());
       }
-      this.transactions.get(Integer.parseInt(info.substring(0, 3))).add(transaction);
+      transactions.get(Integer.parseInt(info.substring(0, 3))).add(transaction);
     }
   }
 
   /**
-   * Sums all of the transactions and prints information about those that are out of balance.
+   * Sums all of the transactions and returns information about those that are out of balance.
+   * 
+   * @return A string that contains information about transactions that are not balanced.
    */
-  private void processTransactions() {
-    for (Entry<Integer, List<Transaction>> e : this.transactions.entrySet()) {
+  private String processTransactions() {
+    StringBuffer buffer = new StringBuffer();
+    for (Entry<Integer, List<Transaction>> e : transactions.entrySet()) {
       int sum = 0;
       for (Transaction t : e.getValue()) {
         sum += t.getBalance();
       }
       if (sum != 0) {
-        System.out.println(printResults(e, Math.abs(sum)));
+        buffer.append(printResults(e, Math.abs(sum)));
       }
     }
+    return buffer.toString();
   }
 
   /**
@@ -119,7 +131,7 @@ public class TransactionProcessing extends Kata {
     buffer.append(temp);
 
     for (Transaction t : entry.getValue()) {
-      temp = t.getAccountNo() + " " + this.accounts.get(t.getAccountNo()).getAccountDescr();
+      temp = t.getAccountNo() + " " + accounts.get(t.getAccountNo()).getAccountDescr();
       buffer.append(temp);
       int index = temp.length() + KataUtils.getBalanceAsString(t.getBalance()).length();
       for (; index < NUM_SPACES; index++) {
@@ -149,16 +161,13 @@ public class TransactionProcessing extends Kata {
    * The main program; given the name of a file, extracts all of the lines in the file and then
    * processes them.
    * 
-   * @param args Name of the file containing account information and transactions.
+   * @param args None.
    */
   public static void main(String... args) {
-    if (args.length != 1) {
-      System.err.println("Need filename.");
-      return;
-    }
+    String filename = TransactionProcessing.class.getResource("example.kata").getPath();
 
     TransactionProcessing transactionProcessing = new TransactionProcessing();
-    transactionProcessing.setLines(KataUtils.readLines(args[0]));
+    transactionProcessing.setLines(KataUtils.readLines(filename));
 
     if (transactionProcessing.getLines() != null) {
       transactionProcessing.processLines();

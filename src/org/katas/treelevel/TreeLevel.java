@@ -179,10 +179,10 @@ public class TreeLevel extends Kata {
    * The main program; given the name of a file, extracts all of the lines in the file and then
    * processes them.
    * 
-   * @param args Name of the file containing nodes with which to build one or more trees.
+   * @param args None.
    */
   public static void main(String... args) {
-    String filename = TreeLevel.class.getResource("example.kata").getPath().trim();
+    String filename = TreeLevel.class.getResource("example.kata").getPath();
 
     TreeLevel treeLevel = new TreeLevel();
     treeLevel.setLines(KataUtils.readLines(filename));
