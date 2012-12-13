@@ -11,7 +11,7 @@ import org.junit.Test;
 public class TestTreeLevel {
 
   /**
-   * Tests the {@link TreeLevel#getLevelOrder(String)} method.
+   * Tests the {@link TreeLevel#getLevelOrder(String)} method with valid trees.
    */
   @Test
   public void testLevelOrder() {
@@ -21,8 +21,14 @@ public class TestTreeLevel {
 
     tree = "(5,LLL) (6,LLR) (3,LL) (1,L) (0,) (2,R) (4,RR) (7,RRR) (8,RRL) ()";
     assertEquals("should be 0 1 2 3 4 5 6 8 7", "0 1 2 3 4 5 6 8 7", TreeLevel.getLevelOrder(tree));
+  }
 
-    tree = "(5,LLL) (6,LLR) (3,LL) (1,L) (0,LR) (2,R) (4,RR) (7,RRR) (8,RRL) ()";
+  /**
+   * Tests the {@link TreeLevel#getLevelOrder(String)} method with an invalid tree.
+   */
+  @Test
+  public void testInvalidTree() {
+    String tree = "(5,LLL) (6,LLR) (3,LL) (1,L) (0,LR) (2,R) (4,RR) (7,RRR) (8,RRL) ()";
     assertEquals("should be null", null, TreeLevel.getLevelOrder(tree));
   }
 
