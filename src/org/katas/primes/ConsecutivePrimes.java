@@ -10,8 +10,7 @@ import java.util.Set;
 import com.bpd.utils.validation.Validator;
 
 /**
- * This kata finds the number of representations for a given positive integer. (More information can
- * be found <a href="http://uva.onlinejudge.org/external/12/1210.pdf" target="_blank">here</a>.)
+ * This class contains methods that find the number of representations for a given positive integer.
  * 
  * @author BJ Peter DeLaCruz
  * @see <a href="http://www.bjpeterdelacruz.com/files/katas/1210_Consecutive_Primes.pdf">Consecutive
@@ -96,9 +95,12 @@ public class ConsecutivePrimes {
    */
   public String getResults(int number) {
     StringBuffer buffer = new StringBuffer();
+    if (resultsMap.get(number) == null) {
+      return "[]";
+    }
     for (List<Integer> list : resultsMap.get(number)) {
-      buffer.append(list.toString());
-      buffer.append(' ');
+      String temp = list + " ";
+      buffer.append(temp);
     }
     return buffer.toString().substring(0, buffer.toString().length() - 1);
   }
