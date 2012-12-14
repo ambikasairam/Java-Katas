@@ -331,13 +331,10 @@ public class Squares extends Kata {
    * @param args The name of the file containing lines to check whether they form squares.
    */
   public static void main(String... args) {
-    if (args.length != 1) {
-      System.err.println("Need filename.");
-      return;
-    }
+    String filename = Squares.class.getResource("example.kata").getPath();
 
     Squares squares = new Squares();
-    squares.setLines(KataUtils.readLines(args[0]));
+    squares.setLines(KataUtils.readLines(filename));
 
     if (squares.getLines() != null) {
       squares.processLines();

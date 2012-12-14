@@ -5,15 +5,15 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * JUnit tests for the Minesweeper kata.
+ * JUnit tests for the {@link Minesweeper} class.
  * 
  * @author BJ Peter DeLaCruz <bjpeter@hawaii.edu>
  */
 public class TestMinesweeper {
 
   private Minesweeper minesweeper;
-  private static final String ONE = "Should be 1";
-  private static final String TWO = "Should be 2";
+  private static final String ONE = "should be one";
+  private static final String TWO = "should be two";
   private static final String EMPTY_ROW = ". . . .";
 
   /**
