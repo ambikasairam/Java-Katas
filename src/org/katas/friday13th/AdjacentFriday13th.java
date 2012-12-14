@@ -8,7 +8,7 @@ import java.util.Date;
  * 
  * @author BJ Peter DeLaCruz
  */
-public class AdjacentFriday13th {
+final class AdjacentFriday13th {
 
   /** One day in milliseconds. */
   public static final long DAY_IN_MILLISECONDS = 86_400_000;

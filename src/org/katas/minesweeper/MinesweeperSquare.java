@@ -10,7 +10,7 @@ import com.bpd.utils.math.Point;
  * @param <X> Row number.
  * @param <Y> Column number.
  */
-public class MinesweeperSquare<X extends Number, Y extends Number> extends Point<X, Y> {
+final class MinesweeperSquare<X extends Number, Y extends Number> extends Point<X, Y> {
 
   private final boolean isMineLocatedHere;
   private int numSurroundingMines;

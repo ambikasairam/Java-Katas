@@ -5,7 +5,7 @@ package org.katas.transaction;
  * 
  * @author BJ Peter DeLaCruz
  */
-public class Account {
+final class Account {
 
   private final int accountNo;
   private final String accountDescr;

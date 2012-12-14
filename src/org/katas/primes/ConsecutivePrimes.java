@@ -16,7 +16,7 @@ import com.bpd.utils.validation.Validator;
  * @see <a href="http://www.bjpeterdelacruz.com/files/katas/1210_Consecutive_Primes.pdf">Consecutive
  * Primes</a>
  */
-public class ConsecutivePrimes {
+final class ConsecutivePrimes {
 
   private final Set<Integer> primes = new LinkedHashSet<Integer>();
   private final Set<Integer> composites = new HashSet<Integer>();
@@ -95,7 +95,7 @@ public class ConsecutivePrimes {
    */
   public String getResults(int number) {
     StringBuffer buffer = new StringBuffer();
-    if (resultsMap.get(number) == null) {
+    if (resultsMap.get(number) == null && getCount(number) == 0) {
       return "[]";
     }
     for (List<Integer> list : resultsMap.get(number)) {

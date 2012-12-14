@@ -5,7 +5,7 @@ package org.katas.bowling;
  * 
  * @author BJ Peter DeLaCruz
  */
-public class Bowling {
+final class Bowling {
 
   /**
    * Given a bowling record, this method will calculate a bowler's final score.

@@ -14,7 +14,7 @@ import com.bpd.utils.validation.Validator;
  * @author BJ Peter DeLaCruz
  * @see <a href="http://www.bjpeterdelacruz.com/files/katas/122_Tree_Level.pdf">Tree Level</a>
  */
-public class TreeLevel extends Kata {
+final class TreeLevel extends Kata {
 
   /**
    * Creates a new TreeLevel object.

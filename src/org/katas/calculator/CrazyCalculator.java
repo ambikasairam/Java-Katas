@@ -18,7 +18,7 @@ import com.bpd.utils.validation.Validator;
  * @see <a href="http://www.bjpeterdelacruz.com/files/katas/354_Crazy_Calculator.pdf">Crazy
  * Calculator</a>
  */
-public class CrazyCalculator extends Kata {
+final class CrazyCalculator extends Kata {
 
   private static final char LEFT_ASSOC = 'L';
   private static final char RIGHT_ASSOC = 'R';

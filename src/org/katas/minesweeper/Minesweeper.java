@@ -15,7 +15,7 @@ import org.katas.common.KataUtils;
  * @author BJ Peter DeLaCruz <bjpeter@hawaii.edu>
  * @see <a href="http://www.bjpeterdelacruz.com/files/katas/Minesweeper.pdf">Minesweeper</a>
  */
-public class Minesweeper extends Kata {
+final class Minesweeper extends Kata {
 
   private final Map<Integer, List<MinesweeperSquare<Number, Number>>> minesweeperGrid =
       new HashMap<Integer, List<MinesweeperSquare<Number, Number>>>();

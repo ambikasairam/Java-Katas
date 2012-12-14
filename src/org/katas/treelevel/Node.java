@@ -8,7 +8,7 @@ import java.util.Objects;
  * 
  * @author BJ Peter DeLaCruz
  */
-public class Node implements Comparable<Node> {
+final class Node implements Comparable<Node> {
 
   private final int value;
   private final String position;

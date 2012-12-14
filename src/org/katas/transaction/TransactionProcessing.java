@@ -16,7 +16,7 @@ import org.katas.common.KataUtils;
  * @see <a href="http://www.bjpeterdelacruz.com/files/katas/Transaction_Processing.pdf">Transaction
  * Processing</a>
  */
-public class TransactionProcessing extends Kata {
+final class TransactionProcessing extends Kata {
 
   private static final int NUM_SPACES = 50;
   private final Map<Integer, List<Transaction>> transactions;

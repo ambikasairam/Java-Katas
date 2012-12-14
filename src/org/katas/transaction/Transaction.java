@@ -8,7 +8,7 @@ import org.katas.common.KataUtils;
  * 
  * @author BJ Peter DeLaCruz
  */
-public class Transaction {
+final class Transaction {
 
   private final int accountNo;
   private final int transactionNo;
