@@ -20,6 +20,7 @@ import java.util.List;
 import org.katas.common.Kata;
 import org.katas.common.KataEnums;
 import org.katas.common.KataUtils;
+import com.bpd.utils.StringUtils;
 
 /**
  * This program determines whether a line intersects a rectangle by checking if a point on the line
@@ -118,7 +119,7 @@ public class Intersection extends Kata {
 
       if (coordinates.size() != 8) {
         System.err.println("Expected 8 integers. Found " + coordinates.size() + ":");
-        System.err.println(KataUtils.printArrayContents(coordinates));
+        System.err.println(StringUtils.printArrayContents(coordinates));
         continue;
       }
 

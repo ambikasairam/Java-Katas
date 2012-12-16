@@ -20,6 +20,7 @@ import java.util.List;
 import org.katas.common.Kata;
 import org.katas.common.KataEnums;
 import org.katas.common.KataUtils;
+import com.bpd.utils.StringUtils;
 
 /**
  * This program sorts one or more stacks of pancakes that were read in from a file from smallest to
@@ -67,13 +68,13 @@ public class PancakeStacks extends Kata {
    */
   private void flipPancakes() {
     for (List<Integer> stack : this.pancakeStacks) {
-      System.out.println("Stack:     " + KataUtils.printArrayContents(stack));
+      System.out.println("Stack:     " + StringUtils.printArrayContents(stack));
       int size = stack.size();
       while (!this.isSorted(stack)) {
         flip(stack.subList(0, size--));
       }
       this.positions.add(0);
-      System.out.println("Positions: " + KataUtils.printArrayContents(this.positions) + "\n");
+      System.out.println("Positions: " + StringUtils.printArrayContents(this.positions) + "\n");
       this.positions.clear();
       this.headIndex = 1;
     }

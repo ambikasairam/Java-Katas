@@ -20,6 +20,7 @@ import java.util.List;
 import org.katas.common.Kata;
 import org.katas.common.KataEnums;
 import org.katas.common.KataUtils;
+import com.bpd.utils.ListUtils;
 
 /**
  * My solution to the Josephus problem (also known as Roman Roulette).
@@ -85,7 +86,7 @@ public class RomanRoulette extends Kata {
    * @param params Contains N and K.
    */
   private void findPosition(int n, int k, List<Integer> params) {
-    List<Integer> idNumbers = KataUtils.createIntegersList(n);
+    List<Integer> idNumbers = ListUtils.createIntegersList(1, n);
     int burier; // The person who buries the person who just died (the victim)
     boolean isFirstVictim = true;
     boolean isPositionFound = false;

@@ -21,6 +21,7 @@ import java.util.StringTokenizer;
 import org.katas.common.Kata;
 import org.katas.common.KataEnums;
 import org.katas.common.KataUtils;
+import com.bpd.utils.StringUtils;
 
 /**
  * This program reads in a file containing one or more spreadsheets that contain formulas and
@@ -91,7 +92,7 @@ public class Spreadsheet extends Kata {
       calculateFormulas();
     }
 
-    System.out.println(KataUtils.print2dArrayContents(this.spreadsheets));
+    System.out.println(StringUtils.print2dArrayContents(this.spreadsheets));
   }
 
   /**

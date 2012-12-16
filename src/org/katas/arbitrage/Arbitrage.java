@@ -206,13 +206,10 @@ public class Arbitrage extends Kata {
    * @param args Name of the file containing the currency exchange table.
    */
   public static void main(String... args) {
-    if (args.length != 1) {
-      System.err.println("Need filename.");
-      return;
-    }
+    String filename = Arbitrage.class.getResource("example.kata").getPath();
 
     Arbitrage arbitrage = new Arbitrage();
-    arbitrage.setLines(KataUtils.readLines(args[0]));
+    arbitrage.setLines(KataUtils.readLines(filename));
 
     if (arbitrage.getLines() != null) {
       arbitrage.processLines();

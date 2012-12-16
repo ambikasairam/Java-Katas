@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Set;
 import org.katas.common.Kata;
 import org.katas.common.KataUtils;
+import com.bpd.utils.StringUtils;
 
 /**
  * This program reads in strings from a file and determines their positions in the ordered sequence
@@ -54,14 +55,14 @@ public class Permalex extends Kata {
         return;
       }
 
-      List<Character> letters = KataUtils.getChars(line);
+      List<Character> letters = StringUtils.toCharacterList(line);
       List<String> strings = KataUtils.makeStringsList(new ArrayList<Character>(letters));
       Set<String> set = new HashSet<String>(strings);
       strings.clear();
       strings.addAll(set);
       Collections.sort(strings);
 
-      System.out.println(strings.indexOf(KataUtils.getString(letters)) + 1);
+      System.out.println(strings.indexOf(StringUtils.toString(letters)) + 1);
 
     }
   }
