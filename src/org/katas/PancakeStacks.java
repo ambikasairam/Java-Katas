@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright (C) 2012 BJ Peter DeLaCruz
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package org.katas;
 
 import java.util.ArrayList;
@@ -5,6 +20,7 @@ import java.util.List;
 import org.katas.common.Kata;
 import org.katas.common.KataEnums;
 import org.katas.common.KataUtils;
+import com.bpd.utils.StringUtils;
 
 /**
  * This program sorts one or more stacks of pancakes that were read in from a file from smallest to
@@ -52,13 +68,13 @@ public class PancakeStacks extends Kata {
    */
   private void flipPancakes() {
     for (List<Integer> stack : this.pancakeStacks) {
-      System.out.println("Stack:     " + KataUtils.printArrayContents(stack));
+      System.out.println("Stack:     " + StringUtils.printArrayContents(stack));
       int size = stack.size();
       while (!this.isSorted(stack)) {
         flip(stack.subList(0, size--));
       }
       this.positions.add(0);
-      System.out.println("Positions: " + KataUtils.printArrayContents(this.positions) + "\n");
+      System.out.println("Positions: " + StringUtils.printArrayContents(this.positions) + "\n");
       this.positions.clear();
       this.headIndex = 1;
     }

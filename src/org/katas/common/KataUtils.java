@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright (C) 2012 BJ Peter DeLaCruz
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package org.katas.common;
 
 import java.io.BufferedReader;
@@ -6,13 +21,13 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 
 import org.katas.PlayingCard;
+import com.bpd.utils.validation.Validator;
 
 /**
  * This class contains a set of methods that will help solving future Java katas much easier.
@@ -37,6 +52,11 @@ public final class KataUtils {
    */
   @Deprecated
   public static List<String> makeStringsList(List<Character> letters) {
+    Validator.checkNull(letters);
+    if (letters.isEmpty()) {
+      return new ArrayList<>();
+    }
+
     List<String> strings = new ArrayList<String>();
     int numLetters = letters.size();
     makeStringsList(strings, letters);
@@ -58,6 +78,9 @@ public final class KataUtils {
    */
   @Deprecated
   private static void makeStringsList(List<String> strings, List<Character> letters) {
+    Validator.checkNull(strings);
+    Validator.checkNull(letters);
+
     if (letters.size() == 2) {
       strings.add(letters.get(0) + "" + letters.get(1));
       strings.add(letters.get(1) + "" + letters.get(0));
@@ -85,6 +108,10 @@ public final class KataUtils {
    * @return The list of permutations of strings with length 0 to N.
    */
   public static List<String> getAllPermutationsOfSubsequences(Set<Character> chars) {
+    Validator.checkNull(chars);
+    if (chars.isEmpty()) {
+      return new ArrayList<>();
+    }
 
     Set<Set<Character>> powerSetOfChars = generatePowerSet(chars);
 
@@ -106,6 +133,8 @@ public final class KataUtils {
    * @return The power set.
    */
   private static Set<Set<Character>> generatePowerSet(Set<Character> set) {
+    Validator.checkNull(set);
+
     Set<Set<Character>> powerSet = new HashSet<Set<Character>>();
     if (set.isEmpty()) {
       powerSet.add(new HashSet<Character>());
@@ -136,6 +165,12 @@ public final class KataUtils {
    * @param strings The list in which the permutations of strings are stored.
    */
   private static void permute(List<Character> characters, int index, List<String> strings) {
+    Validator.checkNull(characters);
+    Validator.checkNull(strings);
+    if (characters.isEmpty()) {
+      return;
+    }
+
     if (index == characters.size()) {
       StringBuffer buffer = new StringBuffer();
       for (int i = 0; i < index; i++) {
@@ -154,49 +189,6 @@ public final class KataUtils {
         characters.set(index, temp);
       }
     }
-  }
-
-  /**
-   * Given a string, returns a list of characters in the string.
-   * 
-   * @param string The string from which to extract characters.
-   * @return The list of characters in the string.
-   */
-  public static List<Character> getChars(String string) {
-    List<Character> letters = new ArrayList<Character>();
-    for (int index = 0; index < string.length(); index++) {
-      letters.add(string.charAt(index));
-    }
-    return letters;
-  }
-
-  /**
-   * Given a list of characters, returns a string containing all of the characters concatenated
-   * together.
-   * 
-   * @param letters List of characters.
-   * @return A string containing all of the characters concatenated together.
-   */
-  public static String getString(List<Character> letters) {
-    StringBuffer buffer = new StringBuffer();
-    for (Character c : letters) {
-      buffer.append(c);
-    }
-    return buffer.toString();
-  }
-
-  /**
-   * Creates a list of integers from 1 to N.
-   * 
-   * @param n The greatest integer that will be in the list.
-   * @return A list of integers from 1 to N.
-   */
-  public static List<Integer> createIntegersList(int n) {
-    List<Integer> integers = new ArrayList<Integer>();
-    for (int index = 0; index < n; index++) {
-      integers.add(index + 1);
-    }
-    return integers;
   }
 
   /**
@@ -248,64 +240,14 @@ public final class KataUtils {
   }
 
   /**
-   * Prints the contents of a list of objects (strings, integers, etc.).
-   * 
-   * @param list The list of objects.
-   * @return A string displaying the contents of a list.
-   */
-  public static String printArrayContents(List<?> list) {
-    StringBuffer buffer = new StringBuffer();
-    String temp = "[";
-    buffer.append(temp);
-    for (int index = 0; index < list.size() - 1; index++) {
-      buffer.append(list.get(index));
-      buffer.append(", ");
-    }
-    buffer.append(list.get(list.size() - 1));
-    temp = "]";
-    buffer.append(temp);
-    return buffer.toString();
-  }
-
-  /**
-   * Given a list of 2D arrays of objects, returns a string representing the contents of each 2D
-   * array in a readable format.
-   * 
-   * @param list List of 2D arrays of objects.
-   * @return A string representing the contents of each 2D array of objects.
-   */
-  public static String print2dArrayContents(List<?> list) {
-    StringBuffer buffer = new StringBuffer();
-    int numTables = 0;
-    String temp = "[ ";
-    buffer.append(temp);
-    for (Object o : list) {
-      if (o instanceof Object[][]) {
-        Object[][] objects = (Object[][]) o;
-        for (int index = 0; index < objects.length - 1; index++) {
-          buffer.append(printArrayContents(Arrays.asList(objects[index])));
-          temp = "\n  ";
-          buffer.append(temp);
-        }
-        buffer.append(printArrayContents(Arrays.asList(objects[objects.length - 1])));
-      }
-      temp = " ]";
-      buffer.append(temp);
-      if (++numTables < list.size()) {
-        temp = "\n\n[ ";
-        buffer.append(temp);
-      }
-    }
-    return buffer.toString();
-  }
-
-  /**
    * Given the name of a file, reads in all of the lines from the file.
    * 
    * @param filename Name of a file.
    * @return A list containing all of the lines that were read in.
    */
   public static List<String> readLines(String filename) {
+    Validator.checkEmptyString(filename);
+
     List<String> list = new ArrayList<String>();
     File file = new File(filename);
     try (BufferedReader reader =
@@ -330,12 +272,16 @@ public final class KataUtils {
    * @return A concatenated string containing all of the strings in the list, separated by spaces.
    */
   public static String stringsListToString(List<String> strings) {
+    if (strings == null || strings.isEmpty()) {
+      return "";
+    }
+
     StringBuffer buffer = new StringBuffer();
-    for (String s : strings) {
-      String temp = s + " ";
+    for (int index = 0; index < strings.size() - 1; index++) {
+      String temp = strings.get(index) + " ";
       buffer.append(temp);
     }
-    return buffer.toString().substring(0, buffer.toString().length() - 1);
+    return buffer.toString() + strings.get(strings.size() - 1);
   }
 
   /**
@@ -351,6 +297,10 @@ public final class KataUtils {
    * @return A list of strings that contains one replacement substring per string.
    */
   public static List<String> replace(String string, String oldString, String newString) {
+    Validator.checkNull(string);
+    Validator.checkNull(oldString);
+    Validator.checkNull(newString);
+
     List<String> tokens = new ArrayList<String>();
     List<String> strings = new ArrayList<String>();
     StringTokenizer tokenizer = new StringTokenizer(string, " ");
@@ -374,6 +324,11 @@ public final class KataUtils {
    * @return A list of playing cards.
    */
   public static List<PlayingCard> createPlayingCards(List<String> lines) {
+    Validator.checkNull(lines);
+    if (lines.isEmpty()) {
+      return new ArrayList<>();
+    }
+
     List<PlayingCard> playingCards = new ArrayList<PlayingCard>();
     while (!lines.isEmpty()) {
       if ("#".equals(lines.get(0))) {

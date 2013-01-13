@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright (C) 2012 BJ Peter DeLaCruz
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package org.katas;
 
 import java.util.List;
@@ -5,6 +20,7 @@ import java.util.List;
 import org.katas.common.Kata;
 import org.katas.common.KataEnums;
 import org.katas.common.KataUtils;
+import com.bpd.utils.StringUtils;
 
 /**
  * This program will form double leading crosses if common letters are found in each pair of
@@ -82,8 +98,8 @@ public class WordCrosses extends Kata {
 
     boolean isCommonCharFound = false;
     for (int index = 0; index < strings.size(); index += 2) {
-      horizontalLetters = KataUtils.getChars(strings.get(index));
-      verticalLetters = KataUtils.getChars(strings.get(index + 1));
+      horizontalLetters = StringUtils.toCharacterList(strings.get(index));
+      verticalLetters = StringUtils.toCharacterList(strings.get(index + 1));
 
       isCommonCharFound = false;
       for (Character c : horizontalLetters) {
@@ -116,8 +132,8 @@ public class WordCrosses extends Kata {
         strings.get(0).length() - positionNumbers[0] + NUM_SPACES + positionNumbers[1] - 1;
     int verticalDistanceBetweenFirstLetters = positionNumbers[2] - positionNumbers[3];
 
-    List<Character> firstVerticalWord = KataUtils.getChars(strings.get(1));
-    List<Character> secondVerticalWord = KataUtils.getChars(strings.get(3));
+    List<Character> firstVerticalWord = StringUtils.toCharacterList(strings.get(1));
+    List<Character> secondVerticalWord = StringUtils.toCharacterList(strings.get(3));
 
     for (int index = 0, secondVerticalWordIndex = 0;; index++) {
       boolean isFirstVerticalWordPrinted = index >= firstVerticalWord.size();
