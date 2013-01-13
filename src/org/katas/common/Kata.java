@@ -1,5 +1,6 @@
 package org.katas.common;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -10,7 +11,7 @@ import java.util.List;
 public abstract class Kata {
 
   /** The lines read in from a file. */
-  protected List<String> lines;
+  protected List<String> lines = new ArrayList<>();
 
   /**
    * Sets lines read in from a file.

@@ -80,7 +80,7 @@ final class ConsecutivePrimes {
    * @param number The number for which to find the number of representations.
    * @return The number of representations.
    */
-  public Integer getCount(int number) {
+  protected Integer getCount(int number) {
     Validator.checkNegative(number);
 
     countSum(number);
@@ -93,7 +93,7 @@ final class ConsecutivePrimes {
    * @param number The number for which to find the number of representations.
    * @return A list of representations for the given number.
    */
-  public String getResults(int number) {
+  protected String getResults(int number) {
     StringBuffer buffer = new StringBuffer();
     if (resultsMap.get(number) == null && getCount(number) == 0) {
       return "[]";
